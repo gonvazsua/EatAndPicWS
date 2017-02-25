@@ -1,5 +1,7 @@
 package com.eatandpic.dao;
 
+import java.util.Set;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.repository.CrudRepository;
@@ -7,7 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 import com.eatandpic.models.User;
 
 @Transactional
-public interface UserDao  extends CrudRepository<User, Long> {
+public interface UserDao extends CrudRepository<User, Long> {
 	
 	/**
 	   * This method will find an User instance in the database by its email.
@@ -17,5 +19,9 @@ public interface UserDao  extends CrudRepository<User, Long> {
 	  public User findByEmail(String email);
 	  
 	  public User findByUsername(String username);
+	  
+	  public Set<User> findFollowers(User user);
+	  
+	  public Set<Long> findFollowersIds(User user);
 
 }

@@ -53,6 +53,15 @@ public class User {
     @NotNull
     private int rolId;
     
+    /*
+     * FOREIGN KEY FOLLOWERS
+     */
+    @ManyToMany(targetEntity=User.class)
+	private Set followers;
+    
+    @ManyToMany(targetEntity=Picture.class)
+	private Set likes;
+    
     
     public User(){}    
     
@@ -73,15 +82,6 @@ public class User {
     	this.lastLogin = new Date();
     	this.rolId = Rol.USUARIO;
     }
-    
-    /*
-     * FOREIGN KEY FOLLOWERS
-     */
-    @ManyToMany(targetEntity=User.class)
-	private Set followers;
-    
-    @ManyToMany(targetEntity=Picture.class)
-	private Set likes;
 
 	public long getUserId() {
 		return userId;
