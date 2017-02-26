@@ -20,8 +20,8 @@ public interface UserDao extends CrudRepository<User, Long> {
 	  
 	  public User findByUsername(String username);
 	  
-	  public Set<User> findFollowers(User user);
+	  //public Set<User> findFollowers(User user);
 	  
-	  public Set<Long> findFollowersIds(User user);
+	  //public Set<Long> findFollowersIds(User user);
 
 }

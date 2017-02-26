@@ -35,7 +35,7 @@ public class PictureController {
 		try{
 			user = new User(userId);
 			
-			followersIds = userDao.findFollowersIds(user);
+			//followersIds = userDao.findFollowersIds(user);
 			
 			if(followersIds != null && !followersIds.isEmpty()){
 				
