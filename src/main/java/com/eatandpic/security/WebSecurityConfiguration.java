@@ -13,42 +13,42 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.eatandpic.dao.UserDao;
 
-@Configuration
-public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
-	
-	@Autowired
-	UserDao userDao;
-	
-	@Override
-	public void init(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService());
-	}
-	
-	@Bean
-	UserDetailsService userDetailsService(){
-		
-		return new UserDetailsService(){
-			
-			@Override
-		    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-				
-		        com.eatandpic.models.User user = userDao.findByUsername(username);
-		        
-		        if(user != null) {
-		        	
-		        	return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), true, true, 
-		        			true, true, AuthorityUtils.createAuthorityList(SecurityConstants.USER));
-			        
-		        } 
-		        else {
-		          
-		        	throw new UsernameNotFoundException("could not find the user '"
-		                  + username + "'");
-		        }
-		    }
-			
-		};
-		
-	}
-
-}
+//@Configuration
+//public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
+//	
+//	@Autowired
+//	UserDao userDao;
+//	
+//	@Override
+//	public void init(AuthenticationManagerBuilder auth) throws Exception {
+//		auth.userDetailsService(userDetailsService());
+//	}
+//	
+//	@Bean
+//	UserDetailsService userDetailsService(){
+//		
+//		return new UserDetailsService(){
+//			
+//			@Override
+//		    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//				
+//		        com.eatandpic.models.User user = userDao.findByUsername(username);
+//		        
+//		        if(user != null) {
+//		        	
+//		        	return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), true, true, 
+//		        			true, true, AuthorityUtils.createAuthorityList(SecurityConstants.USER));
+//			        
+//		        } 
+//		        else {
+//		          
+//		        	throw new UsernameNotFoundException("could not find the user '"
+//		                  + username + "'");
+//		        }
+//		    }
+//			
+//		};
+//		
+//	}
+//
+//}

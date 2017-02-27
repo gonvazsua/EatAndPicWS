@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eatandpic.dao.PictureDao;
@@ -26,23 +27,18 @@ public class PictureController {
 	private UserDao userDao;
 	
 	@RequestMapping(value = "/followersPictures", method = RequestMethod.GET)
-	public List<Picture> getFollowersPictures(long userId, HttpServletResponse response){
+	public List<Picture> getFollowersPictures(@RequestParam long userId, HttpServletResponse response){
 		
 		List<Picture> userPictures = null, pictures = null;
 		Set<Long> followersIds = null;
 		User user = null;
 		
 		try{
-			user = new User(userId);
 			
-			//followersIds = userDao.findFollowersIds(user);
+			user = userDao.findOne(userId);
 			
-			if(followersIds != null && !followersIds.isEmpty()){
-				
-				for(Long followerId : followersIds){
-					
-				}
-				
+			if(user != null && !user.getFollowers().isEmpty()){
+				//Load followers
 			}
 			
 			response.setStatus(HttpServletResponse.SC_OK);
