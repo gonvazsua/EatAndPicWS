@@ -63,14 +63,12 @@ public class UserController {
 	  @RequestMapping(value = "/login", method = RequestMethod.POST)
 	  public User login(@RequestBody User user, HttpServletResponse response) {
 	    
-		  String userId = "";
-		  String passwordLogin = "";
+
 		  User existingUser = null;
 		  try {
 			  
 			  if(user != null){
-				  
-				  passwordLogin = user.getPassword();
+
 				  existingUser = userDao.findByUsername(user.getUsername());
 				  
 				  if(existingUser != null && existingUser.checkPassword(user.getPassword())){
