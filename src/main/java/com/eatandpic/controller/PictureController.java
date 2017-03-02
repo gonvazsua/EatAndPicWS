@@ -37,9 +37,9 @@ public class PictureController {
 			
 			user = userDao.findOne(userId);
 			
-			if(user != null && !user.getFollowers().isEmpty()){
-				//Load followers
-			}
+//			if(user != null && !user.getFollowers().isEmpty()){
+//				//Load followers
+//			}
 			
 			response.setStatus(HttpServletResponse.SC_OK);
 			

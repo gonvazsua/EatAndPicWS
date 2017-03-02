@@ -1,7 +1,5 @@
 package com.eatandpic.dao;
 
-import java.util.Set;
-
 import javax.transaction.Transactional;
 
 import org.springframework.data.repository.CrudRepository;

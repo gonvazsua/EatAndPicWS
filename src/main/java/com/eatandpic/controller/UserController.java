@@ -37,7 +37,7 @@ public class UserController {
 			  
 			  if(user != null && userDao.findByEmail(user.getEmail()) == null && userDao.findByUsername(user.getUsername()) == null){
 				  
-				  user.prepareForRegister();
+				  //user.prepareForRegister();
 				  userDao.save(user);
 				  
 				  response.setStatus(HttpServletResponse.SC_ACCEPTED);
@@ -71,14 +71,14 @@ public class UserController {
 
 				  existingUser = userDao.findByUsername(user.getUsername());
 				  
-				  if(existingUser != null && existingUser.checkPassword(user.getPassword())){
-					  existingUser.setLastLogin(new Date());
-					  userDao.save(existingUser);
-					  response.setStatus(HttpServletResponse.SC_ACCEPTED);
-				  }
-				  else{
-					  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				  }
+//				  if(existingUser != null && existingUser.checkPassword(user.getPassword())){
+//					  existingUser.setLastLogin(new Date());
+//					  userDao.save(existingUser);
+//					  response.setStatus(HttpServletResponse.SC_ACCEPTED);
+//				  }
+//				  else{
+//					  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//				  }
 			  }
 			  else{
 				  response.setStatus(HttpServletResponse.SC_BAD_REQUEST); 
@@ -101,8 +101,8 @@ public class UserController {
 	  @ResponseBody
 	  public String delete(long id) {
 		  try {
-		      User user = new User(id);
-		      userDao.delete(user);
+		      //User user = new User(id);
+		      //userDao.delete(user);
 		  }
 		  catch (Exception ex) {
 			  return "Error deleting the user:" + ex.toString();
@@ -120,7 +120,7 @@ public class UserController {
 		  String userId = "";
 		  try {
 			  	User user = userDao.findByEmail(email);
-			  	userId = String.valueOf(user.getUserId());
+			  	//userId = String.valueOf(user.getUserId());
 		  }
 		  catch (Exception ex) {
 			  return "User not found";
@@ -138,7 +138,7 @@ public class UserController {
 		  try {
 			  User user = userDao.findOne(id);
 			  user.setEmail(email);
-			  user.setName(name);
+			  //user.setName(name);
 			  userDao.save(user);
 		  }
 		  catch (Exception ex) {
