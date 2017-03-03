@@ -17,6 +17,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
+import javax.validation.constraints.Size;
 import javax.persistence.JoinColumn;
 
 import com.eatandpic.crypt.CryptoConverter;
@@ -25,39 +26,35 @@ import com.eatandpic.crypt.CryptoConverter;
 @Table(name = "user")
 public class User {
 	
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long userId;
+	@Id
+    @Column(name = "ID")
+    private Long id;
 
-    @Null
-    private String name;
-  
-    @Null
-    private String surname;
-  
+    @Column(name = "USERNAME", length = 50, unique = true)
     @NotNull
+    @Size(min = 4, max = 50)
     private String username;
-  
+
+    @Column(name = "PASSWORD", length = 100)
     @NotNull
-    private String email;
-  
-    @NotNull
+    @Size(min = 4, max = 100)
     private String password;
-    
-    @Null
-    private String picture;
-    
+
+    @Column(name = "FIRSTNAME", length = 50)
     @NotNull
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date registerDate;
-  
+    @Size(min = 4, max = 50)
+    private String firstname;
+
+    @Column(name = "LASTNAME", length = 50)
     @NotNull
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastLogin;
-  
+    @Size(min = 4, max = 50)
+    private String lastname;
+
+    @Column(name = "EMAIL", length = 50)
     @NotNull
-    private int rolId;
-    
+    @Size(min = 4, max = 50)
+    private String email;
+
     @Column(name = "ENABLED")
     @NotNull
     private Boolean enabled;
@@ -74,6 +71,20 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "AUTHORITY_ID", referencedColumnName = "ID")})
     private List<Authority> authorities;
     
+    @Null
+    private String picture;
+    
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date registerDate;
+  
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastLogin;
+  
+    @NotNull
+    private int rolId;
+    
     /*
      * FOREIGN KEY FOLLOWERS
      */
@@ -88,11 +99,11 @@ public class User {
     
     public User(String email, String name){
     	this.email = email;
-    	this.name = name;
+    	this.firstname = name;
     }
     
     public User(long id){
-    	this.userId = id;
+    	this.id = id;
     }
     
     public User(String username, String email, String password){
@@ -104,32 +115,36 @@ public class User {
     	this.rolId = Rol.USUARIO;
     }
 
-	public long getUserId() {
-		return userId;
+	public long getId() {
+		return id;
 	}
 
-	public void setUserId(long userId) {
-		this.userId = userId;
+	public void setId(long userId) {
+		this.id = userId;
 	}
 
-	public String getName() {
-		return name;
+	public String getFirstname() {
+		return firstname;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
 	}
 
-	public String getSurname() {
-		return surname;
+	public String getLastname() {
+		return lastname;
 	}
 
-	public void setSurname(String surname) {
-		this.surname = surname;
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
 	}
 
 	public String getUsername() {
 		return username;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public void setUsername(String username) {

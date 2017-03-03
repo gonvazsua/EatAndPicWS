@@ -24,7 +24,7 @@ public class PictureController {
 	private PictureDao pictureDao;
 	
 	@Autowired
-	private UserDao userDao;
+	protected UserDao userDao;
 	
 	@RequestMapping(value = "/followersPictures", method = RequestMethod.GET)
 	public List<Picture> getFollowersPictures(@RequestParam long userId, HttpServletResponse response){
