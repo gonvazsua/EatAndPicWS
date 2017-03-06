@@ -1,9 +1,11 @@
 package com.eatandpic.models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,6 +20,10 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import javax.persistence.JoinColumn;
 
 import com.eatandpic.crypt.CryptoConverter;
@@ -28,6 +34,7 @@ public class User {
 	
 	@Id
     @Column(name = "ID")
+	@GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "USERNAME", length = 50, unique = true)
@@ -41,12 +48,12 @@ public class User {
     private String password;
 
     @Column(name = "FIRSTNAME", length = 50)
-    @NotNull
+    @Null
     @Size(min = 4, max = 50)
     private String firstname;
 
     @Column(name = "LASTNAME", length = 50)
-    @NotNull
+    @Null
     @Size(min = 4, max = 50)
     private String lastname;
 
@@ -64,7 +71,7 @@ public class User {
     @NotNull
     private Date lastPasswordResetDate;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinTable(
             name = "USER_AUTHORITY",
             joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
@@ -102,7 +109,7 @@ public class User {
     	this.firstname = name;
     }
     
-    public User(long id){
+    public User(Long id){
     	this.id = id;
     }
     
@@ -115,11 +122,11 @@ public class User {
     	this.rolId = Rol.USUARIO;
     }
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long userId) {
+	public void setId(Long userId) {
 		this.id = userId;
 	}
 
@@ -141,10 +148,6 @@ public class User {
 
 	public String getUsername() {
 		return username;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public void setUsername(String username) {
@@ -224,13 +227,23 @@ public class User {
 		return (new CryptoConverter().convertToEntityAttribute(this.getPassword()));
 	}
 	
-	public void prepareForRegister(){
+	public void prepareForRegisterRoleUser(){
 		this.username = this.getUsername();
     	this.email = this.getEmail();
-    	this.setCryptedPassword(this.getPassword());
+    	//this.setCryptedPassword(this.getPassword());
     	this.registerDate = new Date();
     	this.lastLogin = new Date();
     	this.rolId = Rol.USUARIO;
+  
+    	Authority authority = new Authority();
+    	authority.setName(AuthorityName.ROLE_USER);
+		
+    	this.authorities = new ArrayList<Authority>();
+    	this.authorities.add(authority);
+    	this.enabled = true;
+    	this.registerDate = new Date();
+    	this.lastLogin = new Date();
+    	this.lastPasswordResetDate = new Date();
 	}
 	
 	public boolean checkPassword(String passwordToCheck){

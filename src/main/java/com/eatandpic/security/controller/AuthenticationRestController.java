@@ -9,20 +9,29 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eatandpic.dao.UserDao;
+import com.eatandpic.models.User;
 import com.eatandpic.security.JwtAuthenticationRequest;
 import com.eatandpic.security.JwtAuthenticationResponse;
 import com.eatandpic.security.JwtTokenUtil;
 import com.eatandpic.security.JwtUser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 public class AuthenticationRestController {
@@ -38,6 +47,9 @@ public class AuthenticationRestController {
 
     @Autowired
     private UserDetailsService userDetailsService;
+    
+    @Autowired
+    private UserDao userDao;
 
     @RequestMapping(value = "${jwt.route.authentication.path}", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
@@ -72,5 +84,42 @@ public class AuthenticationRestController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+    
+      /**
+	   * POST /create  --> Create a new user and save it in the database.
+	   */
+	  @CrossOrigin
+	  @RequestMapping(value = "${jwt.route.authentication.register}", method = RequestMethod.POST)
+	  public ResponseEntity<?> create(@RequestBody User user, HttpServletResponse response) {
+	    
+		  String userId = "";
+		  UserDetails userDetails = null;
+		  JwtAuthenticationRequest authenticationRequest;
+		  
+		  try {
+			  
+			  if(user != null && userDao.findByEmail(user.getEmail()) == null && userDao.findByUsername(user.getUsername()) == null){
+				  
+				  user.prepareForRegisterRoleUser();
+				  
+				  userDao.save(user);
+				  
+				  authenticationRequest = new JwtAuthenticationRequest(user.getUsername(), user.getPassword());
+			  
+				  return this.createAuthenticationToken(authenticationRequest);
+			  }
+			  else{
+				  response.setStatus(HttpServletResponse.SC_BAD_REQUEST); 
+				  user = null;
+			  }
+				  
+		  }
+		  catch (Exception ex) {
+			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			  return null;
+		  }
+	    
+		  return null;
+	  }
 
 }
