@@ -14,6 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,6 +51,9 @@ public class AuthenticationRestController {
     
     @Autowired
     private UserDao userDao;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @RequestMapping(value = "${jwt.route.authentication.path}", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException {
@@ -95,6 +99,7 @@ public class AuthenticationRestController {
 		  String userId = "";
 		  UserDetails userDetails = null;
 		  JwtAuthenticationRequest authenticationRequest;
+		  String lastPassword = "";
 		  
 		  try {
 			  
@@ -102,9 +107,13 @@ public class AuthenticationRestController {
 				  
 				  user.prepareForRegisterRoleUser();
 				  
+				  //Crypt password
+				  lastPassword = user.getPassword();
+				  user.setPassword(passwordEncoder.encode(user.getPassword()));
+				  
 				  userDao.save(user);
 				  
-				  authenticationRequest = new JwtAuthenticationRequest(user.getUsername(), user.getPassword());
+				  authenticationRequest = new JwtAuthenticationRequest(user.getUsername(), lastPassword);
 			  
 				  return this.createAuthenticationToken(authenticationRequest);
 			  }
