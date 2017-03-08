@@ -27,6 +27,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import javax.persistence.JoinColumn;
 
 import com.eatandpic.crypt.CryptoConverter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "user")
@@ -45,6 +46,7 @@ public class User {
     @Column(name = "PASSWORD", length = 100)
     @NotNull
     @Size(min = 4, max = 100)
+    @JsonIgnore
     private String password;
 
     @Column(name = "FIRSTNAME", length = 50)
@@ -71,6 +73,7 @@ public class User {
     @NotNull
     private Date lastPasswordResetDate;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinTable(
             name = "USER_AUTHORITY",
@@ -85,6 +88,7 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     private Date registerDate;
   
+    @JsonIgnore
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastLogin;
@@ -223,6 +227,7 @@ public class User {
 		return crypted;
 	}
 	
+	@JsonIgnore
 	public String getPasswordForJWTAuth(){
 		return (new CryptoConverter().convertToEntityAttribute(this.getPassword()));
 	}
