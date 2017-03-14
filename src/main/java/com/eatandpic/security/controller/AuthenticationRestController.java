@@ -69,7 +69,11 @@ public class AuthenticationRestController {
 
         // Reload password post-security so we can generate token
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        final String token = jwtTokenUtil.generateToken(userDetails);
+        
+        //Load User for getting userId and save it into the token
+        final User user = userDao.findByUsername(userDetails.getUsername());
+        
+        final String token = jwtTokenUtil.generateToken(userDetails, user.getId());
 
         // Return the token
         return ResponseEntity.ok(new JwtAuthenticationResponse(token));

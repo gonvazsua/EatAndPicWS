@@ -46,7 +46,6 @@ public class User {
     @Column(name = "PASSWORD", length = 100)
     @NotNull
     @Size(min = 4, max = 100)
-    @JsonIgnore
     private String password;
 
     @Column(name = "FIRSTNAME", length = 50)

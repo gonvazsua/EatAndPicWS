@@ -2,9 +2,11 @@ package com.eatandpic.controller;
 
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eatandpic.dao.UserDao;
 import com.eatandpic.models.User;
+import com.eatandpic.security.JwtTokenUtil;
+import com.eatandpic.validator.UserValidator;
 
 @RestController
 @RequestMapping("/user")
@@ -24,6 +28,11 @@ public class UserController {
 	  @Autowired
 	  private UserDao userDao;
 	  
+	  @Value("${jwt.header}")
+	  private String tokenHeader;
+
+	  @Autowired
+	  private JwtTokenUtil jwtTokenUtil;
 	
 	  /**
 	   * POST /create  --> Create a new user and save it in the database.
@@ -37,7 +46,6 @@ public class UserController {
 			  
 			  if(user != null && userDao.findByEmail(user.getEmail()) == null && userDao.findByUsername(user.getUsername()) == null){
 				  
-				  //user.prepareForRegister();
 				  userDao.save(user);
 				  
 				  response.setStatus(HttpServletResponse.SC_ACCEPTED);
@@ -70,15 +78,6 @@ public class UserController {
 			  if(user != null){
 
 				  existingUser = userDao.findByUsername(user.getUsername());
-				  
-//				  if(existingUser != null && existingUser.checkPassword(user.getPassword())){
-//					  existingUser.setLastLogin(new Date());
-//					  userDao.save(existingUser);
-//					  response.setStatus(HttpServletResponse.SC_ACCEPTED);
-//				  }
-//				  else{
-//					  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//				  }
 			  }
 			  else{
 				  response.setStatus(HttpServletResponse.SC_BAD_REQUEST); 
@@ -114,37 +113,35 @@ public class UserController {
 	   * GET /get-by-email  --> Return the id for the user having the passed
 	   * email.
 	   */
-	  @RequestMapping("/get-by-email")
+	  @RequestMapping(value = "/update", method = RequestMethod.POST)
 	  @ResponseBody
-	  public String getByEmail(String email) {
-		  String userId = "";
+	  public User updateUser(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
+		  
+		  String token = "";
+	      Long userId = null;
+		  
 		  try {
-			  	User user = userDao.findByEmail(email);
-			  	//userId = String.valueOf(user.getUserId());
+			  
+			  token = request.getHeader(tokenHeader);
+			  userId = jwtTokenUtil.getUserIdFromToken(token);
+			  
+			  if(UserValidator.validateUser(user)
+					  && userId != null && userId.equals(user.getId())){
+				  
+				  user.setId(userId);
+				  userDao.save(user);
+				  
+			  }
+			  else{
+				  throw new Exception("User not valid");
+			  }
+			  
 		  }
 		  catch (Exception ex) {
-			  return "User not found";
+			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			  return null;
 		  }
-		  return "The user id is: " + userId;
-	  }
-  
-	  /**
-	   * GET /update  --> Update the email and the name for the user in the 
-	   * database having the passed id.
-	   */
-	  @RequestMapping("/update")
-	  @ResponseBody
-	  public String updateUser(long id, String email, String name) {
-		  try {
-			  User user = userDao.findOne(id);
-			  user.setEmail(email);
-			  //user.setName(name);
-			  userDao.save(user);
-		  }
-		  catch (Exception ex) {
-			  return "Error updating the user: " + ex.toString();
-		  }
-		  return "User succesfully updated!";
+		  return user;
 	  }
 
 }
