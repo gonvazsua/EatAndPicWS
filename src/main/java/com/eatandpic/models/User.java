@@ -291,6 +291,4 @@ public class User {
 	public void setAuthorities(List<Authority> authorities) {
 		this.authorities = authorities;
 	}
-	
-	
 }

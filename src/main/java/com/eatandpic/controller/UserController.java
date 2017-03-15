@@ -1,12 +1,11 @@
 package com.eatandpic.controller;
 
-import java.util.Date;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.eatandpic.dao.UserDao;
 import com.eatandpic.models.User;
 import com.eatandpic.security.JwtTokenUtil;
+import com.eatandpic.security.JwtUser;
 import com.eatandpic.validator.UserValidator;
 
 @RestController
@@ -33,6 +33,9 @@ public class UserController {
 
 	  @Autowired
 	  private JwtTokenUtil jwtTokenUtil;
+	  
+	  @Autowired
+	  private UserDetailsService userDetailsService;
 	
 	  /**
 	   * POST /create  --> Create a new user and save it in the database.
@@ -65,7 +68,7 @@ public class UserController {
 	  }
 	  
 	  /**
-	   * POST /create  --> Create a new user and save it in the database.
+	   * POST /login  --> Login new User
 	   */
 	  @CrossOrigin
 	  @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -110,7 +113,7 @@ public class UserController {
 	  }
   
 	  /**
-	   * GET /get-by-email  --> Return the id for the user having the passed
+	   * POST /updateUser  --> Update the passed User
 	   * email.
 	   */
 	  @RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -119,14 +122,16 @@ public class UserController {
 		  
 		  String token = "";
 	      Long userId = null;
-		  
+		  User userBBDD = null;
+	      
 		  try {
 			  
 			  token = request.getHeader(tokenHeader);
 			  userId = jwtTokenUtil.getUserIdFromToken(token);
 			  
-			  if(UserValidator.validateUser(user)
-					  && userId != null && userId.equals(user.getId())){
+			  userBBDD = userDao.findOne(userId);
+			  
+			  if(userBBDD != null && UserValidator.validateUser(user) && userId != null){
 				  
 				  user.setId(userId);
 				  userDao.save(user);
@@ -141,7 +146,16 @@ public class UserController {
 			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			  return null;
 		  }
+		  
 		  return user;
 	  }
+	  
+	  @RequestMapping(value = "/getAuthenticatedUser", method = RequestMethod.GET)
+	    public JwtUser getAuthenticatedUser(HttpServletRequest request) {
+	        String token = request.getHeader(tokenHeader);
+	        String username = jwtTokenUtil.getUsernameFromToken(token);
+	        JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
+	        return user;
+	    }
 
 }
