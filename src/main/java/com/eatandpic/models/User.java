@@ -49,12 +49,10 @@ public class User {
     private String password;
 
     @Column(name = "FIRSTNAME", length = 50)
-    @Null
     @Size(min = 4, max = 50)
     private String firstname;
 
     @Column(name = "LASTNAME", length = 50)
-    @Null
     @Size(min = 4, max = 50)
     private String lastname;
 
@@ -291,4 +289,17 @@ public class User {
 	public void setAuthorities(List<Authority> authorities) {
 		this.authorities = authorities;
 	}
+	
+	public boolean equals(User otherUser) {
+        if (this == otherUser)
+            return true;
+        if (id == null || otherUser == null || getClass() != otherUser.getClass())
+            return false;
+        
+        return id.equals(otherUser.getId());
+    }
+    @Override
+    public int hashCode() {
+        return id == null ? 0 : id.hashCode();
+    }
 }

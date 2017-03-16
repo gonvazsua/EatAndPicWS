@@ -3,41 +3,83 @@ package com.eatandpic.validator;
 import com.eatandpic.exceptions.UserNotValidException;
 import com.eatandpic.models.User;
 
+import net.bytebuddy.asm.Advice.This;
+
 public class UserValidator {
 	
-	public static Boolean validateUser(User user){
+	private User user;
+	
+	public UserValidator(User user){
 		
-		Boolean isValid = true;
-		
-		try{
-			
-			validateUsername(user.getUsername());
-			
-		} catch (UserNotValidException e) {
-			
-			isValid = false;
-		
-		}
-		
-		return isValid;
+		this.user = user;
 		
 	}
 	
-	public static void validateUsername(String username) throws UserNotValidException{
+	public User getUser(){
+		return this.user;
+	}
+	
+	public void validateUserForPersonalDataChange(){
 		
-		if(!"".equals(username) && username.length() > 50){
+		validateUsername();
+		
+		validateFistName();
+		
+		validateLastname();
+		
+	}
+	
+	public void validateUsername() {
+		
+		if(!"".equals(this.getUser().getUsername()) && this.getUser().getUsername().length() > 50){
 			
-			throw new UserNotValidException("Username not valid");
+			this.getUser().setUsername(this.getUser().getUsername().substring(0, 50));
 			
 		}
 		
 	}
 	
-	public static void validateEmail(String email) throws UserNotValidException {
+	public void validateFistName() {
 		
-		if(!"".equals(email) && email.length() > 50){
+		if(this.getUser().getFirstname() != null 
+				&& !"".equals(this.getUser().getFirstname()) 
+				&& this.getUser().getFirstname().length() > 50){
 			
-			throw new UserNotValidException("Email not valid");
+			this.getUser().setFirstname(this.getUser().getFirstname().substring(0, 50));
+			
+		}
+		
+	}
+	
+	public void validateLastname() {
+		
+		if(this.getUser().getLastname() != null 
+				&& !"".equals(this.getUser().getLastname()) 
+				&& this.getUser().getLastname().length() > 50){
+			
+			this.getUser().setLastname(this.getUser().getLastname().substring(0, 50));
+			
+		}
+		
+	}
+	
+	public void validateEmail() {
+		
+		if(this.getUser().getEmail() != null 
+				&& !"".equals(this.getUser().getEmail()) && this.getUser().getEmail().length() > 50){
+			
+			this.getUser().setEmail(this.getUser().getEmail().substring(0, 50));
+			
+		}
+
+	}
+	
+	public void validatePassword() {
+		
+		if(this.getUser().getPassword() != null 
+				&& !"".equals(this.getUser().getPassword()) && this.getUser().getPassword().length() > 100){
+			
+			this.getUser().setEmail(this.getUser().getEmail().substring(0, 100));
 			
 		}
 

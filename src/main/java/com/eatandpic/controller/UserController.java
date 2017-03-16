@@ -1,11 +1,14 @@
 package com.eatandpic.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eatandpic.dao.UserDao;
+import com.eatandpic.manager.UserManager;
 import com.eatandpic.models.User;
 import com.eatandpic.security.JwtTokenUtil;
 import com.eatandpic.security.JwtUser;
@@ -36,6 +40,9 @@ public class UserController {
 	  
 	  @Autowired
 	  private UserDetailsService userDetailsService;
+	  
+	  @Autowired
+	  private PasswordEncoder passwordEncoder;
 	
 	  /**
 	   * POST /create  --> Create a new user and save it in the database.
@@ -116,14 +123,112 @@ public class UserController {
 	   * POST /updateUser  --> Update the passed User
 	   * email.
 	   */
-	  @RequestMapping(value = "/update", method = RequestMethod.POST)
+	  @RequestMapping(value = "/updatePersonalData", method = RequestMethod.POST)
 	  @ResponseBody
 	  public User updateUser(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
 		  
 		  String token = "";
 	      Long userId = null;
+		  User userBBDD = null, userCheckUsername = null;
+	      UserValidator userValidator = null;
+		  
+		  try {
+			  
+			  userValidator = new UserValidator(user);
+			  token = request.getHeader(tokenHeader);
+			  userId = jwtTokenUtil.getUserIdFromToken(token);
+			  
+			  userBBDD = userDao.findOne(userId);
+			  
+			  //Check if exists another user with same Username
+			  if(!userBBDD.getUsername().equals(user.getUsername())){
+				  
+				  userCheckUsername = userDao.findByUsername(user.getUsername());
+				  
+			  }
+			  
+			  if(userCheckUsername == null && userBBDD != null && userId != null){
+				  
+				  userValidator.validateUserForPersonalDataChange();
+				  UserManager.copyFieldsFromPersonalDataChange(user, userBBDD);
+
+				  userDao.save(userBBDD);
+				  
+			  }
+			  else{
+				  throw new Exception("Username already exists");
+			  }
+			  
+		  }
+		  catch (Exception ex) {
+			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			  return null;
+		  }
+		  
+		  return user;
+	  }
+	  
+	  /**
+	   * POST /updateEmail  --> Update the user email
+	   * email.
+	   */
+	  @RequestMapping(value = "/updateEmail", method = RequestMethod.POST)
+	  @ResponseBody
+	  public User updateUserEmail(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
+		  
+		  String token = "";
+	      Long userId = null;
+		  User userBBDD = null, userCheckEmail = null;
+	      UserValidator userValidator = null;
+		  
+		  try {
+			  
+			  userValidator = new UserValidator(user);
+			  token = request.getHeader(tokenHeader);
+			  userId = jwtTokenUtil.getUserIdFromToken(token);
+			  
+			  userBBDD = userDao.findOne(userId);
+			  
+			  //Check if exists another user with same Email
+			  if(!userBBDD.getEmail().equals(user.getEmail())){
+				  
+				  userCheckEmail = userDao.findByEmail(user.getEmail());
+				  
+			  }
+			  
+			  if(userCheckEmail == null && userBBDD != null && userId != null){
+				  
+				  userValidator.validateEmail();
+				  UserManager.copyFieldsFromEmailChange(user, userBBDD);
+
+				  userDao.save(userBBDD);
+				  
+			  }
+			  else{
+				  throw new Exception("Email already exists");
+			  }
+			  
+		  }
+		  catch (Exception ex) {
+			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			  return null;
+		  }
+		  
+		  return user;
+	  }
+	  
+	  /**
+	   * POST /updateEmail  --> Update the user email
+	   * email.
+	   */
+	  @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
+	  @ResponseBody
+	  public User updatePassword(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
+		  
+		  String token = "";
+	      Long userId = null;
 		  User userBBDD = null;
-	      
+		  
 		  try {
 			  
 			  token = request.getHeader(tokenHeader);
@@ -131,14 +236,16 @@ public class UserController {
 			  
 			  userBBDD = userDao.findOne(userId);
 			  
-			  if(userBBDD != null && UserValidator.validateUser(user) && userId != null){
+			  if(userBBDD != null && userId != null){
 				  
-				  user.setId(userId);
-				  userDao.save(user);
+				  userBBDD.setPassword(passwordEncoder.encode(user.getPassword()));
+				  userBBDD.setLastPasswordResetDate(new Date());
+
+				  userDao.save(userBBDD);
 				  
 			  }
 			  else{
-				  throw new Exception("User not valid");
+				  throw new Exception("Email already exists");
 			  }
 			  
 		  }
@@ -151,11 +258,11 @@ public class UserController {
 	  }
 	  
 	  @RequestMapping(value = "/getAuthenticatedUser", method = RequestMethod.GET)
-	    public JwtUser getAuthenticatedUser(HttpServletRequest request) {
-	        String token = request.getHeader(tokenHeader);
-	        String username = jwtTokenUtil.getUsernameFromToken(token);
-	        JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
-	        return user;
-	    }
+	  public User getAuthenticatedUser(HttpServletRequest request) {
+		  String token = request.getHeader(tokenHeader);
+		  Long userId = jwtTokenUtil.getUserIdFromToken(token);
+		  User user = userDao.findOne(userId);
+		  return user;
+	  }
 
 }
