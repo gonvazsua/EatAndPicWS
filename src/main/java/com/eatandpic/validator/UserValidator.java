@@ -1,9 +1,6 @@
 package com.eatandpic.validator;
 
-import com.eatandpic.exceptions.UserNotValidException;
 import com.eatandpic.models.User;
-
-import net.bytebuddy.asm.Advice.This;
 
 public class UserValidator {
 	
