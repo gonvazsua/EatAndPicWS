@@ -7,20 +7,25 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import com.eatandpic.dao.UserDao;
 import com.eatandpic.manager.UserManager;
 import com.eatandpic.models.User;
 import com.eatandpic.security.JwtTokenUtil;
-import com.eatandpic.security.JwtUser;
 import com.eatandpic.validator.UserValidator;
 
 @RestController
@@ -263,6 +268,11 @@ public class UserController {
 		  Long userId = jwtTokenUtil.getUserIdFromToken(token);
 		  User user = userDao.findOne(userId);
 		  return user;
+	  }
+	  
+	  @RequestMapping(value = "/updateProfilePicture", method = RequestMethod.POST)
+	  public String updateProfilePicture(@RequestParam MultipartFile image, HttpServletRequest request, HttpServletResponse response){
+		  return "";
 	  }
 
 }
