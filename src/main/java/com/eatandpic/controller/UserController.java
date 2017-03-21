@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import com.eatandpic.dao.UserDao;
+import com.eatandpic.manager.FileManager;
 import com.eatandpic.manager.UserManager;
 import com.eatandpic.models.User;
 import com.eatandpic.security.JwtTokenUtil;
@@ -48,6 +50,10 @@ public class UserController {
 	  
 	  @Autowired
 	  private PasswordEncoder passwordEncoder;
+	  
+	  @Autowired
+	  private Environment env;
+	  
 	
 	  /**
 	   * POST /create  --> Create a new user and save it in the database.
@@ -271,8 +277,36 @@ public class UserController {
 	  }
 	  
 	  @RequestMapping(value = "/updateProfilePicture", method = RequestMethod.POST)
-	  public String updateProfilePicture(@RequestParam MultipartFile image, HttpServletRequest request, HttpServletResponse response){
-		  return "";
+	  public String updateProfilePicture(@RequestBody MultipartFile image, HttpServletRequest request, HttpServletResponse response){
+		  
+		  String token = "";
+	      Long userId = null;
+		  User userBBDD = null;
+		  String newFileName = null;
+		  
+		  try {
+			  
+			  token = request.getHeader(tokenHeader);
+			  userId = jwtTokenUtil.getUserIdFromToken(token);
+			  
+			  userBBDD = userDao.findOne(userId);
+			  
+			  if(userBBDD != null && image != null){
+				  
+				  newFileName = FileManager.uploadProfilePicture(env.getProperty("userProfilePicturesPath"), image, userId);
+				  
+				  userBBDD.setPicture(newFileName);
+				  
+				  userDao.save(userBBDD);
+			  }
+			  
+		  }
+		  catch (Exception ex) {
+			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			  newFileName = null;
+		  }
+		  
+		  return newFileName;
 	  }
 
 }
