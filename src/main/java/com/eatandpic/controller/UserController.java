@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -276,13 +277,14 @@ public class UserController {
 		  return user;
 	  }
 	  
-	  @RequestMapping(value = "/updateProfilePicture", method = RequestMethod.POST)
+	  @RequestMapping(value = "/updateProfilePicture", method = RequestMethod.POST, produces = MediaType.IMAGE_JPEG_VALUE)
 	  public String updateProfilePicture(@RequestBody MultipartFile image, HttpServletRequest request, HttpServletResponse response){
 		  
 		  String token = "";
 	      Long userId = null;
 		  User userBBDD = null;
 		  String newFileName = null;
+		  String base64Img = null;
 		  
 		  try {
 			  
@@ -298,15 +300,18 @@ public class UserController {
 				  userBBDD.setPicture(newFileName);
 				  
 				  userDao.save(userBBDD);
+				  
+				  base64Img = FileManager.getBase64FromProfilePictureName(env.getProperty("userProfilePicturesPath"), newFileName);
+				  
 			  }
 			  
 		  }
 		  catch (Exception ex) {
 			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			  newFileName = null;
+			  base64Img = null;
 		  }
 		  
-		  return newFileName;
+		  return base64Img;
 	  }
 
 }

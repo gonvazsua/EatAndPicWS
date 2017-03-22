@@ -78,7 +78,7 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "AUTHORITY_ID", referencedColumnName = "ID")})
     private List<Authority> authorities;
     
-    @Null
+    @Column(name = "picture")
     private String picture;
     
     @NotNull
