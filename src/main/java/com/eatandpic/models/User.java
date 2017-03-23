@@ -28,6 +28,7 @@ import javax.persistence.JoinColumn;
 
 import com.eatandpic.crypt.CryptoConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @Entity
 @Table(name = "user")
@@ -79,6 +80,7 @@ public class User {
     private List<Authority> authorities;
     
     @Column(name = "picture")
+    @JsonSerialize(using= com.eatandpic.serializer.ProfilePictureSerializer.class)
     private String picture;
     
     @NotNull

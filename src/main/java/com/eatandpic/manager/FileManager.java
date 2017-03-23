@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileManager {
 	
 	private static final String JPG = ".jpg";
+	private static final String BASE_64 = "data:image/png;base64,";
 	
 	public static String uploadProfilePicture(String path, MultipartFile image, Long userId) throws IOException{
 		
@@ -80,7 +81,7 @@ public class FileManager {
 		String uriBase64 = null;
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append("data:image/png;base64,");
+		sb.append(BASE_64);
 		sb.append(StringUtils.newStringUtf8(Base64.encodeBase64(imageBytes, false)));
 		uriBase64 = sb.toString();
 		
