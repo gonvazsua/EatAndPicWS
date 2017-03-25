@@ -1,4 +1,4 @@
-package com.eatandpic.manager;
+package com.eatandpic.factory;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-public class FileManager {
+public class FileFactory {
 	
 	private static final String JPG = ".jpg";
 	private static final String BASE_64 = "data:image/png;base64,";

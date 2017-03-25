@@ -5,6 +5,8 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,8 +27,8 @@ import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import com.eatandpic.dao.UserDao;
-import com.eatandpic.manager.FileManager;
-import com.eatandpic.manager.UserManager;
+import com.eatandpic.factory.FileFactory;
+import com.eatandpic.factory.UserFactory;
 import com.eatandpic.models.User;
 import com.eatandpic.security.JwtTokenUtil;
 import com.eatandpic.validator.UserValidator;
@@ -34,6 +36,8 @@ import com.eatandpic.validator.UserValidator;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+	
+	  private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
 	  // Private fields
 
@@ -56,84 +60,9 @@ public class UserController {
 	  private Environment env;
 	  
 	
-	  /**
-	   * POST /create  --> Create a new user and save it in the database.
-	   */
-	  @CrossOrigin
-	  @RequestMapping(value = "/register", method = RequestMethod.POST)
-	  public User create(@RequestBody User user, HttpServletResponse response) {
-	    
-		  String userId = "";
-		  try {
-			  
-			  if(user != null && userDao.findByEmail(user.getEmail()) == null && userDao.findByUsername(user.getUsername()) == null){
-				  
-				  userDao.save(user);
-				  
-				  response.setStatus(HttpServletResponse.SC_ACCEPTED);
-			  }
-			  else{
-				  response.setStatus(HttpServletResponse.SC_BAD_REQUEST); 
-				  user = null;
-			  }
-				  
-		  }
-		  catch (Exception ex) {
-			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			  return null;
-		  }
-	    
-		  return user;
-	  }
-	  
-	  /**
-	   * POST /login  --> Login new User
-	   */
-	  @CrossOrigin
-	  @RequestMapping(value = "/login", method = RequestMethod.POST)
-	  public User login(@RequestBody User user, HttpServletResponse response) {
-	    
-
-		  User existingUser = null;
-		  try {
-			  
-			  if(user != null){
-
-				  existingUser = userDao.findByUsername(user.getUsername());
-			  }
-			  else{
-				  response.setStatus(HttpServletResponse.SC_BAD_REQUEST); 
-				  existingUser = null;
-			  }
-				  
-		  }
-		  catch (Exception ex) {
-			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			  return null;
-		  }
-	    
-		  return existingUser;
-	  }
   
 	  /**
-	   * GET /delete  --> Delete the user having the passed id.
-	   */
-	  @RequestMapping("/delete")
-	  @ResponseBody
-	  public String delete(long id) {
-		  try {
-		      //User user = new User(id);
-		      //userDao.delete(user);
-		  }
-		  catch (Exception ex) {
-			  return "Error deleting the user:" + ex.toString();
-		  }
-		  return "User succesfully deleted!";
-	  }
-  
-	  /**
-	   * POST /updateUser  --> Update the passed User
-	   * email.
+	   * POST /updatePersonalData  --> Update the passed data User
 	   */
 	  @RequestMapping(value = "/updatePersonalData", method = RequestMethod.POST)
 	  @ResponseBody
@@ -162,7 +91,7 @@ public class UserController {
 			  if(userCheckUsername == null && userBBDD != null && userId != null){
 				  
 				  userValidator.validateUserForPersonalDataChange();
-				  UserManager.copyFieldsFromPersonalDataChange(user, userBBDD);
+				  UserFactory.copyFieldsFromPersonalDataChange(user, userBBDD);
 
 				  userDao.save(userBBDD);
 				  
@@ -173,12 +102,14 @@ public class UserController {
 			  
 		  }
 		  catch (Exception ex) {
+			  log.error(ex.getMessage());
 			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			  return null;
 		  }
 		  
 		  return user;
 	  }
+	  
 	  
 	  /**
 	   * POST /updateEmail  --> Update the user email
@@ -211,7 +142,7 @@ public class UserController {
 			  if(userCheckEmail == null && userBBDD != null && userId != null){
 				  
 				  userValidator.validateEmail();
-				  UserManager.copyFieldsFromEmailChange(user, userBBDD);
+				  UserFactory.copyFieldsFromEmailChange(user, userBBDD);
 
 				  userDao.save(userBBDD);
 				  
@@ -222,6 +153,7 @@ public class UserController {
 			  
 		  }
 		  catch (Exception ex) {
+			  log.error(ex.getMessage());
 			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			  return null;
 		  }
@@ -229,9 +161,10 @@ public class UserController {
 		  return user;
 	  }
 	  
+	  
+	  
 	  /**
-	   * POST /updateEmail  --> Update the user email
-	   * email.
+	   * POST /updatePassword  --> Update the user password
 	   */
 	  @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
 	  @ResponseBody
@@ -262,6 +195,7 @@ public class UserController {
 			  
 		  }
 		  catch (Exception ex) {
+			  log.error(ex.getMessage());
 			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			  return null;
 		  }
@@ -269,6 +203,10 @@ public class UserController {
 		  return user;
 	  }
 	  
+	  
+	  /**
+	   * GET /getAuthenticatedUser
+	   */
 	  @RequestMapping(value = "/getAuthenticatedUser", method = RequestMethod.GET)
 	  public User getAuthenticatedUser(HttpServletRequest request) {
 		  String token = request.getHeader(tokenHeader);
@@ -277,6 +215,10 @@ public class UserController {
 		  return user;
 	  }
 	  
+	  
+	  /**
+	   * POST /updateProfilePicture  --> Update user profile picture
+	   */
 	  @RequestMapping(value = "/updateProfilePicture", method = RequestMethod.POST, produces = MediaType.IMAGE_JPEG_VALUE)
 	  public String updateProfilePicture(@RequestBody MultipartFile image, HttpServletRequest request, HttpServletResponse response){
 		  
@@ -295,18 +237,19 @@ public class UserController {
 			  
 			  if(userBBDD != null && image != null){
 				  
-				  newFileName = FileManager.uploadProfilePicture(env.getProperty("userProfilePicturesPath"), image, userId);
+				  newFileName = FileFactory.uploadProfilePicture(env.getProperty("userProfilePicturesPath"), image, userId);
 				  
 				  userBBDD.setPicture(newFileName);
 				  
 				  userDao.save(userBBDD);
 				  
-				  base64Img = FileManager.getBase64FromProfilePictureName(env.getProperty("userProfilePicturesPath"), newFileName);
+				  base64Img = FileFactory.getBase64FromProfilePictureName(env.getProperty("userProfilePicturesPath"), newFileName);
 				  
 			  }
 			  
 		  }
 		  catch (Exception ex) {
+			  log.error(ex.getMessage());
 			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			  base64Img = null;
 		  }

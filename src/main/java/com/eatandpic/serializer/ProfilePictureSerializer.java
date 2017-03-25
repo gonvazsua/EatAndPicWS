@@ -2,7 +2,7 @@ package com.eatandpic.serializer;
 
 import java.io.IOException;
 
-import com.eatandpic.manager.FileManager;
+import com.eatandpic.factory.FileFactory;
 import com.eatandpic.utils.GetPropertiesValues;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,7 +24,7 @@ public class ProfilePictureSerializer extends JsonSerializer<String>{
 		
 		String path = properties.getValue(key);
 		
-		jgen.writeObject((String) FileManager.getBase64FromProfilePictureName(path, picture));
+		jgen.writeObject((String) FileFactory.getBase64FromProfilePictureName(path, picture));
 		
 		//jgen.writeEndArray();
 		

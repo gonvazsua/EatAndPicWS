@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -26,7 +27,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.JoinColumn;
 
-import com.eatandpic.crypt.CryptoConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -103,6 +103,9 @@ public class User {
     
     @ManyToMany(targetEntity=Picture.class)
 	private Set likes;
+    
+    @ManyToOne
+    private City city;
     
     
     public User(){}    
@@ -213,24 +216,6 @@ public class User {
 		this.likes = likes;
 	}
 	
-	public void setCryptedPassword(String nonCryptedPassword){
-		this.setPassword(new CryptoConverter().convertToDatabaseColumn(nonCryptedPassword));
-	}
-	
-	public void cryptPassword(){
-		this.setCryptedPassword(this.getPassword());
-	}
-	
-	public String cryptPassword(String nonCryptedPassword){
-		String crypted = (new CryptoConverter().convertToDatabaseColumn(nonCryptedPassword));
-		return crypted;
-	}
-	
-	@JsonIgnore
-	public String getPasswordForJWTAuth(){
-		return (new CryptoConverter().convertToEntityAttribute(this.getPassword()));
-	}
-	
 	public void prepareForRegisterRoleUser(){
 		this.username = this.getUsername();
     	this.email = this.getEmail();
@@ -248,16 +233,6 @@ public class User {
     	this.registerDate = new Date();
     	this.lastLogin = new Date();
     	this.lastPasswordResetDate = new Date();
-	}
-	
-	public boolean checkPassword(String passwordToCheck){
-		String crypted = cryptPassword(passwordToCheck);
-		
-		if(crypted.equals(this.getPassword())){
-			return true;
-		}
-		
-		return false;
 	}
 
 	public String getPicture() {

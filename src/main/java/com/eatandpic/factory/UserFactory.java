@@ -1,8 +1,8 @@
-package com.eatandpic.manager;
+package com.eatandpic.factory;
 
 import com.eatandpic.models.User;
 
-public class UserManager {
+public class UserFactory {
 	
 	public static void copyFieldsFromPersonalDataChange(User userFrom, User userTo){
 		
