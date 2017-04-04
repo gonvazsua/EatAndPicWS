@@ -15,9 +15,6 @@ public class Province {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long provinceId;
 	
-	@ManyToOne
-	private Community community;
-	
 	@NotNull
 	@Size(min = 4, max = 50)
 	private String name;
@@ -29,14 +26,6 @@ public class Province {
 
 	public void setProvinceId(long provinceId) {
 		this.provinceId = provinceId;
-	}
-
-	public Community getCommunity() {
-		return community;
-	}
-
-	public void setCommunity(Community community) {
-		this.community = community;
 	}
 
 	public String getName() {

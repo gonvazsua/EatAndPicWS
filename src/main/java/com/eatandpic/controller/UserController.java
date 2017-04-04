@@ -9,23 +9,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
-
 import com.eatandpic.dao.UserDao;
 import com.eatandpic.factory.FileFactory;
 import com.eatandpic.factory.UserFactory;
@@ -237,7 +230,7 @@ public class UserController {
 			  
 			  if(userBBDD != null && image != null){
 				  
-				  newFileName = FileFactory.uploadProfilePicture(env.getProperty("userProfilePicturesPath"), image, userId);
+				  newFileName = FileFactory.uploadProfilePicture(image, userId);
 				  
 				  userBBDD.setPicture(newFileName);
 				  
