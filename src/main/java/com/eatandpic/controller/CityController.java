@@ -20,7 +20,7 @@ import com.eatandpic.models.City;
 
 @RestController
 @RequestMapping("/city")
-public class CityController {
+public class CityController { 
 	
 	private static final Logger log = LoggerFactory.getLogger(CityController.class);
 	
