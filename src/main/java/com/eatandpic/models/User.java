@@ -101,7 +101,7 @@ public class User {
     @ManyToMany(targetEntity=User.class)
 	private Set followers;
     
-    @ManyToMany(targetEntity=Picture.class)
+    @ManyToMany(targetEntity=PlatePicture.class)
 	private Set likes;
     
     @ManyToOne

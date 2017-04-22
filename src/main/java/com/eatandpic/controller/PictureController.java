@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eatandpic.dao.PictureDao;
+import com.eatandpic.dao.PlatePictureDao;
 import com.eatandpic.dao.UserDao;
-import com.eatandpic.models.Picture;
+import com.eatandpic.models.PlatePicture;
 import com.eatandpic.models.Plate;
 import com.eatandpic.models.Restaurant;
 import com.eatandpic.models.User;
@@ -25,7 +25,7 @@ import com.eatandpic.security.JwtTokenUtil;
 public class PictureController {
 	
 	@Autowired
-	private PictureDao pictureDao;
+	private PlatePictureDao pictureDao;
 	
 	@Autowired
 	protected UserDao userDao;
@@ -54,8 +54,8 @@ public class PictureController {
      */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
-	public Picture save(HttpServletRequest request, HttpServletResponse response,
-			@RequestBody Picture picture){
+	public PlatePicture save(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody PlatePicture picture){
 		  
 		try{
 			

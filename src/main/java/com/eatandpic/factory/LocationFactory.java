@@ -26,7 +26,7 @@ public class LocationFactory {
 		lookupService = new LookupService(databaseFile, LookupService.GEOIP_STANDARD);
 		
 		//location = lookupService.getLocation(host);
-		location = lookupService.getLocation("90.94.241.221");
+		location = lookupService.getLocation("188.78.186.80");
 		
 		if(location == null)
 			throw new IPNotFoundException("Not found location for: " + host);

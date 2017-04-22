@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="picture")
-public class Picture {
+public class PlatePicture {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

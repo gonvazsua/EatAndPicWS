@@ -6,13 +6,13 @@ import javax.transaction.Transactional;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.eatandpic.models.Picture;
+import com.eatandpic.models.PlatePicture;
 import com.eatandpic.models.Restaurant;
 import com.eatandpic.models.User;
 
 @Transactional
-public interface PictureDao extends CrudRepository<Picture, Long> {
+public interface PlatePictureDao extends CrudRepository<PlatePicture, Long> {
 	
-	public List<Picture> findByUser(User user);
+	public List<PlatePicture> findByUser(User user);
 
 }

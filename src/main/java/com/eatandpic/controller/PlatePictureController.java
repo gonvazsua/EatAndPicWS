@@ -3,6 +3,8 @@ package com.eatandpic.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,48 +12,43 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eatandpic.dao.PlateDao;
-import com.eatandpic.dao.RestaurantDao;
-import com.eatandpic.models.Plate;
-import com.eatandpic.models.Restaurant;
+import com.eatandpic.dao.PlatePictureDao;
+import com.eatandpic.models.PlatePicture;
 
 @RestController
-@RequestMapping("/plate")
-public class PlateController {
+@RequestMapping("/platePicture")
+public class PlatePictureController {
+	
+	private static final Logger log = LoggerFactory.getLogger(PlatePictureController.class);
 	
 	@Autowired
-	private PlateDao plateDao;
-	
-	@Autowired
-	private RestaurantDao restaurantDao;
+	private PlatePictureDao platePictureDao;
 	
 	/**
-     * POST /savePlate  --> Save new Plate and return it
+     * POST /save
      */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
-	public Plate save(HttpServletRequest request, HttpServletResponse response,
-			@RequestBody Plate plate){
-		  
-		Restaurant restaurant = null;	
+	public PlatePicture save(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody PlatePicture platePicture){
+		
+		PlatePicture savedPlatePicture = null;  
 		
 		try{
 			
-			restaurant = restaurantDao.findOne(plate.getRestaurant().getRestaurantId());
-			
-			plate.setRestaurant(restaurant);
-			
-			plateDao.save(plate);
+			savedPlatePicture = platePictureDao.save(platePicture);
 			
 			response.setStatus(HttpServletResponse.SC_OK);
 			  
-		} catch(Exception e){
+		} catch(Exception ex){
+			
+			log.error("Error al guardar platePicture: " + ex.getMessage());
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			plate = null;
-		}
-		  
-		return plate;
+		
+		} 
+		
+		return savedPlatePicture;
 		 
 	}
-	
+
 }
