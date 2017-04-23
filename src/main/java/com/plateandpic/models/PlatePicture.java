@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.plateandpic.factory.PictureFactory;
+import com.plateandpic.factory.PlatePictureFactory;
 
 @Entity
 @Table(name="picture")

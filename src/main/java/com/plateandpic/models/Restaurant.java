@@ -59,6 +59,8 @@ public class Restaurant {
 	@Size(min = 1, max = 50)
 	private String picture;
 	
+	private Double rating;
+	
 	
 	public long getRestaurantId() {
 		return restaurantId;
@@ -154,6 +156,14 @@ public class Restaurant {
 
 	public void setApiPlaceId(String apiPlaceId) {
 		this.apiPlaceId = apiPlaceId;
+	}
+
+	public Double getRating() {
+		return rating;
+	}
+
+	public void setRating(Double rating) {
+		this.rating = rating;
 	}
 
 }

@@ -22,6 +22,7 @@ import com.plateandpic.dao.RestaurantDao;
 import com.plateandpic.exceptions.IPNotFoundException;
 import com.plateandpic.exceptions.RestaurantNotFoundException;
 import com.plateandpic.factory.LocationFactory;
+import com.plateandpic.factory.RestaurantFactory;
 import com.plateandpic.models.City;
 import com.plateandpic.models.IpLocation;
 import com.plateandpic.models.Restaurant;
@@ -38,6 +39,9 @@ public class RestaurantController {
 	
 	@Autowired
 	private RestaurantDao restaurantDao;
+	
+	@Autowired
+	private RestaurantFactory restaurantFactory;
 	
     /**
      * GET /getRestaurants  --> Get restaurants list
@@ -117,7 +121,7 @@ public class RestaurantController {
 		
 		try{
 			
-			savedRestaurant = restaurantDao.save(restaurant);
+			savedRestaurant = restaurantFactory.buildAndSave(restaurant);
 			
 			response.setStatus(HttpServletResponse.SC_OK);
 			  

@@ -15,9 +15,10 @@ import com.plateandpic.utils.GetPropertiesValues;
 
 public class FileFactory {
 	
-	private static final String JPG = ".jpg";
+	public static final String JPG = ".jpg";
 	private static final String BASE_64 = "data:image/png;base64,";
 	private static final String systemPath = "user.dir";
+	private static final String DOT = ".";
 	
 	public static String uploadProfilePicture(MultipartFile image, Long userId) throws IOException{
 		
@@ -57,8 +58,6 @@ public class FileFactory {
 	public static String getBase64FromProfilePictureName(String path, String profilePictureName) throws IOException{
 		
 		byte[] imageBytes = null;
-		File fi = null;
-		String realPath = null;
 		String uriBase64 = null;
 		
 		try{
@@ -113,6 +112,50 @@ public class FileFactory {
 		
 		return file;
 		
+	}
+	
+	public static String uploadFile(String relativeFolderPath, String fileName, MultipartFile fileToUpload) throws IOException{
+		
+		String newFileName = "";
+		String projectPath = "";
+		File newFile = null;
+		
+		try{
+			
+			projectPath = System.getProperty(systemPath);
+			
+			newFile = new File(projectPath + relativeFolderPath + fileName);
+			
+			if(!newFile.exists())
+				newFile.createNewFile();
+			
+			fileToUpload.transferTo(newFile);
+			
+			newFileName = newFile.getName();
+			
+			
+		} catch(IOException e){
+			throw e;
+		}
+		
+		return newFileName;
+	}
+	
+	public static Integer getFileCount(String relativeFolderPath){
+		
+		String projectPath = "";
+		File folder = null;
+		Integer counter = 0;
+		
+		projectPath = System.getProperty(systemPath);
+		
+		folder = new File(projectPath + relativeFolderPath);
+		
+		if(folder.exists() && folder.isDirectory()){
+			counter = folder.list().length;
+		}
+			
+		return counter;		
 	}
 
 }
