@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.plateandpic.factory.PlatePictureFactory;
 
 @Entity
-@Table(name="picture")
+@Table(name="plate_picture")
 public class PlatePicture {
 	
 	@Id
@@ -33,8 +33,6 @@ public class PlatePicture {
 	@ManyToOne
 	private User user;
 	
-	@NotNull
-	@Size(min = 4, max = 50)
 	private String title;
 	
 	@NotNull

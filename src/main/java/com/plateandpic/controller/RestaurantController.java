@@ -79,11 +79,15 @@ public class RestaurantController {
 		  
 		try{
 			
+			if(name == null || "".equals(name)){
+				throw new RestaurantNotFoundException("Restaurant not found: Empty name!");
+			}
+			
 			ipLocation = LocationFactory.getLocationFromHost(request.getRemoteHost());
 			
 			city = cityDao.findByName(ipLocation.getCityName());
 			
-			restaurants = restaurantDao.findByNameAndCity(name, city);
+			restaurants = restaurantDao.findByNameAndCityId(name, city.getCityId());
 			
 			if(restaurants == null || restaurants.isEmpty()){
 				throw new RestaurantNotFoundException("Restaurant not found by name: " + name);
@@ -117,11 +121,14 @@ public class RestaurantController {
 	public Restaurant save(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody Restaurant restaurant){
 		
-		Restaurant savedRestaurant = null;  
+		Restaurant savedRestaurant = null;
 		
 		try{
 			
-			savedRestaurant = restaurantFactory.buildAndSave(restaurant);
+			savedRestaurant = restaurantFactory.findByApiPlaceId(restaurant);
+			
+			if(savedRestaurant == null)
+				savedRestaurant = restaurantFactory.buildAndSave(restaurant);
 			
 			response.setStatus(HttpServletResponse.SC_OK);
 			  
