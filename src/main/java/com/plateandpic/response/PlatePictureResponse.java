@@ -21,6 +21,7 @@ public class PlatePictureResponse {
 	private String plateName;
 	private String picture;
 	private Integer likesNumber;
+	private Integer commentsNumber;
 	private Boolean likeToUser;
 	private String registeredOn;
 	
@@ -40,6 +41,7 @@ public class PlatePictureResponse {
 		this.plateId = platePicture.getPlate().getPlateId();
 		this.plateName = platePicture.getPlate().getName();
 		this.likesNumber = platePicture.getLikes().size();
+		this.commentsNumber = platePicture.getComments().size();
 		this.likeToUser = false;
 		this.registeredOn = new SimpleDateFormat("dd/MM/yyyy").format(platePicture.getRegisteredOn());
 		
@@ -125,6 +127,14 @@ public class PlatePictureResponse {
 		this.likesNumber = likesNumber;
 	}
 	
+	public Integer getCommentsNumber() {
+		return commentsNumber;
+	}
+	
+	public void setCommentsNumber(Integer commentsNumber) {
+		this.commentsNumber = commentsNumber;
+	}
+	
 	public Boolean getLikeToUser() {
 		return likeToUser;
 	}
@@ -184,7 +194,7 @@ public class PlatePictureResponse {
 			
 		}
 		
-		this.setLikeToUser(likeToUser);
+		this.setLikeToUser(userLike);
 		
 	}
 

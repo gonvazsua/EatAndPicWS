@@ -23,7 +23,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.plateandpic.dao.PlatePictureDao;
 import com.plateandpic.exceptions.PlatePictureException;
+import com.plateandpic.exceptions.UserNotValidException;
 import com.plateandpic.factory.PlatePictureFactory;
+import com.plateandpic.models.Plate;
 import com.plateandpic.models.PlatePicture;
 import com.plateandpic.response.PlatePictureResponse;
 
@@ -123,6 +125,74 @@ public class PlatePictureController {
 		} 
 		
 		return lastPlatePictures;
+		 
+	}
+	
+	/**
+     * POST /like
+     */
+	@RequestMapping(value = "/like", method = RequestMethod.POST)
+	@ResponseBody
+	public PlatePicture like(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody Long platePictureId){
+		
+		String token = "";
+		
+		try{
+			
+			token = request.getHeader(tokenHeader);
+			
+			platePictureFactory.likePlatePicture(token, platePictureId);
+			
+			response.setStatus(HttpServletResponse.SC_OK);
+			  
+		} catch(PlatePictureException ex){
+			
+			log.error("Error al guardar like platePicture: " + ex.getMessage());
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		
+		} catch (UserNotValidException e) {
+			
+			log.error("Error al guardar like platePicture: " + e.getMessage());
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			
+		} 
+		
+		return null;
+		 
+	}
+	
+	/**
+     * POST /unlike
+     */
+	@RequestMapping(value = "/unlike", method = RequestMethod.POST)
+	@ResponseBody
+	public PlatePicture unlike(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody Long platePictureId){
+		
+		String token = "";
+		
+		try{
+			
+			token = request.getHeader(tokenHeader);
+			
+			platePictureFactory.unlikePlatePicture(token, platePictureId);
+			
+			response.setStatus(HttpServletResponse.SC_OK);
+			  
+		} catch(PlatePictureException ex){
+			
+			log.error("Error al guardar unlike platePicture: " + ex.getMessage());
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		
+		} catch (UserNotValidException e) {
+			
+			log.error("Error al guardar unlike platePicture: " + e.getMessage());
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			
+		} 
+		
+		return null;
 		 
 	}
 

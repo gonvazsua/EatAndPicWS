@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -40,13 +41,14 @@ public class PlatePicture {
     private Date registeredOn;
 	
 	@ManyToMany(targetEntity=User.class)
-	private Set likes;	
+	private Set likes;
+	
+	@OneToMany(targetEntity=Comment.class)
+	private Set comments;
 	
 	@NotNull
 	@Size(min = 4, max = 50)
 	private String picture;
-	
-	
 
 	public long getPictureId() {
 		return pictureId;
@@ -102,6 +104,14 @@ public class PlatePicture {
 
 	public void setPicture(String picture) {
 		this.picture = picture;
+	}
+	
+	public Set getComments() {
+		return comments;
+	}
+
+	public void setComments(Set comments) {
+		this.comments = comments;
 	}
 
 }

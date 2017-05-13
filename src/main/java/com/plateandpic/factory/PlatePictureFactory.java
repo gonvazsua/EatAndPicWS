@@ -18,6 +18,7 @@ import com.plateandpic.constants.ConstantsProperties;
 import com.plateandpic.dao.PlatePictureDao;
 import com.plateandpic.dao.UserDao;
 import com.plateandpic.exceptions.PlatePictureException;
+import com.plateandpic.exceptions.UserNotValidException;
 import com.plateandpic.models.PlatePicture;
 import com.plateandpic.models.User;
 import com.plateandpic.response.PlatePictureResponse;
@@ -161,6 +162,56 @@ public class PlatePictureFactory {
 		}
 		
 		return response;
+	}
+	
+	public void likePlatePicture(String token, Long platePictureId) throws UserNotValidException, PlatePictureException{
+		
+		Long userId = null;
+		User user = null;
+		PlatePicture platePicture = null;
+		
+		userId = jwtTokenUtil.getUserIdFromToken(token);
+		user = userDao.findOne(userId);
+		
+		if(user == null){
+			throw new UserNotValidException("User not found with ID: " + userId);
+		}
+		
+		platePicture = platePictureDao.findOne(platePictureId);
+		
+		if(platePicture == null){
+			throw new PlatePictureException("PlatePicture not found with ID: " + platePictureId);
+		}
+		
+		platePicture.getLikes().add(user);
+		
+		platePictureDao.save(platePicture);
+		
+	}
+	
+	public void unlikePlatePicture(String token, Long platePictureId) throws UserNotValidException, PlatePictureException{
+		
+		Long userId = null;
+		User user = null;
+		PlatePicture platePicture = null;
+		
+		userId = jwtTokenUtil.getUserIdFromToken(token);
+		user = userDao.findOne(userId);
+		
+		if(user == null){
+			throw new UserNotValidException("User not found with ID: " + userId);
+		}
+		
+		platePicture = platePictureDao.findOne(platePictureId);
+		
+		if(platePicture == null){
+			throw new PlatePictureException("PlatePicture not found with ID: " + platePictureId);
+		}
+		
+		platePicture.getLikes().remove(user);
+		
+		platePictureDao.save(platePicture);
+		
 	}
 
 }
