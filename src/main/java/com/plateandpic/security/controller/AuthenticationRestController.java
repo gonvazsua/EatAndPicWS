@@ -30,6 +30,7 @@ import com.plateandpic.security.JwtUser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -104,12 +105,16 @@ public class AuthenticationRestController {
 		  UserDetails userDetails = null;
 		  JwtAuthenticationRequest authenticationRequest;
 		  String lastPassword = "";
+		  Set followers = null;
 		  
 		  try {
 			  
 			  if(user != null && userDao.findByEmail(user.getEmail()) == null && userDao.findByUsername(user.getUsername()) == null){
 				  
 				  user.prepareForRegisterRoleUser();
+				  
+				  followers.add(user);
+				  user.setFollowers(followers);
 				  
 				  //Crypt password
 				  lastPassword = user.getPassword();

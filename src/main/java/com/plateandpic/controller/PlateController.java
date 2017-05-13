@@ -19,6 +19,7 @@ import com.plateandpic.dao.PlateDao;
 import com.plateandpic.dao.RestaurantDao;
 import com.plateandpic.exceptions.PlateException;
 import com.plateandpic.exceptions.RestaurantNotFoundException;
+import com.plateandpic.factory.PlateFactory;
 import com.plateandpic.models.Plate;
 import com.plateandpic.models.Restaurant;
 
@@ -34,6 +35,9 @@ public class PlateController {
 	@Autowired
 	private RestaurantDao restaurantDao;
 	
+	@Autowired
+	private PlateFactory plateFactory;
+	
 	/**
      * POST /savePlate  --> Save new Plate and return it
      */
@@ -47,15 +51,7 @@ public class PlateController {
 		
 		try{
 			
-			restaurant = restaurantDao.findOne(plate.getRestaurant().getRestaurantId());
-			
-			plate.setRestaurant(restaurant);
-			
-			savedPlate = plateDao.save(plate);
-			
-			if(savedPlate == null){
-				throw new PlateException("Plate not saved: " + plate.toString());
-			}
+			savedPlate = plateFactory.savePlateIfNotExists(plate);
 			
 			response.setStatus(HttpServletResponse.SC_OK);
 			  

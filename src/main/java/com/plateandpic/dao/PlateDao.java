@@ -13,5 +13,7 @@ import com.plateandpic.models.Restaurant;
 public interface PlateDao extends CrudRepository<Plate, Long> {
 	
 	public List<Plate> findByRestaurant(Restaurant restaurant);
+	
+	public List<Plate> findByRestaurantAndName(Restaurant restaurant, String name);
 
 }

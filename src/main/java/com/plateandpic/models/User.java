@@ -217,6 +217,7 @@ public class User {
 	}
 	
 	public void prepareForRegisterRoleUser(){
+		
 		this.username = this.getUsername();
     	this.email = this.getEmail();
     	//this.setCryptedPassword(this.getPassword());
@@ -233,6 +234,7 @@ public class User {
     	this.registerDate = new Date();
     	this.lastLogin = new Date();
     	this.lastPasswordResetDate = new Date();
+	
 	}
 
 	public String getPicture() {
