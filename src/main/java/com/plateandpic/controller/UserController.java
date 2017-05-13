@@ -1,5 +1,6 @@
 package com.plateandpic.controller;
 
+import java.io.IOException;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +26,7 @@ import com.plateandpic.dao.UserDao;
 import com.plateandpic.factory.FileFactory;
 import com.plateandpic.factory.UserFactory;
 import com.plateandpic.models.User;
+import com.plateandpic.response.UserResponse;
 import com.plateandpic.security.JwtTokenUtil;
 import com.plateandpic.validator.UserValidator;
 
@@ -33,7 +36,8 @@ public class UserController {
 	
 	  private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-	  // Private fields
+	  @Autowired
+	  private UserFactory userFactory;
 
 	  @Autowired
 	  private UserDao userDao;
@@ -85,7 +89,7 @@ public class UserController {
 			  if(userCheckUsername == null && userBBDD != null && userId != null){
 				  
 				  userValidator.validateUserForPersonalDataChange();
-				  UserFactory.copyFieldsFromPersonalDataChange(user, userBBDD);
+				  userFactory.copyFieldsFromPersonalDataChange(user, userBBDD);
 
 				  userDao.save(userBBDD);
 				  
@@ -136,7 +140,7 @@ public class UserController {
 			  if(userCheckEmail == null && userBBDD != null && userId != null){
 				  
 				  userValidator.validateEmail();
-				  UserFactory.copyFieldsFromEmailChange(user, userBBDD);
+				  userFactory.copyFieldsFromEmailChange(user, userBBDD);
 
 				  userDao.save(userBBDD);
 				  
@@ -202,11 +206,34 @@ public class UserController {
 	   * GET /getAuthenticatedUser
 	   */
 	  @RequestMapping(value = "/getAuthenticatedUser", method = RequestMethod.GET)
-	  public User getAuthenticatedUser(HttpServletRequest request) {
-		  String token = request.getHeader(tokenHeader);
-		  Long userId = jwtTokenUtil.getUserIdFromToken(token);
-		  User user = userDao.findOne(userId);
-		  return user;
+	  public UserResponse getAuthenticatedUser(HttpServletRequest request, HttpServletResponse response) {
+		  
+		  UserResponse userResponse = null;
+		  String token = "";
+		  Long userId = null;
+		  
+		  try{
+			  
+			  token = request.getHeader(tokenHeader);
+			  userId = jwtTokenUtil.getUserIdFromToken(token);
+			  
+			  userResponse = userFactory.getUserResponse(userId);
+			  
+		  } catch(UsernameNotFoundException e){
+			  
+			  log.error(e.getMessage());
+			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			  return null;
+			  
+		  } catch (IOException e) {
+			
+			  log.error(e.getMessage());
+			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			  return null;
+			  
+		  }
+		  
+		  return userResponse;
 	  }
 	  
 	  
