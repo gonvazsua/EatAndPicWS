@@ -25,7 +25,7 @@ public class PlatePicture {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-    private long pictureId;
+    private long platePictureId;
 	
 	@ManyToOne
 	@NotNull
@@ -51,11 +51,11 @@ public class PlatePicture {
 	private String picture;
 
 	public long getPictureId() {
-		return pictureId;
+		return platePictureId;
 	}
 
-	public void setPictureId(long pictureId) {
-		this.pictureId = pictureId;
+	public void setPictureId(long platePictureId) {
+		this.platePictureId = platePictureId;
 	}
 
 	public Plate getPlate() {

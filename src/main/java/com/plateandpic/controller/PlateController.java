@@ -39,7 +39,7 @@ public class PlateController {
 	private PlateFactory plateFactory;
 	
 	/**
-     * POST /savePlate  --> Save new Plate and return it
+     * POST /save --> Save new Plate and return it
      */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody

@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import com.plateandpic.models.PlatePicture;
 import com.plateandpic.models.User;
+import com.plateandpic.utils.DateUtils;
 
 public class PlatePictureResponse {
 	
@@ -43,7 +44,7 @@ public class PlatePictureResponse {
 		this.likesNumber = platePicture.getLikes().size();
 		this.commentsNumber = platePicture.getComments().size();
 		this.likeToUser = false;
-		this.registeredOn = new SimpleDateFormat("dd/MM/yyyy").format(platePicture.getRegisteredOn());
+		this.registeredOn = DateUtils.getDateDDMMYYY(platePicture.getRegisteredOn());
 		
 	}
 	

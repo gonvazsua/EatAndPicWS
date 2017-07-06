@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.plateandpic.constants.ConstantsProperties;
 import com.plateandpic.dao.UserDao;
+import com.plateandpic.exceptions.UserNotValidException;
 import com.plateandpic.models.User;
 import com.plateandpic.response.UserResponse;
+import com.plateandpic.security.JwtTokenUtil;
 
 @Service
 public class UserFactory {
@@ -20,6 +22,9 @@ public class UserFactory {
 	
 	@Autowired
 	private Environment env;
+	
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
 	
 	public void copyFieldsFromPersonalDataChange(User userFrom, User userTo){
 		
@@ -68,9 +73,35 @@ public class UserFactory {
 		
 	}
 	
-	private String getProfilePicturePath(){
+	public String getProfilePicturePath(){
 		
 		return env.getProperty(ConstantsProperties.USER_PROFILE_PICTURE_PATH);
+		
+	}
+	
+	public User getUserFromToken(String token) throws UserNotValidException{
+		
+		Long userId = jwtTokenUtil.getUserIdFromToken(token);
+		
+		User user = userDao.findOne(userId);
+		
+		if(user == null){
+			throw new UserNotValidException("User not found with token: " + token);
+		}
+		
+		return user;
+		
+	}
+	
+	public User getUserByUsername(String username) throws UserNotValidException{
+		
+		User user = userDao.findByUsername(username);
+		
+		if(user == null){
+			throw new UserNotValidException("User not found with username: " + username);
+		}
+		
+		return user;
 		
 	}
 

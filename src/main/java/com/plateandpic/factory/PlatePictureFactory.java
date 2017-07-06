@@ -22,6 +22,7 @@ import com.plateandpic.exceptions.UserNotValidException;
 import com.plateandpic.models.PlatePicture;
 import com.plateandpic.models.User;
 import com.plateandpic.response.PlatePictureResponse;
+import com.plateandpic.response.UserResponse;
 import com.plateandpic.security.JwtTokenUtil;
 
 @Service
@@ -37,20 +38,17 @@ public class PlatePictureFactory {
 	private Environment env;
 	
 	@Autowired
-	private JwtTokenUtil jwtTokenUtil;
-	
-	@Autowired
-	private UserDao userDao;
+	private UserFactory userFactory;
 	
 	
-	public PlatePicture save(MultipartFile picture, PlatePicture platePicture, String token) throws PlatePictureException, IOException{
+	public PlatePicture save(MultipartFile picture, PlatePicture platePicture, String token) throws PlatePictureException, IOException, UserNotValidException{
 		
 		PlatePicture savedPlatePicture;
 		String newPictureName = "";
 		
 		try{
 			
-			platePicture.setUser(getUserFromToken(token));
+			platePicture.setUser(userFactory.getUserFromToken(token));
 			
 			newPictureName = getNewPlatePictureFileName();
 			
@@ -105,28 +103,14 @@ public class PlatePictureFactory {
 		
 	}
 	
-	private User getUserFromToken(String token){
-		
-		Long userId = jwtTokenUtil.getUserIdFromToken(token);
-		
-		User user = userDao.findOne(userId);
-		
-		return user;
-		
-	}
-	
-	public List<PlatePictureResponse> getLastPlatePictures(String token, Integer page) throws PlatePictureException, IOException{
+	public List<PlatePictureResponse> getLastPlatePictures(String token, Integer page) throws PlatePictureException, IOException, UserNotValidException{
 		
 		User user = null;
 		List<PlatePicture> platePictures = null;
 		List<PlatePictureResponse> platePicturesResponse;
 		Pageable pageable = null;
 		
-		user = getUserFromToken(token);
-		
-		if(user == null){
-			throw new PlatePictureException("User not found under token: " + token);
-		}
+		user = userFactory.getUserFromToken(token);
 		
 		pageable = new PageRequest(page, ROW_LIMIT, Sort.Direction.DESC, QUERY_SORT);
 		
@@ -166,22 +150,12 @@ public class PlatePictureFactory {
 	
 	public void likePlatePicture(String token, Long platePictureId) throws UserNotValidException, PlatePictureException{
 		
-		Long userId = null;
 		User user = null;
 		PlatePicture platePicture = null;
 		
-		userId = jwtTokenUtil.getUserIdFromToken(token);
-		user = userDao.findOne(userId);
+		user = userFactory.getUserFromToken(token);
 		
-		if(user == null){
-			throw new UserNotValidException("User not found with ID: " + userId);
-		}
-		
-		platePicture = platePictureDao.findOne(platePictureId);
-		
-		if(platePicture == null){
-			throw new PlatePictureException("PlatePicture not found with ID: " + platePictureId);
-		}
+		platePicture = getPlatePictureById(platePictureId);
 		
 		platePicture.getLikes().add(user);
 		
@@ -191,26 +165,48 @@ public class PlatePictureFactory {
 	
 	public void unlikePlatePicture(String token, Long platePictureId) throws UserNotValidException, PlatePictureException{
 		
-		Long userId = null;
 		User user = null;
 		PlatePicture platePicture = null;
 		
-		userId = jwtTokenUtil.getUserIdFromToken(token);
-		user = userDao.findOne(userId);
+		user = userFactory.getUserFromToken(token);
 		
-		if(user == null){
-			throw new UserNotValidException("User not found with ID: " + userId);
-		}
+		platePicture = getPlatePictureById(platePictureId);
 		
-		platePicture = platePictureDao.findOne(platePictureId);
+		platePicture.getLikes().remove(user);
+		
+		platePictureDao.save(platePicture);
+		
+	}
+	
+	
+	public PlatePicture getPlatePictureById(Long platePictureId) throws PlatePictureException{
+		
+		PlatePicture platePicture = platePictureDao.findOne(platePictureId);
 		
 		if(platePicture == null){
 			throw new PlatePictureException("PlatePicture not found with ID: " + platePictureId);
 		}
 		
-		platePicture.getLikes().remove(user);
+		return platePicture;
 		
-		platePictureDao.save(platePicture);
+	}
+	
+	public List<PlatePictureResponse> getPlatePictureByUsername(String username, Integer page) throws UserNotValidException, IOException{
+		
+		User user = null;
+		List<PlatePicture> platePictures = null;
+		List<PlatePictureResponse> platePicturesResponse;
+		Pageable pageable = null;
+		
+		user = userFactory.getUserByUsername(username);
+		
+		pageable = new PageRequest(page, ROW_LIMIT, Sort.Direction.DESC, QUERY_SORT);
+		
+		platePictures = platePictureDao.findByUser(user, pageable);
+		
+		platePicturesResponse = buildPlatePictureResponseFromPlatePictureList(platePictures, user);
+		
+		return platePicturesResponse;
 		
 	}
 

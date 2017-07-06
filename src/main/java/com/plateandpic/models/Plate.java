@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.classmate.types.TypePlaceHolder;
 
@@ -19,6 +20,7 @@ public class Plate {
     private long plateId;
 	
 	@NotNull
+	@Size(min = 4, max = 50)
 	private String name;
 	
 	@ManyToOne

@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Comment {
@@ -22,6 +23,7 @@ public class Comment {
 	private User user;
 	
 	@NotNull
+	@Size(min = 1, max = 150)
     private String comment;
 	
 	@NotNull

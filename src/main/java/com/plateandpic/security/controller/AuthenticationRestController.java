@@ -113,9 +113,6 @@ public class AuthenticationRestController {
 				  
 				  user.prepareForRegisterRoleUser();
 				  
-				  followers.add(user);
-				  user.setFollowers(followers);
-				  
 				  //Crypt password
 				  lastPassword = user.getPassword();
 				  user.setPassword(passwordEncoder.encode(user.getPassword()));

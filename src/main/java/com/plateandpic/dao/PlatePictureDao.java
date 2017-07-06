@@ -16,6 +16,8 @@ import com.plateandpic.models.User;
 @Transactional
 public interface PlatePictureDao extends CrudRepository<PlatePicture, Long> {
 	
+	public List<PlatePicture> findByUser(User user, Pageable pageable);
+	
 	public List<PlatePicture> findByUserIn(Set<User> users, Pageable pageable);
 
 }

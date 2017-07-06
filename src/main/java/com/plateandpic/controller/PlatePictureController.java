@@ -27,7 +27,9 @@ import com.plateandpic.exceptions.UserNotValidException;
 import com.plateandpic.factory.PlatePictureFactory;
 import com.plateandpic.models.Plate;
 import com.plateandpic.models.PlatePicture;
+import com.plateandpic.models.User;
 import com.plateandpic.response.PlatePictureResponse;
+import com.plateandpic.response.UserResponse;
 
 @RestController
 @RequestMapping("/platePicture")
@@ -93,11 +95,12 @@ public class PlatePictureController {
 	
 	/**
      * GET /lastPlatePictures
+	 * @throws UserNotValidException 
      */
 	@RequestMapping(value = "/lastPlatePictures", method = RequestMethod.GET)
 	@ResponseBody
 	public List<PlatePictureResponse> lastPlatePictures(HttpServletRequest request, HttpServletResponse response, 
-			@RequestParam Integer page){
+			@RequestParam Integer page) throws UserNotValidException{
 		
 		List<PlatePictureResponse> lastPlatePictures;
 		String token = "";
@@ -193,6 +196,37 @@ public class PlatePictureController {
 		} 
 		
 		return null;
+		 
+	}
+	
+	/**
+     * GET /getByUsername
+     */
+	@RequestMapping(value = "/getByUsername", method = RequestMethod.GET)
+	@ResponseBody
+	public List<PlatePictureResponse> getByUsername(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam String username, @RequestParam Integer page){
+		
+		String token = "";
+		List<PlatePictureResponse> lastPlatePictures = null;
+		
+		try{
+			
+			lastPlatePictures = platePictureFactory.getPlatePictureByUsername(username, page);
+			
+			response.setStatus(HttpServletResponse.SC_OK);
+			  
+		} catch (UserNotValidException e) {
+			
+			log.error("Error al guardar unlike platePicture: " + e.getMessage());
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			
+		} catch (IOException e) {
+			log.error("Error al obtener platePicture: " + e.getMessage());
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		} 
+		
+		return lastPlatePictures;
 		 
 	}
 

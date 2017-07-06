@@ -2,6 +2,7 @@ package com.plateandpic.models;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -98,6 +99,7 @@ public class User {
     /*
      * FOREIGN KEY FOLLOWERS
      */
+    @JsonIgnore
     @ManyToMany(targetEntity=User.class)
 	private Set followers;
     
@@ -234,6 +236,8 @@ public class User {
     	this.registerDate = new Date();
     	this.lastLogin = new Date();
     	this.lastPasswordResetDate = new Date();
+    	this.followers = new HashSet();
+    	this.followers.add(this);
 	
 	}
 
