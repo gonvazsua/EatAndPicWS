@@ -1,5 +1,9 @@
 package com.plateandpic.constants;
 
+/**
+ * @author gonzalo
+ *
+ */
 public class ConstantsProperties {
 	
 	public static final String APPLICATION_PROPERTIES = "application.properties";

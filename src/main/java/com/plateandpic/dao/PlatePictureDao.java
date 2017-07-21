@@ -13,11 +13,25 @@ import com.plateandpic.models.PlatePicture;
 import com.plateandpic.models.Restaurant;
 import com.plateandpic.models.User;
 
+/**
+ * @author gonzalo
+ *
+ */
 @Transactional
 public interface PlatePictureDao extends CrudRepository<PlatePicture, Long> {
 	
+	/**
+	 * @param user
+	 * @param pageable
+	 * @return
+	 */
 	public List<PlatePicture> findByUser(User user, Pageable pageable);
 	
+	/**
+	 * @param users
+	 * @param pageable
+	 * @return
+	 */
 	public List<PlatePicture> findByUserIn(Set<User> users, Pageable pageable);
 
 }

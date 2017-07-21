@@ -14,6 +14,10 @@ import com.plateandpic.models.User;
 import com.plateandpic.response.UserResponse;
 import com.plateandpic.security.JwtTokenUtil;
 
+/**
+ * @author gonzalo
+ *
+ */
 @Service
 public class UserFactory {
 	
@@ -26,6 +30,10 @@ public class UserFactory {
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 	
+	/**
+	 * @param userFrom
+	 * @param userTo
+	 */
 	public void copyFieldsFromPersonalDataChange(User userFrom, User userTo){
 		
 		userTo.setUsername(userFrom.getUsername());
@@ -34,12 +42,21 @@ public class UserFactory {
 		
 	}
 	
+	/**
+	 * @param userFrom
+	 * @param userTo
+	 */
 	public void copyFieldsFromEmailChange(User userFrom, User userTo){
 		
 		userTo.setEmail(userFrom.getEmail());
 		
 	}
 	
+	/**
+	 * @param userId
+	 * @return
+	 * @throws IOException
+	 */
 	public UserResponse getUserResponse(Long userId) throws IOException{
 		
 		UserResponse userResponse = null;
@@ -57,6 +74,11 @@ public class UserFactory {
 		
 	}
 	
+	/**
+	 * @param user
+	 * @return
+	 * @throws IOException
+	 */
 	private UserResponse buildUserResponse(User user) throws IOException{
 		
 		UserResponse userResponse = null;
@@ -73,12 +95,20 @@ public class UserFactory {
 		
 	}
 	
+	/**
+	 * @return
+	 */
 	public String getProfilePicturePath(){
 		
 		return env.getProperty(ConstantsProperties.USER_PROFILE_PICTURE_PATH);
 		
 	}
 	
+	/**
+	 * @param token
+	 * @return
+	 * @throws UserNotValidException
+	 */
 	public User getUserFromToken(String token) throws UserNotValidException{
 		
 		Long userId = jwtTokenUtil.getUserIdFromToken(token);
@@ -93,6 +123,11 @@ public class UserFactory {
 		
 	}
 	
+	/**
+	 * @param username
+	 * @return
+	 * @throws UserNotValidException
+	 */
 	public User getUserByUsername(String username) throws UserNotValidException{
 		
 		User user = userDao.findByUsername(username);

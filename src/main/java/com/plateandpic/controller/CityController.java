@@ -18,6 +18,10 @@ import com.plateandpic.dao.CityDao;
 import com.plateandpic.exceptions.CityNotFoundException;
 import com.plateandpic.models.City;
 
+/**
+ * @author gonzalo
+ *
+ */
 @RestController
 @RequestMapping("/city")
 public class CityController { 
@@ -29,8 +33,11 @@ public class CityController {
 	
 	
 	/**
-     * GET /getCityByName  --> Get city by name
-     */
+	 * @param request
+	 * @param response
+	 * @param name
+	 * @return
+	 */
 	@RequestMapping(value = "/getCityByName", method = RequestMethod.GET)
 	@ResponseBody
 	public City getCityByName(HttpServletRequest request, HttpServletResponse response,

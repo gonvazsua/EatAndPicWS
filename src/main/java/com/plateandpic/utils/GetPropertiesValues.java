@@ -4,20 +4,34 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * @author gonzalo
+ *
+ */
 public class GetPropertiesValues {
 	
 	private String propFileName;
 	
+	/**
+	 * @param propFileName
+	 */
 	public GetPropertiesValues(String propFileName){
 		
 		this.propFileName = propFileName;
 		
 	}
 	
+	/**
+	 * @return
+	 */
 	public String getPropFileName(){
 		return this.propFileName;
 	}
 	
+	/**
+	 * @param key
+	 * @return
+	 */
 	public String getValue(String key){
 		
 		String value = "";

@@ -2,6 +2,10 @@ package com.plateandpic.response;
 
 import com.plateandpic.models.User;
 
+/**
+ * @author gonzalo
+ *
+ */
 public class UserResponse {
 	
 	private Long userId;
@@ -11,6 +15,9 @@ public class UserResponse {
 	private String email;
 	private String picture;
 	
+	/**
+	 * @param user
+	 */
 	public UserResponse(User user){
 		
 		this.userId = user.getId();
@@ -22,50 +29,86 @@ public class UserResponse {
 		
 	}
 
+	/**
+	 * @return
+	 */
 	public Long getUserId() {
 		return userId;
 	}
 
+	/**
+	 * @param userId
+	 */
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getUsername() {
 		return username;
 	}
 
+	/**
+	 * @param username
+	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getFirstname() {
 		return firstname;
 	}
 
+	/**
+	 * @param firstname
+	 */
 	public void setFirstname(String firstname) {
 		this.firstname = firstname;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getLastname() {
 		return lastname;
 	}
 
+	/**
+	 * @param lastname
+	 */
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getEmail() {
 		return email;
 	}
 
+	/**
+	 * @param email
+	 */
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getPicture() {
 		return picture;
 	}
 
+	/**
+	 * @param picture
+	 */
 	public void setPicture(String picture) {
 		this.picture = picture;
 	}

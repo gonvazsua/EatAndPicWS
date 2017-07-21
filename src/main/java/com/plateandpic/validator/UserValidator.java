@@ -2,20 +2,33 @@ package com.plateandpic.validator;
 
 import com.plateandpic.models.User;
 
+/**
+ * @author gonzalo
+ *
+ */
 public class UserValidator {
 	
 	private User user;
 	
+	/**
+	 * @param user
+	 */
 	public UserValidator(User user){
 		
 		this.user = user;
 		
 	}
 	
+	/**
+	 * @return
+	 */
 	public User getUser(){
 		return this.user;
 	}
 	
+	/**
+	 * 
+	 */
 	public void validateUserForPersonalDataChange(){
 		
 		validateUsername();
@@ -26,6 +39,9 @@ public class UserValidator {
 		
 	}
 	
+	/**
+	 * 
+	 */
 	public void validateUsername() {
 		
 		if(!"".equals(this.getUser().getUsername()) && this.getUser().getUsername().length() > 50){
@@ -36,6 +52,9 @@ public class UserValidator {
 		
 	}
 	
+	/**
+	 * 
+	 */
 	public void validateFistName() {
 		
 		if(this.getUser().getFirstname() != null 
@@ -48,6 +67,9 @@ public class UserValidator {
 		
 	}
 	
+	/**
+	 * 
+	 */
 	public void validateLastname() {
 		
 		if(this.getUser().getLastname() != null 
@@ -60,6 +82,9 @@ public class UserValidator {
 		
 	}
 	
+	/**
+	 * 
+	 */
 	public void validateEmail() {
 		
 		if(this.getUser().getEmail() != null 
@@ -71,6 +96,9 @@ public class UserValidator {
 
 	}
 	
+	/**
+	 * 
+	 */
 	public void validatePassword() {
 		
 		if(this.getUser().getPassword() != null 

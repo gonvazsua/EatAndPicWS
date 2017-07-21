@@ -31,6 +31,10 @@ import com.plateandpic.models.User;
 import com.plateandpic.response.PlatePictureResponse;
 import com.plateandpic.response.UserResponse;
 
+/**
+ * @author gonzalo
+ *
+ */
 @RestController
 @RequestMapping("/platePicture")
 public class PlatePictureController {
@@ -44,8 +48,10 @@ public class PlatePictureController {
 	private String tokenHeader;
 	
 	/**
-     * POST /save
-     */
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
 	public PlatePicture save(HttpServletRequest request, HttpServletResponse response){
@@ -94,9 +100,12 @@ public class PlatePictureController {
 	}
 	
 	/**
-     * GET /lastPlatePictures
-	 * @throws UserNotValidException 
-     */
+	 * @param request
+	 * @param response
+	 * @param page
+	 * @return
+	 * @throws UserNotValidException
+	 */
 	@RequestMapping(value = "/lastPlatePictures", method = RequestMethod.GET)
 	@ResponseBody
 	public List<PlatePictureResponse> lastPlatePictures(HttpServletRequest request, HttpServletResponse response, 
@@ -132,8 +141,11 @@ public class PlatePictureController {
 	}
 	
 	/**
-     * POST /like
-     */
+	 * @param request
+	 * @param response
+	 * @param platePictureId
+	 * @return
+	 */
 	@RequestMapping(value = "/like", method = RequestMethod.POST)
 	@ResponseBody
 	public PlatePicture like(HttpServletRequest request, HttpServletResponse response,
@@ -166,8 +178,11 @@ public class PlatePictureController {
 	}
 	
 	/**
-     * POST /unlike
-     */
+	 * @param request
+	 * @param response
+	 * @param platePictureId
+	 * @return
+	 */
 	@RequestMapping(value = "/unlike", method = RequestMethod.POST)
 	@ResponseBody
 	public PlatePicture unlike(HttpServletRequest request, HttpServletResponse response,
@@ -200,8 +215,12 @@ public class PlatePictureController {
 	}
 	
 	/**
-     * GET /getByUsername
-     */
+	 * @param request
+	 * @param response
+	 * @param username
+	 * @param page
+	 * @return
+	 */
 	@RequestMapping(value = "/getByUsername", method = RequestMethod.GET)
 	@ResponseBody
 	public List<PlatePictureResponse> getByUsername(HttpServletRequest request, HttpServletResponse response,

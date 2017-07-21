@@ -28,6 +28,10 @@ import com.plateandpic.models.IpLocation;
 import com.plateandpic.models.Restaurant;
 import com.plateandpic.security.JwtTokenUtil;
 
+/**
+ * @author gonzalo
+ *
+ */
 @RestController
 @RequestMapping("/restaurant")
 public class RestaurantController {
@@ -43,9 +47,11 @@ public class RestaurantController {
 	@Autowired
 	private RestaurantFactory restaurantFactory;
 	
-    /**
-     * GET /getRestaurants  --> Get restaurants list
-     */
+
+	/**
+	 * @param chars
+	 * @return
+	 */
 	@RequestMapping(value = "/getRestaurants", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Restaurant> getRestaurants(String chars){
@@ -65,9 +71,13 @@ public class RestaurantController {
 	}
 	
 	
+
 	/**
-     * GET /getRestaurantsByName
-     */
+	 * @param request
+	 * @param response
+	 * @param name
+	 * @return
+	 */
 	@RequestMapping(value = "/getRestaurantsByName", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Restaurant> getRestaurantsByName(HttpServletRequest request, HttpServletResponse response,
@@ -113,9 +123,13 @@ public class RestaurantController {
 		 
 	}
 	
+
 	/**
-     * POST /save
-     */
+	 * @param request
+	 * @param response
+	 * @param restaurant
+	 * @return
+	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
 	public Restaurant save(HttpServletRequest request, HttpServletResponse response,

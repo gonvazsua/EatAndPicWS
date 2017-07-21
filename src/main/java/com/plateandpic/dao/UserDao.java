@@ -6,13 +6,25 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.plateandpic.models.User;
 
+/**
+ * @author gonzalo
+ *
+ */
 @Transactional
 public interface UserDao extends CrudRepository<User, Long> {
 	
 	
-	  public User findByEmail(String email);
+	  /**
+	 * @param email
+	 * @return
+	 */
+	public User findByEmail(String email);
 	  
-	  public User findByUsername(String username);
+	  /**
+	 * @param username
+	 * @return
+	 */
+	public User findByUsername(String username);
 	  
 	  //public Set<User> findFollowers(User user);
 	  

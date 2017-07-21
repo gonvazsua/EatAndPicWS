@@ -25,6 +25,10 @@ import com.plateandpic.response.PlatePictureResponse;
 import com.plateandpic.response.UserResponse;
 import com.plateandpic.security.JwtTokenUtil;
 
+/**
+ * @author gonzalo
+ *
+ */
 @Service
 public class PlatePictureFactory {
 	
@@ -41,6 +45,15 @@ public class PlatePictureFactory {
 	private UserFactory userFactory;
 	
 	
+	/**
+	 * @param picture
+	 * @param platePicture
+	 * @param token
+	 * @return
+	 * @throws PlatePictureException
+	 * @throws IOException
+	 * @throws UserNotValidException
+	 */
 	public PlatePicture save(MultipartFile picture, PlatePicture platePicture, String token) throws PlatePictureException, IOException, UserNotValidException{
 		
 		PlatePicture savedPlatePicture;
@@ -67,6 +80,11 @@ public class PlatePictureFactory {
 		return savedPlatePicture;
 	}
 	
+	/**
+	 * @param platePicture
+	 * @return
+	 * @throws PlatePictureException
+	 */
 	public PlatePicture savePlatePicture(PlatePicture platePicture) throws PlatePictureException{
 		
 		platePicture.setRegisteredOn(new Date());
@@ -81,18 +99,27 @@ public class PlatePictureFactory {
 		
 	}
 	
+	/**
+	 * @return
+	 */
 	private String getPlatePicturesPath(){
 		
 		return env.getProperty(ConstantsProperties.PLATE_PICTURES_PATH);
 		
 	}
 	
+	/**
+	 * @return
+	 */
 	private String getProfilePicturePath(){
 		
 		return env.getProperty(ConstantsProperties.USER_PROFILE_PICTURE_PATH);
 		
 	}
 	
+	/**
+	 * @return
+	 */
 	private String getNewPlatePictureFileName(){
 		
 		Integer numFiles = FileFactory.getFileCount(getPlatePicturesPath());
@@ -103,6 +130,14 @@ public class PlatePictureFactory {
 		
 	}
 	
+	/**
+	 * @param token
+	 * @param page
+	 * @return
+	 * @throws PlatePictureException
+	 * @throws IOException
+	 * @throws UserNotValidException
+	 */
 	public List<PlatePictureResponse> getLastPlatePictures(String token, Integer page) throws PlatePictureException, IOException, UserNotValidException{
 		
 		User user = null;
@@ -122,6 +157,12 @@ public class PlatePictureFactory {
 		
 	}
 	
+	/**
+	 * @param platePictures
+	 * @param user
+	 * @return
+	 * @throws IOException
+	 */
 	private List<PlatePictureResponse> buildPlatePictureResponseFromPlatePictureList(List<PlatePicture> platePictures, User user) throws IOException{
 		
 		List<PlatePictureResponse> response = new ArrayList<PlatePictureResponse>();
@@ -148,6 +189,12 @@ public class PlatePictureFactory {
 		return response;
 	}
 	
+	/**
+	 * @param token
+	 * @param platePictureId
+	 * @throws UserNotValidException
+	 * @throws PlatePictureException
+	 */
 	public void likePlatePicture(String token, Long platePictureId) throws UserNotValidException, PlatePictureException{
 		
 		User user = null;
@@ -163,6 +210,12 @@ public class PlatePictureFactory {
 		
 	}
 	
+	/**
+	 * @param token
+	 * @param platePictureId
+	 * @throws UserNotValidException
+	 * @throws PlatePictureException
+	 */
 	public void unlikePlatePicture(String token, Long platePictureId) throws UserNotValidException, PlatePictureException{
 		
 		User user = null;
@@ -179,6 +232,11 @@ public class PlatePictureFactory {
 	}
 	
 	
+	/**
+	 * @param platePictureId
+	 * @return
+	 * @throws PlatePictureException
+	 */
 	public PlatePicture getPlatePictureById(Long platePictureId) throws PlatePictureException{
 		
 		PlatePicture platePicture = platePictureDao.findOne(platePictureId);
@@ -191,6 +249,13 @@ public class PlatePictureFactory {
 		
 	}
 	
+	/**
+	 * @param username
+	 * @param page
+	 * @return
+	 * @throws UserNotValidException
+	 * @throws IOException
+	 */
 	public List<PlatePictureResponse> getPlatePictureByUsername(String username, Integer page) throws UserNotValidException, IOException{
 		
 		User user = null;

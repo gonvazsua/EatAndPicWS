@@ -13,6 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.plateandpic.constants.ConstantsProperties;
 import com.plateandpic.utils.GetPropertiesValues;
 
+/**
+ * @author gonzalo
+ *
+ */
 public class FileFactory {
 	
 	public static final String JPG = ".jpg";
@@ -20,6 +24,12 @@ public class FileFactory {
 	private static final String systemPath = "user.dir";
 	private static final String DOT = ".";
 	
+	/**
+	 * @param image
+	 * @param userId
+	 * @return
+	 * @throws IOException
+	 */
 	public static String uploadProfilePicture(MultipartFile image, Long userId) throws IOException{
 		
 		File newImage = null;
@@ -55,6 +65,12 @@ public class FileFactory {
 		
 	}
 	
+	/**
+	 * @param path
+	 * @param profilePictureName
+	 * @return
+	 * @throws IOException
+	 */
 	public static String getBase64FromProfilePictureName(String path, String profilePictureName) throws IOException{
 		
 		byte[] imageBytes = null;
@@ -73,6 +89,12 @@ public class FileFactory {
 		return uriBase64;
 	}
 
+	/**
+	 * @param path
+	 * @param profilePictureName
+	 * @return
+	 * @throws IOException
+	 */
 	public static byte[] getBytesFromImage(String path, String profilePictureName) throws IOException {
 		
 		byte[] imageBytes;
@@ -86,6 +108,10 @@ public class FileFactory {
 		return imageBytes;
 	}
 	
+	/**
+	 * @param imageBytes
+	 * @return
+	 */
 	public static String getBase64FromBytes(byte[] imageBytes){
 		
 		String uriBase64 = null;
@@ -98,6 +124,11 @@ public class FileFactory {
 		return uriBase64;
 	}
 	
+	/**
+	 * @param path
+	 * @return
+	 * @throws FileNotFoundException
+	 */
 	public static File getFileFromFileSystem(String path) throws FileNotFoundException{
 		
 		String realPath;
@@ -114,6 +145,13 @@ public class FileFactory {
 		
 	}
 	
+	/**
+	 * @param relativeFolderPath
+	 * @param fileName
+	 * @param fileToUpload
+	 * @return
+	 * @throws IOException
+	 */
 	public static String uploadFile(String relativeFolderPath, String fileName, MultipartFile fileToUpload) throws IOException{
 		
 		String newFileName = "";
@@ -141,6 +179,10 @@ public class FileFactory {
 		return newFileName;
 	}
 	
+	/**
+	 * @param relativeFolderPath
+	 * @return
+	 */
 	public static Integer getFileCount(String relativeFolderPath){
 		
 		String projectPath = "";

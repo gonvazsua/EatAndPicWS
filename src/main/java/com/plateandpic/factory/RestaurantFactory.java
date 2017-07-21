@@ -10,12 +10,20 @@ import org.springframework.stereotype.Service;
 import com.plateandpic.dao.RestaurantDao;
 import com.plateandpic.models.Restaurant;
 
+/**
+ * @author gonzalo
+ *
+ */
 @Service
 public class RestaurantFactory {
 	
 	@Autowired
 	private RestaurantDao restaurantDao;
 	
+	/**
+	 * @param restaurant
+	 * @return
+	 */
 	public Restaurant buildAndSave(Restaurant restaurant){
 		
 		restaurant.setRegisteredOn(new Date());
@@ -27,6 +35,10 @@ public class RestaurantFactory {
 	}
 	
 	
+	/**
+	 * @param restaurant
+	 * @return
+	 */
 	public Restaurant findByApiPlaceId(Restaurant restaurant){
 		
 		Restaurant savedRestaurant = null;

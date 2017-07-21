@@ -24,6 +24,10 @@ import com.plateandpic.factory.CommentFactory;
 import com.plateandpic.models.Comment;
 import com.plateandpic.response.CommentResponse;
 
+/**
+ * @author gonzalo
+ *
+ */
 @RestController
 @RequestMapping("/comment")
 public class CommentController {
@@ -37,8 +41,12 @@ public class CommentController {
 	private String tokenHeader;
 	
 	/**
-     * GET /getByPlatePicture 
-     */
+	 * @param request
+	 * @param response
+	 * @param platePictureId
+	 * @param page
+	 * @return
+	 */
 	@RequestMapping(value = "/getByPlatePicture", method = RequestMethod.GET)
 	@ResponseBody
 	public List<CommentResponse> getByPlatePicture(HttpServletRequest request, HttpServletResponse response, 
@@ -77,9 +85,13 @@ public class CommentController {
 		
 	}
 	
+
 	/**
-     * POST /save 
-     */
+	 * @param request
+	 * @param response
+	 * @param comment
+	 * @return
+	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
 	public CommentResponse save(HttpServletRequest request, HttpServletResponse response, 

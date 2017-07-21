@@ -13,6 +13,10 @@ import com.plateandpic.exceptions.PlateException;
 import com.plateandpic.models.Plate;
 import com.plateandpic.models.Restaurant;
 
+/**
+ * @author gonzalo
+ *
+ */
 @Component
 public class PlateFactory {
 	
@@ -24,6 +28,11 @@ public class PlateFactory {
 	@Autowired
 	private RestaurantDao restaurantDao;
 	
+	/**
+	 * @param plate
+	 * @return
+	 * @throws PlateException
+	 */
 	public Plate savePlateIfNotExists(Plate plate) throws PlateException{
 		
 		Restaurant restaurant = null;

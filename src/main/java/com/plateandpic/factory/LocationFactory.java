@@ -10,8 +10,18 @@ import com.plateandpic.exceptions.IPNotFoundException;
 import com.plateandpic.models.IpLocation;
 import com.plateandpic.utils.GetPropertiesValues;
 
+/**
+ * @author gonzalo
+ *
+ */
 public class LocationFactory {
 	
+	/**
+	 * @param host
+	 * @return
+	 * @throws IPNotFoundException
+	 * @throws IOException
+	 */
 	public static IpLocation getLocationFromHost(String host) throws IPNotFoundException, IOException{
 		
 		LookupService lookupService = null;

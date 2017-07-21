@@ -1,20 +1,37 @@
 package com.plateandpic.exceptions;
 
+/**
+ * @author gonzalo
+ *
+ */
 public class UserNotValidException extends Exception {
 	
-	  public UserNotValidException() { 
+	  /**
+	 * 
+	 */
+	public UserNotValidException() { 
 		  super(); 
 	  }
 	  
-	  public UserNotValidException(String message) { 
+	  /**
+	 * @param message
+	 */
+	public UserNotValidException(String message) { 
 		  super(message); 
 	  }
 	  
-	  public UserNotValidException(String message, Throwable cause) { 
+	  /**
+	 * @param message
+	 * @param cause
+	 */
+	public UserNotValidException(String message, Throwable cause) { 
 		  super(message, cause); 
 	  }
 	  
-	  public UserNotValidException(Throwable cause) { 
+	  /**
+	 * @param cause
+	 */
+	public UserNotValidException(Throwable cause) { 
 		  super(cause); 
 	  }
 }

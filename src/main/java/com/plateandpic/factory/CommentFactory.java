@@ -18,6 +18,10 @@ import com.plateandpic.models.User;
 import com.plateandpic.response.CommentResponse;
 import com.plateandpic.validator.CommentValidator;
 
+/**
+ * @author gonzalo
+ *
+ */
 @Service
 public class CommentFactory {
 	
@@ -30,6 +34,13 @@ public class CommentFactory {
 	@Autowired
 	private UserFactory userFactory;
 	
+	/**
+	 * @param platePictureId
+	 * @param page
+	 * @return
+	 * @throws CommentException
+	 * @throws IOException
+	 */
 	public List<CommentResponse> getCommentsByPlatePictureId(Long platePictureId, Integer page) throws CommentException, IOException{
 		
 		List<CommentResponse> commentsResponse = null;
@@ -49,6 +60,11 @@ public class CommentFactory {
 		
 	}
 	
+	/**
+	 * @param comments
+	 * @return
+	 * @throws IOException
+	 */
 	private List<CommentResponse> buildCommentsResponse(List<Comment> comments) throws IOException{
 		
 		List<CommentResponse> commentsResponse = new ArrayList<CommentResponse>();
@@ -70,6 +86,13 @@ public class CommentFactory {
 		
 	}
 	
+	/**
+	 * @param token
+	 * @param comment
+	 * @return
+	 * @throws UserNotValidException
+	 * @throws CommentException
+	 */
 	public CommentResponse validateAndSave(String token, Comment comment) throws UserNotValidException, CommentException{
 		
 		User user = null;

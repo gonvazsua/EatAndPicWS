@@ -23,6 +23,10 @@ import com.plateandpic.factory.PlateFactory;
 import com.plateandpic.models.Plate;
 import com.plateandpic.models.Restaurant;
 
+/**
+ * @author gonzalo
+ *
+ */
 @RestController
 @RequestMapping("/plate")
 public class PlateController {
@@ -39,8 +43,11 @@ public class PlateController {
 	private PlateFactory plateFactory;
 	
 	/**
-     * POST /save --> Save new Plate and return it
-     */
+	 * @param request
+	 * @param response
+	 * @param plate
+	 * @return
+	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
 	public Plate save(HttpServletRequest request, HttpServletResponse response,
@@ -66,8 +73,11 @@ public class PlateController {
 	}
 	
 	/**
-     * GET /getPlatesByRestaurant --> get plates by restaurant
-     */
+	 * @param request
+	 * @param response
+	 * @param restaurantId
+	 * @return
+	 */
 	@RequestMapping(value = "/getPlatesByRestaurant", method = RequestMethod.GET)
 	@ResponseBody
 	public List<Plate> getPlatesByRestaurant(HttpServletRequest request, HttpServletResponse response,

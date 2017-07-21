@@ -9,11 +9,24 @@ import org.springframework.data.repository.CrudRepository;
 import com.plateandpic.models.Plate;
 import com.plateandpic.models.Restaurant;
 
+/**
+ * @author gonzalo
+ *
+ */
 @Transactional
 public interface PlateDao extends CrudRepository<Plate, Long> {
 	
+	/**
+	 * @param restaurant
+	 * @return
+	 */
 	public List<Plate> findByRestaurant(Restaurant restaurant);
 	
+	/**
+	 * @param restaurant
+	 * @param name
+	 * @return
+	 */
 	public List<Plate> findByRestaurantAndName(Restaurant restaurant, String name);
 
 }

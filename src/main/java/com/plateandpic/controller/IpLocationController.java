@@ -22,6 +22,10 @@ import com.plateandpic.factory.FileFactory;
 import com.plateandpic.factory.LocationFactory;
 import com.plateandpic.models.IpLocation;
 
+/**
+ * @author gonzalo
+ *
+ */
 @RestController
 @RequestMapping("/ipLocation")
 public class IpLocationController {
@@ -32,6 +36,11 @@ public class IpLocationController {
 	private Environment env;
 	
 	
+	/**
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping(value = "/getIpLocation", method = RequestMethod.GET)
 	@ResponseBody
   	public IpLocation getIpLocation(HttpServletRequest request, HttpServletResponse response) {
