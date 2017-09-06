@@ -17,6 +17,9 @@ public class DateUtils {
 	 */
 	public static String getDateDDMMYYY(Date date){
 		
+		if(date == null)
+			return null;
+		
 		return new SimpleDateFormat(DATE_FORMAT).format(date);
 		
 	}
