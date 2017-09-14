@@ -4,7 +4,7 @@ package com.plateandpic.exceptions;
  * @author gonzalo
  *
  */
-public class PlateException extends Exception{
+public class PlateException extends PlateAndPicException {
 	
 	/**
 	 * 

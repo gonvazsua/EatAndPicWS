@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.plateandpic.dao.UserDao;
+import com.plateandpic.exceptions.UserException;
 import com.plateandpic.factory.FileFactory;
 import com.plateandpic.factory.UserFactory;
 import com.plateandpic.models.User;
@@ -61,51 +62,35 @@ public class UserController {
   
 	  /**
 	   * POST /updatePersonalData  --> Update the passed data User
+	 * @throws UserException 
+	 * @throws IOException 
 	   */
 	  @RequestMapping(value = "/updatePersonalData", method = RequestMethod.POST)
 	  @ResponseBody
-	  public User updateUser(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
+	  public UserResponse updateUser(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) throws UserException, IOException {
 		  
-		  String token = "";
-	      Long userId = null;
 		  User userBBDD = null, userCheckUsername = null;
 	      UserValidator userValidator = null;
+	      UserResponse userResponse = null;
+			  
+		  userValidator = new UserValidator(user);
 		  
-		  try {
-			  
-			  userValidator = new UserValidator(user);
-			  token = request.getHeader(tokenHeader);
-			  userId = jwtTokenUtil.getUserIdFromToken(token);
-			  
-			  userBBDD = userDao.findOne(userId);
-			  
-			  //Check if exists another user with same Username
-			  if(!userBBDD.getUsername().equals(user.getUsername())){
-				  
-				  userCheckUsername = userDao.findByUsername(user.getUsername());
-				  
-			  }
-			  
-			  if(userCheckUsername == null && userBBDD != null && userId != null){
-				  
-				  userValidator.validateUserForPersonalDataChange();
-				  userFactory.copyFieldsFromPersonalDataChange(user, userBBDD);
-
-				  userDao.save(userBBDD);
-				  
-			  }
-			  else{
-				  throw new Exception("Username already exists");
-			  }
-			  
-		  }
-		  catch (Exception ex) {
-			  log.error(ex.getMessage());
-			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			  return null;
-		  }
+		  userValidator.validateUserForPersonalDataChange();
 		  
-		  return user;
+		  userBBDD = userFactory.getUserFromToken(request.getHeader(tokenHeader));
+		  
+		  userFactory.checkUsername(userBBDD.getUsername(), user.getUsername());
+		  
+		  userFactory.checkEmail(userBBDD.getEmail(), user.getEmail());
+		  
+		  userFactory.copyFieldsFromPersonalDataChange(user, userBBDD);
+		  
+		  userFactory.saveUser(userBBDD);
+		  
+		  userResponse = userFactory.buildUserResponse(userBBDD);
+		  
+		  return userResponse;
+		  
 	  }
 	  
 	  
@@ -117,18 +102,12 @@ public class UserController {
 	  @ResponseBody
 	  public User updateUserEmail(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
 		  
-		  String token = "";
-	      Long userId = null;
 		  User userBBDD = null, userCheckEmail = null;
 	      UserValidator userValidator = null;
 		  
 		  try {
 			  
-			  userValidator = new UserValidator(user);
-			  token = request.getHeader(tokenHeader);
-			  userId = jwtTokenUtil.getUserIdFromToken(token);
-			  
-			  userBBDD = userDao.findOne(userId);
+			  userBBDD = userFactory.getUserFromToken(request.getHeader(tokenHeader));
 			  
 			  //Check if exists another user with same Email
 			  if(!userBBDD.getEmail().equals(user.getEmail())){
@@ -137,7 +116,7 @@ public class UserController {
 				  
 			  }
 			  
-			  if(userCheckEmail == null && userBBDD != null && userId != null){
+			  if(userCheckEmail == null && userBBDD != null){
 				  
 				  userValidator.validateEmail();
 				  userFactory.copyFieldsFromEmailChange(user, userBBDD);
@@ -168,18 +147,13 @@ public class UserController {
 	  @ResponseBody
 	  public User updatePassword(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
 		  
-		  String token = "";
-	      Long userId = null;
 		  User userBBDD = null;
 		  
 		  try {
 			  
-			  token = request.getHeader(tokenHeader);
-			  userId = jwtTokenUtil.getUserIdFromToken(token);
+			  userBBDD = userFactory.getUserFromToken(request.getHeader(tokenHeader));
 			  
-			  userBBDD = userDao.findOne(userId);
-			  
-			  if(userBBDD != null && userId != null){
+			  if(userBBDD != null){
 				  
 				  userBBDD.setPassword(passwordEncoder.encode(user.getPassword()));
 				  userBBDD.setLastPasswordResetDate(new Date());

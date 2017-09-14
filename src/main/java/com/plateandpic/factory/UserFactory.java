@@ -8,8 +8,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.plateandpic.constants.ConstantsProperties;
+import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.UserDao;
-import com.plateandpic.exceptions.UserNotValidException;
+import com.plateandpic.exceptions.UserException;
 import com.plateandpic.models.User;
 import com.plateandpic.response.UserResponse;
 import com.plateandpic.security.JwtTokenUtil;
@@ -39,6 +40,7 @@ public class UserFactory {
 		userTo.setUsername(userFrom.getUsername());
 		userTo.setFirstname(userFrom.getFirstname());
 		userTo.setLastname(userFrom.getLastname());
+		userTo.setTarget(userFrom.getTarget());
 		
 	}
 	
@@ -65,7 +67,7 @@ public class UserFactory {
 		user = userDao.findOne(userId);
 		
 		if(user == null){
-			throw new UsernameNotFoundException("User not found with id: " + userId);
+			throw new UsernameNotFoundException(MessageConstants.USER_USER_NOT_FOUND);
 		}
 		
 		userResponse = buildUserResponse(user);
@@ -79,7 +81,7 @@ public class UserFactory {
 	 * @return
 	 * @throws IOException
 	 */
-	private UserResponse buildUserResponse(User user) throws IOException{
+	public UserResponse buildUserResponse(User user) throws IOException{
 		
 		UserResponse userResponse = null;
 		String base64UserPicture = "";
@@ -107,16 +109,16 @@ public class UserFactory {
 	/**
 	 * @param token
 	 * @return
-	 * @throws UserNotValidException
+	 * @throws UserException
 	 */
-	public User getUserFromToken(String token) throws UserNotValidException{
+	public User getUserFromToken(String token) throws UserException{
 		
 		Long userId = jwtTokenUtil.getUserIdFromToken(token);
 		
 		User user = userDao.findOne(userId);
 		
 		if(user == null){
-			throw new UserNotValidException("User not found with token: " + token);
+			throw new UserException(MessageConstants.USER_USER_NOT_FOUND);
 		}
 		
 		return user;
@@ -126,17 +128,74 @@ public class UserFactory {
 	/**
 	 * @param username
 	 * @return
-	 * @throws UserNotValidException
+	 * @throws UserException
 	 */
-	public User getUserByUsername(String username) throws UserNotValidException{
+	public User getUserByUsername(String username) throws UserException{
 		
 		User user = userDao.findByUsername(username);
 		
 		if(user == null){
-			throw new UserNotValidException("User not found with username: " + username);
+			throw new UserException(MessageConstants.USER_USER_NOT_FOUND);
 		}
 		
 		return user;
+		
+	}
+	
+	/**
+	 * @param email
+	 * @return
+	 * @throws UserException
+	 */
+	public User getUserByEmail(String email) throws UserException{
+		
+		User user = userDao.findByEmail(email);
+		
+		if(user == null){
+			throw new UserException(MessageConstants.USER_USER_NOT_FOUND);
+		}
+		
+		return user;
+		
+	}
+	
+	/**
+	 * @param oldUsername, newUsername
+	 * @return
+	 * @throws UserException
+	 * 
+	 * Check if username has changed and is unique in DB
+	 */
+	public void checkUsername(String oldUsername, String newUsername) throws UserException{
+		
+		if(!(oldUsername.equals(newUsername)) && (getUserByUsername(newUsername) != null)){
+			
+			throw new UserException(MessageConstants.USER_USERNAME_ALREADY_USED);
+			
+		}
+		
+	}
+	
+	/**
+	 * @param oldEmail, newEmail
+	 * @return
+	 * @throws UserException
+	 * 
+	 * Check if email has changed and is unique in DB
+	 */
+	public void checkEmail(String oldEmail, String newEmail) throws UserException{
+		
+		if(!(oldEmail.equals(newEmail)) && (getUserByEmail(newEmail) != null)){
+			
+			throw new UserException(MessageConstants.USER_USERNAME_ALREADY_USED);
+			
+		}
+		
+	}
+	
+	public void saveUser(User user){
+		
+		userDao.save(user);
 		
 	}
 

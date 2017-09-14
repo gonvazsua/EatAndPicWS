@@ -37,6 +37,8 @@ public class UserValidator {
 		
 		validateLastname();
 		
+		validateEmail();
+		
 	}
 	
 	/**

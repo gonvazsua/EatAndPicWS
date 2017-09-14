@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.plateandpic.dao.PlateDao;
 import com.plateandpic.dao.RestaurantDao;
 import com.plateandpic.exceptions.PlateException;
-import com.plateandpic.exceptions.RestaurantNotFoundException;
+import com.plateandpic.exceptions.RestaurantException;
 import com.plateandpic.factory.PlateFactory;
 import com.plateandpic.models.Plate;
 import com.plateandpic.models.Restaurant;
@@ -91,7 +91,7 @@ public class PlateController {
 			restaurant = restaurantDao.findOne(restaurantId);
 			
 			if(restaurant == null){
-				throw new RestaurantNotFoundException("Restaurant not found with ID: " + restaurantId);
+				throw new RestaurantException("Restaurant not found with ID: " + restaurantId);
 			}
 			
 			plates = plateDao.findByRestaurant(restaurant);
@@ -102,7 +102,7 @@ public class PlateController {
 			
 			response.setStatus(HttpServletResponse.SC_OK);
 			  
-		} catch(RestaurantNotFoundException e){
+		} catch(RestaurantException e){
 			log.error(e.getMessage());
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			plates = null;

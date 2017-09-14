@@ -4,7 +4,7 @@ package com.plateandpic.exceptions;
  * @author gonzalo
  *
  */
-public class IPNotFoundException extends Exception {
+public class IPNotFoundException extends PlateAndPicException {
 	
 	/**
 	 * 

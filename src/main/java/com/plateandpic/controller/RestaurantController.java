@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.plateandpic.dao.CityDao;
 import com.plateandpic.dao.RestaurantDao;
 import com.plateandpic.exceptions.IPNotFoundException;
-import com.plateandpic.exceptions.RestaurantNotFoundException;
+import com.plateandpic.exceptions.RestaurantException;
 import com.plateandpic.factory.LocationFactory;
 import com.plateandpic.factory.RestaurantFactory;
 import com.plateandpic.models.City;
@@ -90,7 +90,7 @@ public class RestaurantController {
 		try{
 			
 			if(name == null || "".equals(name)){
-				throw new RestaurantNotFoundException("Restaurant not found: Empty name!");
+				throw new RestaurantException("Restaurant not found: Empty name!");
 			}
 			
 			ipLocation = LocationFactory.getLocationFromHost(request.getRemoteHost());
@@ -100,12 +100,12 @@ public class RestaurantController {
 			restaurants = restaurantDao.findByNameAndCityId(name, city.getCityId());
 			
 			if(restaurants == null || restaurants.isEmpty()){
-				throw new RestaurantNotFoundException("Restaurant not found by name: " + name);
+				throw new RestaurantException("Restaurant not found by name: " + name);
 			}
 			
 			response.setStatus(HttpServletResponse.SC_OK);
 			  
-		} catch(RestaurantNotFoundException ex){
+		} catch(RestaurantException ex){
 			restaurants = null;
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		

@@ -4,19 +4,19 @@ package com.plateandpic.exceptions;
  * @author gonzalo
  *
  */
-public class CityNotFoundException extends Exception {
+public class CityException extends PlateAndPicException {
 	
 	/**
 	 * 
 	 */
-	public CityNotFoundException(){
+	public CityException(){
 		super();
 	}
 	
 	/**
 	 * @param message
 	 */
-	public CityNotFoundException(String message){
+	public CityException(String message){
 		super(message);
 	}
 

@@ -4,19 +4,19 @@ package com.plateandpic.exceptions;
  * @author gonzalo
  *
  */
-public class RestaurantNotFoundException extends Exception {
+public class RestaurantException extends PlateAndPicException {
 	
 	/**
 	 * 
 	 */
-	public RestaurantNotFoundException(){
+	public RestaurantException(){
 		super();
 	}
 	
 	/**
 	 * @param message
 	 */
-	public RestaurantNotFoundException(String message){
+	public RestaurantException(String message){
 		super(message);
 	}
 

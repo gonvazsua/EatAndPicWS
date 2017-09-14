@@ -63,6 +63,10 @@ public class User {
     @Size(min = 4, max = 50)
     private String email;
 
+    @Column(name = "TARGET", length = 150)
+    @Size(min = 4, max = 150)
+    private String target;	
+    
     @Column(name = "ENABLED")
     @NotNull
     private Boolean enabled;
@@ -281,8 +285,17 @@ public class User {
         
         return id.equals(otherUser.getId());
     }
-    @Override
+    
+	@Override
     public int hashCode() {
         return id == null ? 0 : id.hashCode();
     }
+	
+	public String getTarget(){
+		return this.target;
+	}
+	
+	public void setTarget(String target){
+		this.target = target;
+	}
 }

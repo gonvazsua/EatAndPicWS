@@ -18,7 +18,7 @@ import com.plateandpic.constants.ConstantsProperties;
 import com.plateandpic.dao.PlatePictureDao;
 import com.plateandpic.dao.UserDao;
 import com.plateandpic.exceptions.PlatePictureException;
-import com.plateandpic.exceptions.UserNotValidException;
+import com.plateandpic.exceptions.UserException;
 import com.plateandpic.models.PlatePicture;
 import com.plateandpic.models.User;
 import com.plateandpic.response.PlatePictureResponse;
@@ -52,9 +52,9 @@ public class PlatePictureFactory {
 	 * @return
 	 * @throws PlatePictureException
 	 * @throws IOException
-	 * @throws UserNotValidException
+	 * @throws UserException
 	 */
-	public PlatePicture save(MultipartFile picture, PlatePicture platePicture, String token) throws PlatePictureException, IOException, UserNotValidException{
+	public PlatePicture save(MultipartFile picture, PlatePicture platePicture, String token) throws PlatePictureException, IOException, UserException{
 		
 		PlatePicture savedPlatePicture;
 		String newPictureName = "";
@@ -136,9 +136,9 @@ public class PlatePictureFactory {
 	 * @return
 	 * @throws PlatePictureException
 	 * @throws IOException
-	 * @throws UserNotValidException
+	 * @throws UserException
 	 */
-	public List<PlatePictureResponse> getLastPlatePictures(String token, Integer page) throws PlatePictureException, IOException, UserNotValidException{
+	public List<PlatePictureResponse> getLastPlatePictures(String token, Integer page) throws PlatePictureException, IOException, UserException{
 		
 		User user = null;
 		List<PlatePicture> platePictures = null;
@@ -192,10 +192,10 @@ public class PlatePictureFactory {
 	/**
 	 * @param token
 	 * @param platePictureId
-	 * @throws UserNotValidException
+	 * @throws UserException
 	 * @throws PlatePictureException
 	 */
-	public void likePlatePicture(String token, Long platePictureId) throws UserNotValidException, PlatePictureException{
+	public void likePlatePicture(String token, Long platePictureId) throws UserException, PlatePictureException{
 		
 		User user = null;
 		PlatePicture platePicture = null;
@@ -213,10 +213,10 @@ public class PlatePictureFactory {
 	/**
 	 * @param token
 	 * @param platePictureId
-	 * @throws UserNotValidException
+	 * @throws UserException
 	 * @throws PlatePictureException
 	 */
-	public void unlikePlatePicture(String token, Long platePictureId) throws UserNotValidException, PlatePictureException{
+	public void unlikePlatePicture(String token, Long platePictureId) throws UserException, PlatePictureException{
 		
 		User user = null;
 		PlatePicture platePicture = null;
@@ -253,10 +253,10 @@ public class PlatePictureFactory {
 	 * @param username
 	 * @param page
 	 * @return
-	 * @throws UserNotValidException
+	 * @throws UserException
 	 * @throws IOException
 	 */
-	public List<PlatePictureResponse> getPlatePictureByUsername(String username, Integer page) throws UserNotValidException, IOException{
+	public List<PlatePictureResponse> getPlatePictureByUsername(String username, Integer page) throws UserException, IOException{
 		
 		User user = null;
 		List<PlatePicture> platePictures = null;

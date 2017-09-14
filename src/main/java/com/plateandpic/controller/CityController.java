@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.plateandpic.dao.CityDao;
-import com.plateandpic.exceptions.CityNotFoundException;
+import com.plateandpic.exceptions.CityException;
 import com.plateandpic.models.City;
 
 /**
@@ -50,12 +50,12 @@ public class CityController {
 			city = cityDao.findByName(name);
 			
 			if(city == null){
-				throw new CityNotFoundException("No encontrada ciudad con nombre: " + name);
+				throw new CityException("No encontrada ciudad con nombre: " + name);
 			}
 			
 			response.setStatus(HttpServletResponse.SC_OK);
 			  
-		} catch(CityNotFoundException e){
+		} catch(CityException e){
 			log.error("No encontrada ciudad. " + e.getMessage());
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}

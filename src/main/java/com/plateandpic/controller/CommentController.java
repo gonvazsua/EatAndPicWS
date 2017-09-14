@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.plateandpic.exceptions.CommentException;
-import com.plateandpic.exceptions.UserNotValidException;
+import com.plateandpic.exceptions.UserException;
 import com.plateandpic.factory.CommentFactory;
 import com.plateandpic.models.Comment;
 import com.plateandpic.response.CommentResponse;
@@ -112,7 +112,7 @@ public class CommentController {
 			log.error("Error save:" + e.getMessage());
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			
-		} catch (UserNotValidException e) {
+		} catch (UserException e) {
 			
 			savedComment = null;
 			log.error("Error save:" + e.getMessage());

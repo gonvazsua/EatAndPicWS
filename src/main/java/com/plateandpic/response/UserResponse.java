@@ -6,6 +6,10 @@ import com.plateandpic.models.User;
  * @author gonzalo
  *
  */
+/**
+ * @author gonzalo
+ *
+ */
 public class UserResponse {
 	
 	private Long userId;
@@ -14,6 +18,7 @@ public class UserResponse {
 	private String lastname;
 	private String email;
 	private String picture;
+	private String target;
 	
 	/**
 	 * @param user
@@ -26,6 +31,7 @@ public class UserResponse {
 		this.lastname = user.getLastname();
 		this.email = user.getEmail();
 		this.picture = user.getPicture();
+		this.target = user.getTarget();
 		
 	}
 
@@ -112,5 +118,21 @@ public class UserResponse {
 	public void setPicture(String picture) {
 		this.picture = picture;
 	}
+
+	/**
+	 * @return
+	 */
+	public String getTarget() {
+		return target;
+	}
+
+	/**
+	 * @param target
+	 */
+	public void setTarget(String target) {
+		this.target = target;
+	}
+	
+	
 
 }

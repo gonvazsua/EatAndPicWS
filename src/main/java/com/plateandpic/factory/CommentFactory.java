@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.plateandpic.dao.CommentDao;
 import com.plateandpic.exceptions.CommentException;
-import com.plateandpic.exceptions.UserNotValidException;
+import com.plateandpic.exceptions.UserException;
 import com.plateandpic.models.Comment;
 import com.plateandpic.models.User;
 import com.plateandpic.response.CommentResponse;
@@ -90,10 +90,10 @@ public class CommentFactory {
 	 * @param token
 	 * @param comment
 	 * @return
-	 * @throws UserNotValidException
+	 * @throws UserException
 	 * @throws CommentException
 	 */
-	public CommentResponse validateAndSave(String token, Comment comment) throws UserNotValidException, CommentException{
+	public CommentResponse validateAndSave(String token, Comment comment) throws UserException, CommentException{
 		
 		User user = null;
 		CommentResponse commentResponse = null;
