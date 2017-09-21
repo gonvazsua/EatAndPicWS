@@ -1,19 +1,23 @@
 package com.plateandpic.factory;
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.plateandpic.constants.ConstantsProperties;
 import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.UserDao;
+import com.plateandpic.exceptions.PasswordException;
 import com.plateandpic.exceptions.UserException;
 import com.plateandpic.models.User;
 import com.plateandpic.response.UserResponse;
 import com.plateandpic.security.JwtTokenUtil;
+import com.plateandpic.utils.UpdatePasswordRequest;
 
 /**
  * @author gonzalo
@@ -30,6 +34,9 @@ public class UserFactory {
 	
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	/**
 	 * @param userFrom
@@ -111,7 +118,7 @@ public class UserFactory {
 	 * @return
 	 * @throws UserException
 	 */
-	public User getUserFromToken(String token) throws UserException{
+	public User getUserFromToken(String token) throws UserException {
 		
 		Long userId = jwtTokenUtil.getUserIdFromToken(token);
 		
@@ -193,9 +200,56 @@ public class UserFactory {
 		
 	}
 	
+	/**
+	 * @param user
+	 * 
+	 * Save user in DB
+	 */
 	public void saveUser(User user){
 		
 		userDao.save(user);
+		
+	}
+	
+	/**
+	 * @param passwordRequest
+	 * @param user
+	 * @throws PasswordException
+	 */
+	public void validateLastPasswordAndUpdate(UpdatePasswordRequest passwordRequest, User user) throws PasswordException{
+		
+		validateLastPassword(passwordRequest, user);
+		
+		updateNewPassword(passwordRequest, user);
+		
+		saveUser(user);
+		
+	}
+	
+	/**
+	 * @param passwordRequest
+	 * @param user
+	 * @throws PasswordException
+	 */
+	private void validateLastPassword(UpdatePasswordRequest passwordRequest, User user) throws PasswordException{
+		
+		String lastPassword = passwordEncoder.encode(passwordRequest.getLastPassword());
+		
+		if(!user.getPassword().equals(lastPassword)){
+			throw new PasswordException(MessageConstants.PASSWORD_NOT_CORRECT);
+		}
+		
+	}
+	
+	/**
+	 * @param passwordRequest
+	 * @param user
+	 */
+	private void updateNewPassword(UpdatePasswordRequest passwordRequest, User user){
+		
+		String newPassword = passwordEncoder.encode(passwordRequest.getNewPassword1());
+		
+		user.setPassword(newPassword);
 		
 	}
 

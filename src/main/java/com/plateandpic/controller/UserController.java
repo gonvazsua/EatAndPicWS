@@ -23,12 +23,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.plateandpic.dao.UserDao;
+import com.plateandpic.exceptions.PasswordException;
 import com.plateandpic.exceptions.UserException;
 import com.plateandpic.factory.FileFactory;
 import com.plateandpic.factory.UserFactory;
 import com.plateandpic.models.User;
 import com.plateandpic.response.UserResponse;
 import com.plateandpic.security.JwtTokenUtil;
+import com.plateandpic.utils.UpdatePasswordRequest;
+import com.plateandpic.validator.PasswordValidator;
 import com.plateandpic.validator.UserValidator;
 
 @RestController
@@ -48,12 +51,6 @@ public class UserController {
 
 	  @Autowired
 	  private JwtTokenUtil jwtTokenUtil;
-	  
-	  @Autowired
-	  private UserDetailsService userDetailsService;
-	  
-	  @Autowired
-	  private PasswordEncoder passwordEncoder;
 	  
 	  @Autowired
 	  private Environment env;
@@ -93,86 +90,25 @@ public class UserController {
 		  
 	  }
 	  
-	  
-	  /**
-	   * POST /updateEmail  --> Update the user email
-	   * email.
-	   */
-	  @RequestMapping(value = "/updateEmail", method = RequestMethod.POST)
-	  @ResponseBody
-	  public User updateUserEmail(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
-		  
-		  User userBBDD = null, userCheckEmail = null;
-	      UserValidator userValidator = null;
-		  
-		  try {
-			  
-			  userBBDD = userFactory.getUserFromToken(request.getHeader(tokenHeader));
-			  
-			  //Check if exists another user with same Email
-			  if(!userBBDD.getEmail().equals(user.getEmail())){
-				  
-				  userCheckEmail = userDao.findByEmail(user.getEmail());
-				  
-			  }
-			  
-			  if(userCheckEmail == null && userBBDD != null){
-				  
-				  userValidator.validateEmail();
-				  userFactory.copyFieldsFromEmailChange(user, userBBDD);
-
-				  userDao.save(userBBDD);
-				  
-			  }
-			  else{
-				  throw new Exception("Email already exists");
-			  }
-			  
-		  }
-		  catch (Exception ex) {
-			  log.error(ex.getMessage());
-			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			  return null;
-		  }
-		  
-		  return user;
-	  }
-	  
-	  
-	  
 	  /**
 	   * POST /updatePassword  --> Update the user password
+	 * @throws PasswordException 
+	 * @throws UserException 
 	   */
 	  @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
 	  @ResponseBody
-	  public User updatePassword(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
+	  public User updatePassword(@RequestBody UpdatePasswordRequest passwordRequest, HttpServletRequest request, HttpServletResponse response) throws PasswordException, UserException {
 		  
-		  User userBBDD = null;
+		  User userBBDD = userFactory.getUserFromToken(request.getHeader(tokenHeader));
 		  
-		  try {
+		  PasswordValidator passwordValidator = new PasswordValidator(passwordRequest);
 			  
-			  userBBDD = userFactory.getUserFromToken(request.getHeader(tokenHeader));
+		  passwordValidator.validate();
 			  
-			  if(userBBDD != null){
-				  
-				  userBBDD.setPassword(passwordEncoder.encode(user.getPassword()));
-				  userBBDD.setLastPasswordResetDate(new Date());
-
-				  userDao.save(userBBDD);
-				  
-			  }
-			  else{
-				  throw new Exception("Email already exists");
-			  }
-			  
-		  }
-		  catch (Exception ex) {
-			  log.error(ex.getMessage());
-			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			  return null;
-		  }
+		  userFactory.validateLastPasswordAndUpdate(passwordRequest, userBBDD);
 		  
-		  return user;
+		  return userBBDD;
+		  
 	  }
 	  
 	  
