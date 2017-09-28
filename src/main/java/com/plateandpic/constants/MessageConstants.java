@@ -12,5 +12,7 @@ public class MessageConstants {
 	public static final String PASSWORD_NOT_VALID = "password.notValid";
 	public static final String PASSWORD_NOT_EQUALS = "password.notEquals";
 	public static final String PASSWORD_NOT_CORRECT = "password.notCorrect";
+	
+	public static final String PLATEPICTURE_CANT_LOAD = "platepicture.cantLoad";
 
 }

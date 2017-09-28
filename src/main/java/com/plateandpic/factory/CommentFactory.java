@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.plateandpic.dao.CommentDao;
 import com.plateandpic.exceptions.CommentException;
+import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.UserException;
 import com.plateandpic.models.Comment;
 import com.plateandpic.models.User;
@@ -38,10 +39,10 @@ public class CommentFactory {
 	 * @param platePictureId
 	 * @param page
 	 * @return
-	 * @throws CommentException
 	 * @throws IOException
+	 * @throws PlateAndPicException 
 	 */
-	public List<CommentResponse> getCommentsByPlatePictureId(Long platePictureId, Integer page) throws CommentException, IOException{
+	public List<CommentResponse> getCommentsByPlatePictureId(Long platePictureId, Integer page) throws IOException, PlateAndPicException{
 		
 		List<CommentResponse> commentsResponse = null;
 		List<Comment> comments = null;
@@ -64,8 +65,9 @@ public class CommentFactory {
 	 * @param comments
 	 * @return
 	 * @throws IOException
+	 * @throws PlateAndPicException 
 	 */
-	private List<CommentResponse> buildCommentsResponse(List<Comment> comments) throws IOException{
+	private List<CommentResponse> buildCommentsResponse(List<Comment> comments) throws IOException, PlateAndPicException{
 		
 		List<CommentResponse> commentsResponse = new ArrayList<CommentResponse>();
 		CommentResponse commentResponse = null;

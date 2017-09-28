@@ -13,6 +13,7 @@ import com.plateandpic.constants.ConstantsProperties;
 import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.UserDao;
 import com.plateandpic.exceptions.PasswordException;
+import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.UserException;
 import com.plateandpic.models.User;
 import com.plateandpic.response.UserResponse;
@@ -64,12 +65,17 @@ public class UserFactory {
 	/**
 	 * @param userId
 	 * @return
+	 * @throws PlateAndPicException 
 	 * @throws IOException
 	 */
-	public UserResponse getUserResponse(Long userId) throws IOException{
+	public UserResponse getUserResponse(Long userId) throws PlateAndPicException {
 		
 		UserResponse userResponse = null;
 		User user = null;
+		
+		if(userId == null || userId == 0){
+			throw new UsernameNotFoundException(MessageConstants.USER_USER_NOT_FOUND);
+		}
 		
 		user = userDao.findOne(userId);
 		
@@ -87,8 +93,9 @@ public class UserFactory {
 	 * @param user
 	 * @return
 	 * @throws IOException
+	 * @throws PlateAndPicException 
 	 */
-	public UserResponse buildUserResponse(User user) throws IOException{
+	public UserResponse buildUserResponse(User user) throws PlateAndPicException{
 		
 		UserResponse userResponse = null;
 		String base64UserPicture = "";

@@ -18,12 +18,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.plateandpic.dao.UserDao;
 import com.plateandpic.exceptions.PasswordException;
+import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.UserException;
 import com.plateandpic.factory.FileFactory;
 import com.plateandpic.factory.UserFactory;
@@ -58,13 +60,13 @@ public class UserController {
 	
   
 	  /**
-	   * POST /updatePersonalData  --> Update the passed data User
-	 * @throws UserException 
-	 * @throws IOException 
-	   */
+	  * POST /updatePersonalData  --> Update the passed data User
+	  * @throws IOException 
+	 * @throws PlateAndPicException 
+	  */
 	  @RequestMapping(value = "/updatePersonalData", method = RequestMethod.POST)
 	  @ResponseBody
-	  public UserResponse updateUser(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) throws UserException, IOException {
+	  public UserResponse updateUser(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) throws IOException, PlateAndPicException {
 		  
 		  User userBBDD = null, userCheckUsername = null;
 	      UserValidator userValidator = null;
@@ -114,36 +116,21 @@ public class UserController {
 	  
 	  /**
 	   * GET /getAuthenticatedUser
+	 * @throws PlateAndPicException 
 	   */
 	  @RequestMapping(value = "/getAuthenticatedUser", method = RequestMethod.GET)
-	  public UserResponse getAuthenticatedUser(HttpServletRequest request, HttpServletResponse response) {
+	  public UserResponse getAuthenticatedUser(HttpServletRequest request, HttpServletResponse response) throws PlateAndPicException {
 		  
 		  UserResponse userResponse = null;
 		  String token = "";
 		  Long userId = null;
 		  
-		  try{
-			  
-			  token = request.getHeader(tokenHeader);
-			  userId = jwtTokenUtil.getUserIdFromToken(token);
-			  
-			  userResponse = userFactory.getUserResponse(userId);
-			  
-		  } catch(UsernameNotFoundException e){
-			  
-			  log.error(e.getMessage());
-			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			  return null;
-			  
-		  } catch (IOException e) {
-			
-			  log.error(e.getMessage());
-			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			  return null;
-			  
-		  }
+		  token = request.getHeader(tokenHeader);
+		  userId = jwtTokenUtil.getUserIdFromToken(token);
+		  userResponse = userFactory.getUserResponse(userId);
 		  
 		  return userResponse;
+		  
 	  }
 	  
 	  
@@ -187,5 +174,21 @@ public class UserController {
 		  
 		  return base64Img;
 	  }
-
+	  
+	  /**
+	  * GET /getUserById  --> Load de User by the id
+	  * @throws UserException 
+	 * @throws IOException 
+	 * @throws PlateAndPicException 
+	  */
+	  @RequestMapping(value = "/getUserById", method = RequestMethod.POST)
+	  @ResponseBody
+	  public UserResponse getUserById(HttpServletRequest request, HttpServletResponse response, @RequestParam Long userId) throws IOException, PlateAndPicException {
+		  
+		  UserResponse userResponse = userFactory.getUserResponse(userId);
+		  
+		  return userResponse;
+		  
+	  }
+	  
 }

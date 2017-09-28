@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartRequest;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.plateandpic.dao.PlatePictureDao;
+import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.PlatePictureException;
 import com.plateandpic.exceptions.UserException;
 import com.plateandpic.factory.PlatePictureFactory;
@@ -104,12 +105,12 @@ public class PlatePictureController {
 	 * @param response
 	 * @param page
 	 * @return
-	 * @throws UserException
+	 * @throws PlateAndPicException 
 	 */
 	@RequestMapping(value = "/lastPlatePictures", method = RequestMethod.GET)
 	@ResponseBody
 	public List<PlatePictureResponse> lastPlatePictures(HttpServletRequest request, HttpServletResponse response, 
-			@RequestParam Integer page) throws UserException{
+			@RequestParam Integer page) throws PlateAndPicException{
 		
 		List<PlatePictureResponse> lastPlatePictures;
 		String token = "";
@@ -220,30 +221,20 @@ public class PlatePictureController {
 	 * @param username
 	 * @param page
 	 * @return
+	 * @throws PlateAndPicException 
+	 * @throws IOException 
 	 */
 	@RequestMapping(value = "/getByUsername", method = RequestMethod.GET)
 	@ResponseBody
 	public List<PlatePictureResponse> getByUsername(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam String username, @RequestParam Integer page){
+			@RequestParam String username, @RequestParam Integer page) throws PlateAndPicException, IOException{
 		
 		String token = "";
 		List<PlatePictureResponse> lastPlatePictures = null;
 		
-		try{
+		lastPlatePictures = platePictureFactory.getPlatePictureByUsername(username, page);
 			
-			lastPlatePictures = platePictureFactory.getPlatePictureByUsername(username, page);
-			
-			response.setStatus(HttpServletResponse.SC_OK);
-			  
-		} catch (UserException e) {
-			
-			log.error("Error al guardar unlike platePicture: " + e.getMessage());
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			
-		} catch (IOException e) {
-			log.error("Error al obtener platePicture: " + e.getMessage());
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		} 
+		response.setStatus(HttpServletResponse.SC_OK);
 		
 		return lastPlatePictures;
 		 

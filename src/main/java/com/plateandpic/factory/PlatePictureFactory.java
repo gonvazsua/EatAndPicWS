@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.plateandpic.constants.ConstantsProperties;
 import com.plateandpic.dao.PlatePictureDao;
 import com.plateandpic.dao.UserDao;
+import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.PlatePictureException;
 import com.plateandpic.exceptions.UserException;
 import com.plateandpic.models.PlatePicture;
@@ -134,11 +135,10 @@ public class PlatePictureFactory {
 	 * @param token
 	 * @param page
 	 * @return
-	 * @throws PlatePictureException
 	 * @throws IOException
-	 * @throws UserException
+	 * @throws PlateAndPicException 
 	 */
-	public List<PlatePictureResponse> getLastPlatePictures(String token, Integer page) throws PlatePictureException, IOException, UserException{
+	public List<PlatePictureResponse> getLastPlatePictures(String token, Integer page) throws PlateAndPicException, IOException{
 		
 		User user = null;
 		List<PlatePicture> platePictures = null;
@@ -162,8 +162,9 @@ public class PlatePictureFactory {
 	 * @param user
 	 * @return
 	 * @throws IOException
+	 * @throws PlateAndPicException 
 	 */
-	private List<PlatePictureResponse> buildPlatePictureResponseFromPlatePictureList(List<PlatePicture> platePictures, User user) throws IOException{
+	private List<PlatePictureResponse> buildPlatePictureResponseFromPlatePictureList(List<PlatePicture> platePictures, User user) throws IOException, PlateAndPicException{
 		
 		List<PlatePictureResponse> response = new ArrayList<PlatePictureResponse>();
 		PlatePictureResponse ppr = null;
@@ -253,10 +254,10 @@ public class PlatePictureFactory {
 	 * @param username
 	 * @param page
 	 * @return
-	 * @throws UserException
 	 * @throws IOException
+	 * @throws PlateAndPicException 
 	 */
-	public List<PlatePictureResponse> getPlatePictureByUsername(String username, Integer page) throws UserException, IOException{
+	public List<PlatePictureResponse> getPlatePictureByUsername(String username, Integer page) throws IOException, PlateAndPicException{
 		
 		User user = null;
 		List<PlatePicture> platePictures = null;

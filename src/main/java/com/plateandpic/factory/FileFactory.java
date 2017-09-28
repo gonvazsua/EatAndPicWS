@@ -8,9 +8,13 @@ import java.nio.file.Files;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.apache.tomcat.util.codec.binary.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.plateandpic.constants.ConstantsProperties;
+import com.plateandpic.constants.MessageConstants;
+import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.utils.GetPropertiesValues;
 
 /**
@@ -18,6 +22,8 @@ import com.plateandpic.utils.GetPropertiesValues;
  *
  */
 public class FileFactory {
+	
+	private static final Logger log = LoggerFactory.getLogger(FileFactory.class);
 	
 	public static final String JPG = ".jpg";
 	private static final String BASE_64 = "data:image/png;base64,";
@@ -58,6 +64,7 @@ public class FileFactory {
 			
 		}
 		catch (IOException e){
+			
 			throw e;
 		}
 		
@@ -69,9 +76,10 @@ public class FileFactory {
 	 * @param path
 	 * @param profilePictureName
 	 * @return
+	 * @throws PlateAndPicException 
 	 * @throws IOException
 	 */
-	public static String getBase64FromProfilePictureName(String path, String profilePictureName) throws IOException{
+	public static String getBase64FromProfilePictureName(String path, String profilePictureName) throws PlateAndPicException {
 		
 		byte[] imageBytes = null;
 		String uriBase64 = null;
@@ -83,7 +91,8 @@ public class FileFactory {
 			uriBase64 = getBase64FromBytes(imageBytes);
 			
 		} catch(IOException e){
-			throw e;
+			log.error(e.toString());
+			throw new PlateAndPicException(MessageConstants.PLATEPICTURE_CANT_LOAD);
 		}
 		
 		return uriBase64;

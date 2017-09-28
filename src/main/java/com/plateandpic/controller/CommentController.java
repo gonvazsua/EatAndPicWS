@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.plateandpic.exceptions.CommentException;
+import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.UserException;
 import com.plateandpic.factory.CommentFactory;
 import com.plateandpic.models.Comment;
@@ -46,11 +47,12 @@ public class CommentController {
 	 * @param platePictureId
 	 * @param page
 	 * @return
+	 * @throws PlateAndPicException 
 	 */
 	@RequestMapping(value = "/getByPlatePicture", method = RequestMethod.GET)
 	@ResponseBody
 	public List<CommentResponse> getByPlatePicture(HttpServletRequest request, HttpServletResponse response, 
-			@RequestParam Long platePictureId, @RequestParam Integer page){
+			@RequestParam Long platePictureId, @RequestParam Integer page) throws PlateAndPicException{
 		
 		List<CommentResponse> comments = null;
 		
