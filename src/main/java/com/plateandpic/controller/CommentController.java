@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.exceptions.CommentException;
 import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.UserException;
@@ -48,41 +49,28 @@ public class CommentController {
 	 * @param page
 	 * @return
 	 * @throws PlateAndPicException 
+	 * @throws IOException 
 	 */
 	@RequestMapping(value = "/getByPlatePicture", method = RequestMethod.GET)
 	@ResponseBody
 	public List<CommentResponse> getByPlatePicture(HttpServletRequest request, HttpServletResponse response, 
-			@RequestParam Long platePictureId, @RequestParam Integer page) throws PlateAndPicException{
+			@RequestParam Long platePictureId, @RequestParam Integer page) throws PlateAndPicException, IOException{
 		
 		List<CommentResponse> comments = null;
+			
+		if(platePictureId != null && platePictureId > 0
+				&& page != null && page >= 0){
+			
+			comments = commentFactory.getCommentsByPlatePictureId(platePictureId, page);
+			response.setStatus(HttpServletResponse.SC_OK);	
 		
-		try{
-			
-			if(platePictureId != null && platePictureId > 0
-					&& page != null && page >= 0){
-				
-				comments = commentFactory.getCommentsByPlatePictureId(platePictureId, page);
-				response.setStatus(HttpServletResponse.SC_OK);	
-			
-			}
-			else{
-				throw new CommentException("Params not valid -> platePictureId: " + platePictureId
-						+ ", page: " + page);
-			}
-			
-		} catch (CommentException e) {
-			
-			comments = null;
-			log.error("Error getByPlatePicture:" + e.getMessage());
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			
-		} catch (IOException e) {
-			
-			comments = null;
-			log.error("Error getByPlatePicture:" + e.getMessage());
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
-		
+		else{
+			log.error("Params not valid -> platePictureId: " + platePictureId
+					+ ", page: " + page + ". In CommentController.getByPlatePicture()");
+			throw new CommentException(MessageConstants.GENERAL_ERROR);
+		}
+			
 		return comments;
 		
 	}

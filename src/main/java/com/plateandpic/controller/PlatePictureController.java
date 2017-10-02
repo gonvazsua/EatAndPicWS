@@ -106,37 +106,22 @@ public class PlatePictureController {
 	 * @param page
 	 * @return
 	 * @throws PlateAndPicException 
+	 * @throws IOException 
 	 */
 	@RequestMapping(value = "/lastPlatePictures", method = RequestMethod.GET)
 	@ResponseBody
 	public List<PlatePictureResponse> lastPlatePictures(HttpServletRequest request, HttpServletResponse response, 
-			@RequestParam Integer page) throws PlateAndPicException{
+			@RequestParam Integer page) throws PlateAndPicException, IOException{
 		
 		List<PlatePictureResponse> lastPlatePictures;
 		String token = "";
+			
+		token = request.getHeader(tokenHeader);
 		
-		try{
-			
-			token = request.getHeader(tokenHeader);
-			
-			lastPlatePictures = platePictureFactory.getLastPlatePictures(token, page);
-			
-			response.setStatus(HttpServletResponse.SC_OK);
-			  
-		} catch(PlatePictureException ex){
-			
-			lastPlatePictures = null;
-			log.error("Error getting last PlatePictures: page = " + page + " -> " + ex.getMessage());
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		lastPlatePictures = platePictureFactory.getLastPlatePictures(token, page);
 		
-		} catch (IOException e) {
+		response.setStatus(HttpServletResponse.SC_OK);
 			
-			lastPlatePictures = null;
-			log.error("Error getting last PlatePictures: page = " + page + " -> " + e.getMessage());
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			
-		} 
-		
 		return lastPlatePictures;
 		 
 	}
