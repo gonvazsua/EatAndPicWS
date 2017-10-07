@@ -224,5 +224,30 @@ public class PlatePictureController {
 		return lastPlatePictures;
 		 
 	}
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @param restaurantId
+	 * @param page
+	 * @return
+	 * @throws PlateAndPicException 
+	 * @throws IOException 
+	 */
+	@RequestMapping(value = "/getByRestaurant", method = RequestMethod.GET)
+	@ResponseBody
+	public List<PlatePictureResponse> getByRestaurant(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam Long restaurantId, @RequestParam Integer page) throws PlateAndPicException, IOException{
+		
+		String token = "";
+		List<PlatePictureResponse> lastPlatePictures = null;
+		
+		
+			
+		response.setStatus(HttpServletResponse.SC_OK);
+		
+		return lastPlatePictures;
+		 
+	}
 
 }

@@ -7,8 +7,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.RestaurantDao;
+import com.plateandpic.exceptions.RestaurantException;
 import com.plateandpic.models.Restaurant;
+import com.plateandpic.response.RestaurantRequestResponse;
+import com.plateandpic.utils.DateUtils;
+import com.plateandpic.utils.StringUtils;
 
 /**
  * @author gonzalo
@@ -51,6 +56,54 @@ public class RestaurantFactory {
 		}
 		
 		return savedRestaurant;
+		
+	}
+	
+	/**
+	 * @param id
+	 * @return
+	 * @throws RestaurantException
+	 * 
+	 * Load a RestaurantRequestResponse from RestaurantId
+	 */
+	public RestaurantRequestResponse getById(Long id) throws RestaurantException{
+		
+		RestaurantRequestResponse response = null;
+		
+		Restaurant restaurant = restaurantDao.findOne(id);
+		
+		if(restaurant == null){
+			throw new RestaurantException(MessageConstants.RESTAURANT_NOT_FOUND);
+		}
+		
+		response = buildRestaurantRequestResponse(restaurant);
+		
+		return response;
+		
+	}
+	
+	/**
+	 * @param restaurant
+	 * @return
+	 * 
+	 * Build new RestaurantRequestResponse from a Restaurant object
+	 */
+	private RestaurantRequestResponse buildRestaurantRequestResponse(Restaurant restaurant){
+		
+		RestaurantRequestResponse response = new RestaurantRequestResponse();
+		
+		response.setRestaurantId(restaurant.getRestaurantId());
+		response.setName(restaurant.getName());
+		response.setAddress(restaurant.getAddress());
+		response.setPhoneNumber(restaurant.getPhoneNumber());
+		response.setRegisteredOn(DateUtils.getDateDDMMYYY(restaurant.getRegisteredOn()));
+		response.setCityId(restaurant.getCity().getCityId());
+		response.setCityName(restaurant.getCity().getName());
+		response.setPriceAverage(restaurant.getPriceAverage());
+		response.setPicture(restaurant.getPicture());
+		response.setDescription(restaurant.getDescription());
+		
+		return response;
 		
 	}
 

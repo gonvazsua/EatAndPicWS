@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.CityDao;
 import com.plateandpic.dao.RestaurantDao;
 import com.plateandpic.exceptions.IPNotFoundException;
@@ -26,7 +26,7 @@ import com.plateandpic.factory.RestaurantFactory;
 import com.plateandpic.models.City;
 import com.plateandpic.models.IpLocation;
 import com.plateandpic.models.Restaurant;
-import com.plateandpic.security.JwtTokenUtil;
+import com.plateandpic.response.RestaurantRequestResponse;
 
 /**
  * @author gonzalo
@@ -156,4 +156,27 @@ public class RestaurantController {
 		return savedRestaurant;
 		 
 	}
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @param restaurant
+	 * @return
+	 * @throws RestaurantException 
+	 */
+	@RequestMapping(value = "/getById", method = RequestMethod.GET)
+	@ResponseBody
+	public RestaurantRequestResponse getById(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam Long restaurantId) throws RestaurantException{
+		
+		if(restaurantId == null || restaurantId <= 0){
+			throw new RestaurantException(MessageConstants.RESTAURANT_NOT_FOUND);
+		}
+		
+		RestaurantRequestResponse restaurant = restaurantFactory.getById(restaurantId);
+		
+		return restaurant;
+		 
+	}
+	
 }

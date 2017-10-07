@@ -61,6 +61,9 @@ public class Restaurant {
 	
 	private Double rating;
 	
+	@Size(min = 1, max = 150)
+	private String description;
+	
 	
 	public long getRestaurantId() {
 		return restaurantId;
@@ -164,6 +167,14 @@ public class Restaurant {
 
 	public void setRating(Double rating) {
 		this.rating = rating;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }
