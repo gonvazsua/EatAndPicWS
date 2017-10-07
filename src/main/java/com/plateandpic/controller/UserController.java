@@ -176,12 +176,12 @@ public class UserController {
 	  }
 	  
 	  /**
-	  * GET /getUserById  --> Load de User by the id
+	  * GET /getUserById  --> Load User by the id
 	  * @throws UserException 
 	 * @throws IOException 
 	 * @throws PlateAndPicException 
 	  */
-	  @RequestMapping(value = "/getUserById", method = RequestMethod.POST)
+	  @RequestMapping(value = "/getUserById", method = RequestMethod.GET)
 	  @ResponseBody
 	  public UserResponse getUserById(HttpServletRequest request, HttpServletResponse response, @RequestParam Long userId) throws IOException, PlateAndPicException {
 		  

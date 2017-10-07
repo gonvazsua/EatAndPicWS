@@ -14,5 +14,7 @@ public class MessageConstants {
 	public static final String PASSWORD_NOT_CORRECT = "password.notCorrect";
 	
 	public static final String PLATEPICTURE_CANT_LOAD = "platepicture.cantLoad";
+	
+	public static final String COMMENT_NOT_SAVED = "comment.notSaved";
 
 }

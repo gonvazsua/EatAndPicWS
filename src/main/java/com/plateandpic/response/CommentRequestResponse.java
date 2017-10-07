@@ -7,7 +7,7 @@ import com.plateandpic.utils.DateUtils;
  * @author gonzalo
  *
  */
-public class CommentResponse {
+public class CommentRequestResponse {
 	
 	private Long commentId;
 	private String comment;
@@ -15,11 +15,27 @@ public class CommentResponse {
 	private String username;
 	private String userImage;
 	private String registeredOn;
+	private Long platePictureId;
 	
 	/**
 	 * @param comment
 	 */
-	public CommentResponse(Comment comment){
+	public CommentRequestResponse(){
+		
+		this.commentId = null;
+		this.comment = null;
+		this.userId = null;
+		this.username = null;
+		this.userImage = null;
+		this.registeredOn = null;
+		this.platePictureId = null;
+		
+	}
+	
+	/**
+	 * @param comment
+	 */
+	public CommentRequestResponse(Comment comment){
 		
 		this.commentId = comment.getCommentId();
 		this.comment = comment.getComment();
@@ -27,6 +43,7 @@ public class CommentResponse {
 		this.username = comment.getUser().getUsername();
 		this.userImage = comment.getUser().getPicture();
 		this.registeredOn = DateUtils.getDateDDMMYYY(comment.getRegisteredOn());
+		this.platePictureId = null;
 		
 	}
 	
@@ -113,5 +130,21 @@ public class CommentResponse {
 	public void setUserImage(String userImage) {
 		this.userImage = userImage;
 	}
+
+	/**
+	 * @return
+	 */
+	public Long getPlatePictureId() {
+		return platePictureId;
+	}
+	
+	/**
+	 * @param platePictureId
+	 */
+	public void setPlatePictureId(Long platePictureId) {
+		this.platePictureId = platePictureId;
+	}
+	
+	
 
 }

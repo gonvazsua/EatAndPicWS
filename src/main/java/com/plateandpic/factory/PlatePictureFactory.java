@@ -1,6 +1,5 @@
 package com.plateandpic.factory;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,15 +15,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.plateandpic.constants.ConstantsProperties;
 import com.plateandpic.dao.PlatePictureDao;
-import com.plateandpic.dao.UserDao;
 import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.PlatePictureException;
 import com.plateandpic.exceptions.UserException;
 import com.plateandpic.models.PlatePicture;
 import com.plateandpic.models.User;
 import com.plateandpic.response.PlatePictureResponse;
-import com.plateandpic.response.UserResponse;
-import com.plateandpic.security.JwtTokenUtil;
 
 /**
  * @author gonzalo
@@ -147,6 +143,8 @@ public class PlatePictureFactory {
 		
 		user = userFactory.getUserFromToken(token);
 		
+		platePictureDao.getLastPlatePictures();
+		
 		pageable = new PageRequest(page, ROW_LIMIT, Sort.Direction.DESC, QUERY_SORT);
 		
 		platePictures = platePictureDao.findByUserIn(user.getFollowers(), pageable);
@@ -263,8 +261,6 @@ public class PlatePictureFactory {
 		List<PlatePicture> platePictures = null;
 		List<PlatePictureResponse> platePicturesResponse;
 		Pageable pageable = null;
-		
-		user = userFactory.getUserByUsername(username);
 		
 		pageable = new PageRequest(page, ROW_LIMIT, Sort.Direction.DESC, QUERY_SORT);
 		

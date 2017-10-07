@@ -86,9 +86,13 @@ public class FileFactory {
 		
 		try{
 			
-			imageBytes = getBytesFromImage(path, profilePictureName);
+			if(profilePictureName != null){
 			
-			uriBase64 = getBase64FromBytes(imageBytes);
+				imageBytes = getBytesFromImage(path, profilePictureName);
+				
+				uriBase64 = getBase64FromBytes(imageBytes);
+				
+			}
 			
 		} catch(IOException e){
 			log.error(e.toString());

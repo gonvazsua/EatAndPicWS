@@ -1,9 +1,10 @@
 package com.plateandpic.validator;
 
-import java.util.Date;
-
-import com.plateandpic.models.Comment;
-import com.plateandpic.utils.StringUtils;
+import com.plateandpic.constants.MessageConstants;
+import com.plateandpic.exceptions.CommentException;
+import com.plateandpic.exceptions.PlateAndPicException;
+import com.plateandpic.response.CommentRequestResponse;
+import com.plateandpic.utils.ValidationUtils;
 
 /**
  * @author gonzalo
@@ -11,18 +12,40 @@ import com.plateandpic.utils.StringUtils;
  */
 public class CommentValidator {
 	
-	private static final Integer LENGTH_COMMENT = 50;
+	private static final Integer LENGTH_COMMENT = 150;
+	
+	private CommentRequestResponse comment;
 	
 	/**
 	 * @param comment
+	 * 
+	 * Constructor
+	 */
+	public CommentValidator(CommentRequestResponse comment){
+		
+		this.comment = comment;
+		
+	}
+	
+	/**
+	 * @throws PlateAndPicException 
+	 * 
+	 * Validate only the length of the comment
+	 */
+	public void validate() throws PlateAndPicException{
+		
+		ValidationUtils.validateMandatoryStringLength(comment.getComment(), LENGTH_COMMENT, 
+				getCommentException(MessageConstants.COMMENT_NOT_SAVED));
+		
+	}
+	
+	/**
+	 * @param message
 	 * @return
 	 */
-	public static Comment validate(Comment comment){
+	private CommentException getCommentException(String message){
 		
-		comment.setComment(StringUtils.validateLength(comment.getComment(), LENGTH_COMMENT));
-		comment.setRegisteredOn(new Date());
-		
-		return comment;
+		return new CommentException(message);
 		
 	}
 }

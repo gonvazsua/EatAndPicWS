@@ -24,7 +24,7 @@ import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.UserException;
 import com.plateandpic.factory.CommentFactory;
 import com.plateandpic.models.Comment;
-import com.plateandpic.response.CommentResponse;
+import com.plateandpic.response.CommentRequestResponse;
 
 /**
  * @author gonzalo
@@ -48,15 +48,16 @@ public class CommentController {
 	 * @param platePictureId
 	 * @param page
 	 * @return
+	 * @throws CommentException 
 	 * @throws PlateAndPicException 
 	 * @throws IOException 
 	 */
 	@RequestMapping(value = "/getByPlatePicture", method = RequestMethod.GET)
 	@ResponseBody
-	public List<CommentResponse> getByPlatePicture(HttpServletRequest request, HttpServletResponse response, 
-			@RequestParam Long platePictureId, @RequestParam Integer page) throws PlateAndPicException, IOException{
+	public List<CommentRequestResponse> getByPlatePicture(HttpServletRequest request, HttpServletResponse response, 
+			@RequestParam Long platePictureId, @RequestParam Integer page) throws CommentException {
 		
-		List<CommentResponse> comments = null;
+		List<CommentRequestResponse> comments = null;
 			
 		if(platePictureId != null && platePictureId > 0
 				&& page != null && page >= 0){
@@ -81,33 +82,19 @@ public class CommentController {
 	 * @param response
 	 * @param comment
 	 * @return
+	 * @throws PlateAndPicException 
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
-	public CommentResponse save(HttpServletRequest request, HttpServletResponse response, 
-			@RequestBody Comment comment){
+	public CommentRequestResponse save(HttpServletRequest request, HttpServletResponse response, 
+			@RequestBody CommentRequestResponse comment) throws PlateAndPicException{
 		
-		CommentResponse savedComment;
+		CommentRequestResponse savedComment;
 		String token = "";
 		
-		try{
-			
-			token = request.getHeader(tokenHeader);
-			
-			savedComment = commentFactory.validateAndSave(token, comment);
-			
-		} catch (CommentException e) {
-			
-			savedComment = null;
-			log.error("Error save:" + e.getMessage());
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			
-		} catch (UserException e) {
-			
-			savedComment = null;
-			log.error("Error save:" + e.getMessage());
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		}
+		token = request.getHeader(tokenHeader);
+		
+		savedComment = commentFactory.validateAndSave(token, comment);
 		
 		return savedComment;
 		

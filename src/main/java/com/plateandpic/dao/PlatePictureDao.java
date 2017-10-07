@@ -18,7 +18,7 @@ import com.plateandpic.models.User;
  *
  */
 @Transactional
-public interface PlatePictureDao extends CrudRepository<PlatePicture, Long> {
+public interface PlatePictureDao extends CrudRepository<PlatePicture, Long>, PlatePictureDaoCustom {
 	
 	/**
 	 * @param user

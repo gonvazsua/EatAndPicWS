@@ -2,21 +2,27 @@ package com.plateandpic.factory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.CommentDao;
 import com.plateandpic.exceptions.CommentException;
 import com.plateandpic.exceptions.PlateAndPicException;
+import com.plateandpic.exceptions.PlatePictureException;
 import com.plateandpic.exceptions.UserException;
 import com.plateandpic.models.Comment;
 import com.plateandpic.models.User;
-import com.plateandpic.response.CommentResponse;
+import com.plateandpic.response.CommentRequestResponse;
+import com.plateandpic.utils.Messages;
 import com.plateandpic.validator.CommentValidator;
 
 /**
@@ -26,7 +32,9 @@ import com.plateandpic.validator.CommentValidator;
 @Service
 public class CommentFactory {
 	
-	private static final Integer ROW_LIMIT = 50;
+	private static final Logger log = LoggerFactory.getLogger(CommentFactory.class);
+	
+	private static final Integer ROW_LIMIT = 20;
 	private static final String QUERY_SORT = "registeredOn";
 	
 	@Autowired
@@ -35,6 +43,9 @@ public class CommentFactory {
 	@Autowired
 	private UserFactory userFactory;
 	
+	@Autowired
+	private PlatePictureFactory platePictureFactory;
+	
 	/**
 	 * @param platePictureId
 	 * @param page
@@ -42,20 +53,34 @@ public class CommentFactory {
 	 * @throws IOException
 	 * @throws PlateAndPicException 
 	 */
-	public List<CommentResponse> getCommentsByPlatePictureId(Long platePictureId, Integer page) throws IOException, PlateAndPicException{
+	public List<CommentRequestResponse> getCommentsByPlatePictureId(Long platePictureId, Integer page) throws CommentException{
 		
-		List<CommentResponse> commentsResponse = null;
+		List<CommentRequestResponse> commentsResponse = null;
 		List<Comment> comments = null;
 		Pageable pageable = null;
 		
-		pageable = new PageRequest(page, ROW_LIMIT, Sort.Direction.DESC, QUERY_SORT);
-		comments = commentDao.findByPlatePicture_PlatePictureId(platePictureId, pageable);
-		
-		if(comments == null){
-			throw new CommentException("Comments not found with platePictureId = " + platePictureId);
+		try {
+			
+			pageable = new PageRequest(page, ROW_LIMIT, Sort.Direction.DESC, QUERY_SORT);
+			comments = commentDao.findByPlatePicture_PlatePictureId(platePictureId, pageable);
+			
+			if(comments == null){
+				throw new CommentException(MessageConstants.GENERAL_ERROR);
+			}
+			
+			commentsResponse = buildCommentsResponse(comments);
+			
+		} catch(PlateAndPicException e) {
+			
+			log.error(e.getMessage());
+			throw new CommentException(MessageConstants.GENERAL_ERROR);
+			
+		} catch(IOException e) {
+			
+			log.error(e.getMessage());
+			throw new CommentException(MessageConstants.GENERAL_ERROR);
+			
 		}
-		
-		commentsResponse = buildCommentsResponse(comments);
 		
 		return commentsResponse;
 		
@@ -67,15 +92,15 @@ public class CommentFactory {
 	 * @throws IOException
 	 * @throws PlateAndPicException 
 	 */
-	private List<CommentResponse> buildCommentsResponse(List<Comment> comments) throws IOException, PlateAndPicException{
+	private List<CommentRequestResponse> buildCommentsResponse(List<Comment> comments) throws IOException, PlateAndPicException{
 		
-		List<CommentResponse> commentsResponse = new ArrayList<CommentResponse>();
-		CommentResponse commentResponse = null;
+		List<CommentRequestResponse> commentsResponse = new ArrayList<CommentRequestResponse>();
+		CommentRequestResponse commentResponse = null;
 		String userImage = "";
 		
 		for(Comment comment : comments){
 			
-			commentResponse = new CommentResponse(comment);
+			commentResponse = new CommentRequestResponse(comment);
 			
 			userImage = FileFactory.getBase64FromProfilePictureName(userFactory.getProfilePicturePath(), commentResponse.getUserImage());
 			commentResponse.setUserImage(userImage);
@@ -92,29 +117,78 @@ public class CommentFactory {
 	 * @param token
 	 * @param comment
 	 * @return
-	 * @throws UserException
-	 * @throws CommentException
+	 * @throws PlateAndPicException
+	 * 
+	 * Validate the commentRequest, build new Comment and save it
+	 * 
 	 */
-	public CommentResponse validateAndSave(String token, Comment comment) throws UserException, CommentException{
+	public CommentRequestResponse validateAndSave(String token, CommentRequestResponse comment) throws PlateAndPicException {	
 		
-		User user = null;
-		CommentResponse commentResponse = null;
+		validateComment(comment);
 		
-		user = userFactory.getUserFromToken(token);
+		Comment newComment = buildComment(comment, token);
 		
-		comment.setUser(user);
+		newComment = commentDao.save(newComment);
 		
-		comment = CommentValidator.validate(comment);
-		
-		comment = commentDao.save(comment);
-		
-		if(comment == null){
-			throw new CommentException("Comment not saved!");
+		if(newComment == null){
+			throw new CommentException(MessageConstants.COMMENT_NOT_SAVED);
 		}
 		
-		commentResponse = new CommentResponse(comment);
+		comment = new CommentRequestResponse(newComment);
 		
-		return commentResponse;
+		return comment;
+		
+	}
+	
+	/**
+	 * @param comment
+	 * @throws PlateAndPicException
+	 * 
+	 * Validate the CommentRequestResponse
+	 * 
+	 */
+	private void validateComment(CommentRequestResponse comment) throws PlateAndPicException{
+		
+		CommentValidator commentValidator = new CommentValidator(comment);
+		
+		commentValidator.validate();
+		
+	}
+	
+	/**
+	 * @param commentRequestResponse
+	 * @param userToken
+	 * @return
+	 * @throws CommentException
+	 * 
+	 * Build new Commment from the CommentRequestResponse passed as parameter
+	 * 
+	 */
+	private Comment buildComment(CommentRequestResponse commentRequestResponse, String userToken) throws CommentException {
+		
+		Comment comment = null;
+		
+		try {
+			
+			comment = new Comment();
+			comment.setComment(commentRequestResponse.getComment());
+			comment.setRegisteredOn(new Date());
+			comment.setUser(userFactory.getUserFromToken(userToken));		
+			comment.setPlatePicture(platePictureFactory.getPlatePictureById(commentRequestResponse.getPlatePictureId()));
+			
+		} catch (UserException e){
+			
+			log.error("User not found with token: " + userToken);
+			throw new CommentException(MessageConstants.COMMENT_NOT_SAVED);			
+			
+		} catch (PlatePictureException e){
+			
+			log.error("PlatePicture not found with: " + commentRequestResponse.getPlatePictureId());
+			throw new CommentException(MessageConstants.COMMENT_NOT_SAVED);
+			
+		}
+		
+		return comment;
 		
 	}
 	
