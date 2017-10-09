@@ -28,6 +28,9 @@ public class Plate {
 	
 	@ManyToOne
 	private PlateType plateType;
+	
+	@NotNull
+	private Boolean active;
 
 	
 	
@@ -61,6 +64,14 @@ public class Plate {
 
 	public void setPlateType(PlateType plateType) {
 		this.plateType = plateType;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 
 }

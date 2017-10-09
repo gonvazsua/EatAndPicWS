@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -99,6 +100,9 @@ public class User {
   
     @NotNull
     private int rolId;
+    
+    @OneToOne(fetch = FetchType.LAZY)
+    private Restaurant restaurant;
     
     /*
      * FOREIGN KEY FOLLOWERS
@@ -298,4 +302,22 @@ public class User {
 	public void setTarget(String target){
 		this.target = target;
 	}
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+
+	public City getCity() {
+		return city;
+	}
+
+	public void setCity(City city) {
+		this.city = city;
+	}
+	
+	
 }

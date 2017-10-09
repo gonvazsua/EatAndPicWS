@@ -1,6 +1,5 @@
 package com.plateandpic.response;
 
-import java.text.SimpleDateFormat;
 import java.util.Iterator;
 
 import com.plateandpic.models.PlatePicture;
@@ -24,6 +23,7 @@ public class PlatePictureResponse {
 	private String cityName;
 	private Long plateId;
 	private String plateName;
+	private Boolean plateActive;
 	private String picture;
 	private Integer likesNumber;
 	private Integer commentsNumber;
@@ -48,6 +48,7 @@ public class PlatePictureResponse {
 		this.picture = platePicture.getPicture();
 		this.plateId = platePicture.getPlate().getPlateId();
 		this.plateName = platePicture.getPlate().getName();
+		this.plateActive = platePicture.getPlate().getActive();
 		this.likesNumber = platePicture.getLikes().size();
 		this.commentsNumber = platePicture.getComments().size();
 		this.likeToUser = false;
@@ -304,6 +305,20 @@ public class PlatePictureResponse {
 		
 		this.setLikeToUser(userLike);
 		
+	}
+
+	/**
+	 * @return the plateActive
+	 */
+	public Boolean getPlateActive() {
+		return plateActive;
+	}
+
+	/**
+	 * @param plateActive the plateActive to set
+	 */
+	public void setPlateActive(Boolean plateActive) {
+		this.plateActive = plateActive;
 	}
 
 }

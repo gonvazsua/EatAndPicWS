@@ -64,6 +64,9 @@ public class Restaurant {
 	@Size(min = 1, max = 150)
 	private String description;
 	
+	@NotNull
+	private Boolean active;
+	
 	
 	public long getRestaurantId() {
 		return restaurantId;
@@ -177,4 +180,12 @@ public class Restaurant {
 		this.description = description;
 	}
 
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+	
 }

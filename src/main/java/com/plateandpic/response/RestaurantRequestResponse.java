@@ -18,6 +18,7 @@ public class RestaurantRequestResponse {
 	private String priceAverage;
 	private String picture;
 	private String description;
+	private Boolean active;
 	
 	/**
 	 * @return
@@ -158,7 +159,19 @@ public class RestaurantRequestResponse {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	
+
+	/**
+	 * @return the active
+	 */
+	public Boolean getActive() {
+		return active;
+	}
+
+	/**
+	 * @param active the active to set
+	 */
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
 	
 }
