@@ -39,9 +39,11 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 
 	/* (non-Javadoc)
 	 * @see com.plateandpic.dao.PlatePictureDaoCustom#getLastPlatePictures()
+	 * 
+	 * Get last platePictures loaded by username
 	 */
 	@Override
-	public List<PlatePictureResponse> getLastPlatePicturesByUsername(String username) {
+	public List<PlatePictureResponse> getLastPlatePicturesByUsername(String username, Integer from, Integer to) {
 
 		List<PlatePictureResponse> response = null;
 		StringBuilder SQLQuery = null;
@@ -50,7 +52,7 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 		
 		try {
 			
-			SQLQuery = buildPlatePictureQuery(username, PlatePictureQueryType.TYPE_PROFILE);
+			SQLQuery = buildPlatePictureQuery(username, PlatePictureQueryType.TYPE_PROFILE, from, to);
 			
 			query = entityManager.createNativeQuery(SQLQuery.toString());
 			
@@ -66,7 +68,13 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 		return response;
 	}
 	
-	public List<PlatePictureResponse> getLastFollowersPlatePicturesByUserId(Long userId){
+	/* (non-Javadoc)
+	 * @see com.plateandpic.dao.PlatePictureDaoCustom#getLastPlatePictures()
+	 *	
+	 * Get last platePicture from followed users
+	 */
+	@Override
+	public List<PlatePictureResponse> getLastFollowersPlatePicturesByUserId(Long userId, Integer from, Integer to){
 		
 		List<PlatePictureResponse> response = null;
 		StringBuilder sqlQuery = null;
@@ -75,7 +83,7 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 		
 		try {
 			
-			sqlQuery = buildPlatePictureQuery(userId.toString(), PlatePictureQueryType.TYPE_FOLLOWERS);
+			sqlQuery = buildPlatePictureQuery(userId.toString(), PlatePictureQueryType.TYPE_FOLLOWERS, from, to);
 			
 			query = entityManager.createNativeQuery(sqlQuery.toString());
 			
@@ -98,7 +106,7 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 	 * 	1. FOLLOWERS: Return last platePictures of the followed users by the logged user
 	 * 	2. PROFILE: Return last platePictures of the logged user
 	 */
-	private StringBuilder buildPlatePictureQuery(String data, PlatePictureQueryType queryType){
+	private StringBuilder buildPlatePictureQuery(String data, PlatePictureQueryType queryType, Integer from, Integer to){
 		
 		StringBuilder query = new StringBuilder(100);
 		
@@ -115,9 +123,9 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 		query.append("		LEFT JOIN city c ON c.city_id = r.city_city_id");
 		query.append("		LEFT JOIN ");
 		query.append("		(");
-		query.append("			select likes_plate_picture_id as likesPpId, count(user_id) as likesNumber");
-		query.append("			from user_likes ul");
-		query.append("			group by ul.likes_plate_picture_id");
+		query.append("			select ul.plate_picture_plate_picture_id as likesPpId, count(ul.likes_id) as likesNumber");
+		query.append("			from plate_picture_likes ul");
+		query.append("			group by ul.plate_picture_plate_picture_id");
 		query.append("		) as likes");
 		query.append("		ON likes.likesPpId = pp.plate_picture_id");
 		query.append("		LEFT JOIN ");
@@ -133,6 +141,8 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 		query.append("		)");
 		query.append("		as likeToUser ON (likeToUser.likeUserId = u.id AND likeToUser.likePpId = pp.plate_picture_id)");
 		query.append( getWhereClauseByQueryType(data, queryType) );
+		query.append(" order by pp.registered_on desc ");
+		query.append(" LIMIT ").append(from).append(",").append(to);
 		
 		return query;
 		

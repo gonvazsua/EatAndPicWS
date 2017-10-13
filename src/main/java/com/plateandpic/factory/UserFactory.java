@@ -140,6 +140,16 @@ public class UserFactory {
 	}
 	
 	/**
+	 * @param token
+	 * @return
+	 */
+	public Long getUserIdFromToken(String token){
+		
+		return jwtTokenUtil.getUserIdFromToken(token);
+		
+	}
+	
+	/**
 	 * @param username
 	 * @return
 	 * @throws UserException

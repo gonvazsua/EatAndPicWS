@@ -136,14 +136,16 @@ public class PlatePictureFactory {
 	 */
 	public List<PlatePictureResponse> getLastPlatePictures(String token, Integer page) throws PlateAndPicException, IOException{
 		
-		User user = null;
 		List<PlatePicture> platePictures = null;
 		List<PlatePictureResponse> platePicturesResponse;
 		Pageable pageable = null;
 		
-		user = userFactory.getUserFromToken(token);
+		Long userId = userFactory.getUserIdFromToken(token);
 		
-		platePicturesResponse = platePictureDao.getLastFollowersPlatePicturesByUserId(user.getId());
+		Integer fromLimit = calculateFromLimitPagination(page);
+		Integer toLimit = calculateToLimitPagination(fromLimit);
+		
+		platePicturesResponse = platePictureDao.getLastFollowersPlatePicturesByUserId(userId, fromLimit, toLimit);
 		
 		convertImagesToBase64(platePicturesResponse);
 		
@@ -266,14 +268,42 @@ public class PlatePictureFactory {
 	 */
 	public List<PlatePictureResponse> getPlatePictureByUsername(String username, Integer page) throws IOException, PlateAndPicException{
 		
-		User user = null;
 		List<PlatePictureResponse> platePicturesResponse;
 		
-		platePicturesResponse = platePictureDao.getLastPlatePicturesByUsername(username);
+		Integer fromLimit = calculateFromLimitPagination(page);
+		Integer toLimit = calculateToLimitPagination(fromLimit);
+		
+		platePicturesResponse = platePictureDao.getLastPlatePicturesByUsername(username, fromLimit, toLimit);
 		
 		convertImagesToBase64(platePicturesResponse);
 		
 		return platePicturesResponse;
+		
+	}
+	
+	/**
+	 * @param page
+	 * 
+	 * Calculate the lower limit of the query: 
+	 */
+	private Integer calculateFromLimitPagination(Integer page){
+		
+		Integer fromLimit = page * ROW_LIMIT;
+		
+		return fromLimit;
+		
+	}
+	
+	/**
+	 * @param fromLimit
+	 * 
+	 * Calculate the upper limit of the query: 
+	 */
+	private Integer calculateToLimitPagination(Integer fromLimit){
+		
+		Integer toLimit = fromLimit + (ROW_LIMIT - 1);
+		
+		return toLimit;
 		
 	}
 

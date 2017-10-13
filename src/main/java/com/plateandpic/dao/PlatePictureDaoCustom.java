@@ -13,11 +13,11 @@ public interface PlatePictureDaoCustom {
 	/**
 	 * @return
 	 */
-	public List<PlatePictureResponse> getLastPlatePicturesByUsername(String username);
+	public List<PlatePictureResponse> getLastPlatePicturesByUsername(String username, Integer from, Integer to);
 	
 	/**
 	 * @return
 	 */
-	public List<PlatePictureResponse> getLastFollowersPlatePicturesByUserId(Long userId);
+	public List<PlatePictureResponse> getLastFollowersPlatePicturesByUserId(Long userId, Integer from, Integer to);
 	
 }
