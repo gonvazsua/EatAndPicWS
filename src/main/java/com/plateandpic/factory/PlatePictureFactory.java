@@ -143,15 +143,24 @@ public class PlatePictureFactory {
 		
 		user = userFactory.getUserFromToken(token);
 		
-		platePictureDao.getLastPlatePictures();
+		platePicturesResponse = platePictureDao.getLastFollowersPlatePicturesByUserId(user.getId());
 		
-		pageable = new PageRequest(page, ROW_LIMIT, Sort.Direction.DESC, QUERY_SORT);
-		
-		platePictures = platePictureDao.findByUserIn(user.getFollowers(), pageable);
-		
-		platePicturesResponse = buildPlatePictureResponseFromPlatePictureList(platePictures, user);
+		convertImagesToBase64(platePicturesResponse);
 		
 		return platePicturesResponse;
+		
+	}
+	
+	private void convertImagesToBase64(List<PlatePictureResponse> platePictureResponse) throws PlateAndPicException{
+		
+		String base64ImgPlatePicture = "";
+		
+		for(PlatePictureResponse ppr : platePictureResponse){
+			
+			base64ImgPlatePicture = FileFactory.getBase64FromProfilePictureName(getPlatePicturesPath(), ppr.getPicture());
+			ppr.setPicture(base64ImgPlatePicture);
+			
+		}
 		
 	}
 	
@@ -258,15 +267,11 @@ public class PlatePictureFactory {
 	public List<PlatePictureResponse> getPlatePictureByUsername(String username, Integer page) throws IOException, PlateAndPicException{
 		
 		User user = null;
-		List<PlatePicture> platePictures = null;
 		List<PlatePictureResponse> platePicturesResponse;
-		Pageable pageable = null;
 		
-		pageable = new PageRequest(page, ROW_LIMIT, Sort.Direction.DESC, QUERY_SORT);
+		platePicturesResponse = platePictureDao.getLastPlatePicturesByUsername(username);
 		
-		platePictures = platePictureDao.findByUser(user, pageable);
-		
-		platePicturesResponse = buildPlatePictureResponseFromPlatePictureList(platePictures, user);
+		convertImagesToBase64(platePicturesResponse);
 		
 		return platePicturesResponse;
 		

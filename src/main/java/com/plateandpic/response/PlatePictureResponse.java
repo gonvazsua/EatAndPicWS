@@ -30,6 +30,32 @@ public class PlatePictureResponse {
 	private Boolean likeToUser;
 	private String registeredOn;
 	
+	/**
+	 * @param platePicture
+	 * 
+	 * No params constructor
+	 */
+	public PlatePictureResponse(){
+		
+		this.platePictureId = null;
+		this.title = null;
+		this.userId = null;
+		this.username = null;
+		this.userImage = null;
+		this.restaurantId = null;
+		this.restaurantName = null;
+		this.cityId = null;
+		this.cityName = null;
+		this.picture = null;
+		this.plateId = null;
+		this.plateName = null;
+		this.plateActive = null;
+		this.likesNumber = null;
+		this.commentsNumber = null;
+		this.likeToUser = null;
+		this.registeredOn = null;
+		
+	}
 	
 	/**
 	 * @param platePicture

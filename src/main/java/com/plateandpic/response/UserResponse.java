@@ -29,7 +29,11 @@ public class UserResponse {
 		this.email = user.getEmail();
 		this.picture = user.getPicture();
 		this.target = user.getTarget();
-		this.restaurantId = user.getRestaurant().getRestaurantId();
+		
+		this.restaurantId = null;
+		if(user.getRestaurant() != null){
+			this.restaurantId = user.getRestaurant().getRestaurantId();
+		}
 		
 	}
 

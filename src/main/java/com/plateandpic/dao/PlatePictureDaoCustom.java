@@ -13,6 +13,11 @@ public interface PlatePictureDaoCustom {
 	/**
 	 * @return
 	 */
-	public List<PlatePictureResponse> getLastPlatePictures();
-
+	public List<PlatePictureResponse> getLastPlatePicturesByUsername(String username);
+	
+	/**
+	 * @return
+	 */
+	public List<PlatePictureResponse> getLastFollowersPlatePicturesByUserId(Long userId);
+	
 }
