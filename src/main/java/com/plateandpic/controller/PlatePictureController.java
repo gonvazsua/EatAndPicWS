@@ -135,7 +135,7 @@ public class PlatePictureController {
 	@RequestMapping(value = "/like", method = RequestMethod.POST)
 	@ResponseBody
 	public PlatePicture like(HttpServletRequest request, HttpServletResponse response,
-			@RequestBody Long platePictureId){
+			@RequestBody PlatePictureResponse platePicture){
 		
 		String token = "";
 		
@@ -143,7 +143,7 @@ public class PlatePictureController {
 			
 			token = request.getHeader(tokenHeader);
 			
-			platePictureFactory.likePlatePicture(token, platePictureId);
+			platePictureFactory.likePlatePicture(token, platePicture.getPlatePictureId());
 			
 			response.setStatus(HttpServletResponse.SC_OK);
 			  
@@ -172,7 +172,7 @@ public class PlatePictureController {
 	@RequestMapping(value = "/unlike", method = RequestMethod.POST)
 	@ResponseBody
 	public PlatePicture unlike(HttpServletRequest request, HttpServletResponse response,
-			@RequestBody Long platePictureId){
+			@RequestBody PlatePictureResponse platePicture){
 		
 		String token = "";
 		
@@ -180,7 +180,7 @@ public class PlatePictureController {
 			
 			token = request.getHeader(tokenHeader);
 			
-			platePictureFactory.unlikePlatePicture(token, platePictureId);
+			platePictureFactory.unlikePlatePicture(token, platePicture.getPlatePictureId());
 			
 			response.setStatus(HttpServletResponse.SC_OK);
 			  
