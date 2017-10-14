@@ -15,8 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.constants.PlatePictureConstants;
 import com.plateandpic.constants.PlatePictureQueryType;
+import com.plateandpic.exceptions.PlatePictureException;
 import com.plateandpic.response.PlatePictureResponse;
 import com.plateandpic.utils.DateUtils;
 import com.plateandpic.utils.ParserUtil;
@@ -43,7 +45,7 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 	 * Get last platePictures loaded by username
 	 */
 	@Override
-	public List<PlatePictureResponse> getLastPlatePicturesByUsername(String username, Integer from, Integer to) {
+	public List<PlatePictureResponse> getLastPlatePicturesByUsername(String username, Integer from, Integer to) throws PlatePictureException {
 
 		List<PlatePictureResponse> response = null;
 		StringBuilder SQLQuery = null;
@@ -62,7 +64,10 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 			
 			
 		} catch(Exception e){
-			e.printStackTrace();
+			
+			log.error("Error in getLastPlatePicturesByUsername with username: " + username);
+			throw new PlatePictureException(MessageConstants.PLATEPICTURE_CANT_LOAD);
+			
 		}
 		
 		return response;
@@ -74,7 +79,7 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 	 * Get last platePicture from followed users
 	 */
 	@Override
-	public List<PlatePictureResponse> getLastFollowersPlatePicturesByUserId(Long userId, Integer from, Integer to){
+	public List<PlatePictureResponse> getLastFollowersPlatePicturesByUserId(Long userId, Integer from, Integer to) throws PlatePictureException{
 		
 		List<PlatePictureResponse> response = null;
 		StringBuilder sqlQuery = null;
@@ -92,6 +97,77 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 			response = buildListOfPlatePictureResponse(queryResult);
 			
 		} catch(Exception e){
+			
+			log.error("Error in getLastFollowersPlatePicturesByUserId with userId: " + userId);
+			throw new PlatePictureException(MessageConstants.PLATEPICTURE_CANT_LOAD);
+			
+		}
+		
+		return response;
+		
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.plateandpic.dao.PlatePictureDaoCustom#getLastPlatePicturesByRestaurantId()
+	 *	
+	 * Get last platePicture from users filtered by restaurant
+	 */
+	@Override
+	public List<PlatePictureResponse> getLastPlatePicturesByRestaurantId(Long restaurantId, Integer from, Integer to) throws PlatePictureException{
+		
+		List<PlatePictureResponse> response = null;
+		StringBuilder sqlQuery = null;
+		List<Object[]> queryResult = null;
+		Query query = null;
+		
+		try {
+			
+			sqlQuery = buildPlatePictureQuery(restaurantId.toString(), PlatePictureQueryType.TYPE_RESTAURANT, from, to);
+			
+			query = entityManager.createNativeQuery(sqlQuery.toString());
+			
+			queryResult = query.getResultList();
+			
+			response = buildListOfPlatePictureResponse(queryResult);
+			
+		} catch(Exception e){
+			
+			log.error("Error in getLastPlatePicturesByRestaurantId with restaurantId: " + restaurantId);
+			throw new PlatePictureException(MessageConstants.PLATEPICTURE_CANT_LOAD);
+			
+		}
+		
+		return response;
+		
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.plateandpic.dao.PlatePictureDaoCustom#getLastPlatePicturesByPlateId()
+	 *	
+	 * Get last platePicture from users filtered by restaurant
+	 */
+	@Override
+	public List<PlatePictureResponse> getLastPlatePicturesByPlateId(Long plateId, Integer from, Integer to) throws PlatePictureException{
+		
+		List<PlatePictureResponse> response = null;
+		StringBuilder sqlQuery = null;
+		List<Object[]> queryResult = null;
+		Query query = null;
+		
+		try {
+			
+			sqlQuery = buildPlatePictureQuery(plateId.toString(), PlatePictureQueryType.TYPE_PLATE, from, to);
+			
+			query = entityManager.createNativeQuery(sqlQuery.toString());
+			
+			queryResult = query.getResultList();
+			
+			response = buildListOfPlatePictureResponse(queryResult);
+			
+		} catch(Exception e){
+			
+			log.error("Error in getLastPlatePicturesByPlateId with plateId: " + plateId);
+			throw new PlatePictureException(MessageConstants.PLATEPICTURE_CANT_LOAD);
 			
 		}
 		
@@ -154,7 +230,7 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 	 * @param queryType
 	 * @return
 	 * 
-	 * Return the correct where clause of the query: Profile or Followers type
+	 * Return the correct where clause of the query: Profile, Restaurant or Followers type
 	 */
 	private String getWhereClauseByQueryType(String data, PlatePictureQueryType queryType){
 		
@@ -169,6 +245,14 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 			whereClause.append("where u.id in (");
 			whereClause.append("	select followers_id from user_followers where user_id = ").append(data);
 			whereClause.append(")");
+			
+		} else if(queryType.equals(PlatePictureQueryType.TYPE_RESTAURANT)){
+			
+			whereClause.append(" where r.restaurant_id = ").append(data);
+			
+		} else if(queryType.equals(PlatePictureQueryType.TYPE_PLATE)){
+			
+			whereClause.append(" where pp.plate_plate_id = ").append(data);
 			
 		}
 		

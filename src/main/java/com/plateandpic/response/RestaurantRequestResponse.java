@@ -19,6 +19,7 @@ public class RestaurantRequestResponse {
 	private String picture;
 	private String description;
 	private Boolean active;
+	private String categories;
 	
 	/**
 	 * @return
@@ -172,6 +173,20 @@ public class RestaurantRequestResponse {
 	 */
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+
+	/**
+	 * @return the categories
+	 */
+	public String getCategories() {
+		return categories;
+	}
+
+	/**
+	 * @param categories the categories to set
+	 */
+	public void setCategories(String categories) {
+		this.categories = categories;
 	}
 	
 }

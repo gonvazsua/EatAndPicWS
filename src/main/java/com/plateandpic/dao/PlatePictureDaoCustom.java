@@ -2,6 +2,7 @@ package com.plateandpic.dao;
 
 import java.util.List;
 
+import com.plateandpic.exceptions.PlatePictureException;
 import com.plateandpic.response.PlatePictureResponse;
 
 /**
@@ -13,11 +14,21 @@ public interface PlatePictureDaoCustom {
 	/**
 	 * @return
 	 */
-	public List<PlatePictureResponse> getLastPlatePicturesByUsername(String username, Integer from, Integer to);
+	public List<PlatePictureResponse> getLastPlatePicturesByUsername(String username, Integer from, Integer to) throws PlatePictureException;
 	
 	/**
 	 * @return
 	 */
-	public List<PlatePictureResponse> getLastFollowersPlatePicturesByUserId(Long userId, Integer from, Integer to);
+	public List<PlatePictureResponse> getLastFollowersPlatePicturesByUserId(Long userId, Integer from, Integer to) throws PlatePictureException;
+	
+	/**
+	 * @return
+	 */
+	public List<PlatePictureResponse> getLastPlatePicturesByRestaurantId(Long restaurantId, Integer from, Integer to) throws PlatePictureException;
+	
+	/**
+	 * @return
+	 */
+	public List<PlatePictureResponse> getLastPlatePicturesByPlateId(Long plateId, Integer from, Integer to) throws PlatePictureException;
 	
 }

@@ -282,6 +282,50 @@ public class PlatePictureFactory {
 	}
 	
 	/**
+	 * @param restaurantId
+	 * @param page
+	 * @return
+	 * @throws IOException
+	 * @throws PlateAndPicException 
+	 */
+	public List<PlatePictureResponse> getPlatePictureByRestaurantId(Long restaurantId, Integer page) throws IOException, PlateAndPicException{
+		
+		List<PlatePictureResponse> platePicturesResponse;
+		
+		Integer fromLimit = calculateFromLimitPagination(page);
+		Integer toLimit = calculateToLimitPagination(fromLimit);
+		
+		platePicturesResponse = platePictureDao.getLastPlatePicturesByRestaurantId(restaurantId, fromLimit, toLimit);
+		
+		convertImagesToBase64(platePicturesResponse);
+		
+		return platePicturesResponse;
+		
+	}
+	
+	/**
+	 * @param plateId
+	 * @param page
+	 * @return
+	 * @throws IOException
+	 * @throws PlateAndPicException 
+	 */
+	public List<PlatePictureResponse> getPlatePictureByPlateId(Long plateId, Integer page) throws IOException, PlateAndPicException{
+		
+		List<PlatePictureResponse> platePicturesResponse;
+		
+		Integer fromLimit = calculateFromLimitPagination(page);
+		Integer toLimit = calculateToLimitPagination(fromLimit);
+		
+		platePicturesResponse = platePictureDao.getLastPlatePicturesByPlateId(plateId, fromLimit, toLimit);
+		
+		convertImagesToBase64(platePicturesResponse);
+		
+		return platePicturesResponse;
+		
+	}
+	
+	/**
 	 * @param page
 	 * 
 	 * Calculate the lower limit of the query: 

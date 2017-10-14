@@ -16,7 +16,17 @@ public enum PlatePictureQueryType {
 	/**
 	 * Type Followers will be used when the platepictures to show are from the followed users 
 	 */
-	TYPE_FOLLOWERS(2);
+	TYPE_FOLLOWERS(2),
+	
+	/**
+	 * Type Restaurant will be used when the platepictures to show are filtered by restaurantId
+	 */
+	TYPE_RESTAURANT(3),
+	
+	/**
+	 * Type Plate will be used when the platepictures to show are filtered by plateId
+	 */
+	TYPE_PLATE(4);
 	
 	/**
 	 * Aux. parameter

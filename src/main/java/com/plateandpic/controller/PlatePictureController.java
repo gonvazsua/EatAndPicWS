@@ -214,7 +214,6 @@ public class PlatePictureController {
 	public List<PlatePictureResponse> getByUsername(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam String username, @RequestParam Integer page) throws PlateAndPicException, IOException{
 		
-		String token = "";
 		List<PlatePictureResponse> lastPlatePictures = null;
 		
 		lastPlatePictures = platePictureFactory.getPlatePictureByUsername(username, page);
@@ -239,10 +238,33 @@ public class PlatePictureController {
 	public List<PlatePictureResponse> getByRestaurant(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam Long restaurantId, @RequestParam Integer page) throws PlateAndPicException, IOException{
 		
-		String token = "";
 		List<PlatePictureResponse> lastPlatePictures = null;
 		
+		lastPlatePictures = platePictureFactory.getPlatePictureByRestaurantId(restaurantId, page);
+			
+		response.setStatus(HttpServletResponse.SC_OK);
 		
+		return lastPlatePictures;
+		 
+	}
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @param plateId
+	 * @param page
+	 * @return
+	 * @throws PlateAndPicException 
+	 * @throws IOException 
+	 */
+	@RequestMapping(value = "/getByPlate", method = RequestMethod.GET)
+	@ResponseBody
+	public List<PlatePictureResponse> getByPlate(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam Long plateId, @RequestParam Integer page) throws PlateAndPicException, IOException{
+		
+		List<PlatePictureResponse> lastPlatePictures = null;
+		
+		lastPlatePictures = platePictureFactory.getPlatePictureByPlateId(plateId, page);
 			
 		response.setStatus(HttpServletResponse.SC_OK);
 		

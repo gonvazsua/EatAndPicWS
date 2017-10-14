@@ -1,12 +1,18 @@
 package com.plateandpic.utils;
 
 import java.math.BigInteger;
+import java.util.Iterator;
+import java.util.Set;
+
+import com.plateandpic.models.Category;
 
 /**
  * @author gonzalo
  *
  */
 public class ParserUtil {
+	
+	private static final String SEPARATOR = ",";
 	
 	/**
 	 * @param toConvert
@@ -66,6 +72,34 @@ public class ParserUtil {
 		}
 		
 		return result;
+		
+	}
+	
+	/**
+	 * @param Set<Category>
+	 * @return
+	 * 
+	 * Convert the categories'set to a String separated by comma
+	 * 
+	 */
+	public static String getCategoriesAsString(Set<Category> categories){
+		
+		StringBuilder sb = new StringBuilder(100);
+		Iterator<Category> itCategories = categories.iterator();
+		Category current = null;
+		String parsedString;
+		
+		while(itCategories.hasNext()){
+			
+			current = itCategories.next();
+			sb.append(current.getCategoryName()).append(SEPARATOR);
+			
+		}
+		
+		//Remove last ocurrence of SEPARATOR
+		parsedString = sb.substring(0, sb.length() - 1);
+		
+		return parsedString;
 		
 	}
 

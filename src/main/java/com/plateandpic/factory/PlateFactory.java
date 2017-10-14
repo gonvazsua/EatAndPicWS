@@ -1,5 +1,6 @@
 package com.plateandpic.factory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import com.plateandpic.dao.RestaurantDao;
 import com.plateandpic.exceptions.PlateException;
 import com.plateandpic.models.Plate;
 import com.plateandpic.models.Restaurant;
+import com.plateandpic.response.PlateResponse;
 
 /**
  * @author gonzalo
@@ -61,6 +63,50 @@ public class PlateFactory {
 		}
 		
 		return savedPlate;
+	}
+	
+	/**
+	 * @param restaurantId
+	 * @return
+	 * 
+	 * Load a plateResponse from the Restaurant passed as parameter
+	 */
+	public List<PlateResponse> getPlateResponseByRestaurantId(Long restaurantId){
+		
+		List<PlateResponse> response = null;
+		
+		List<Plate> plates = plateDao.findByRestaurant_restaurantId(restaurantId);
+		
+		if(plates != null){
+		
+			response = buildPlateResponse(plates);
+		
+		}
+		
+		return response;
+		
+	}
+	
+	/**
+	 * @param plates
+	 * @return
+	 * 
+	 * Build a list of PlateResponse from the Plate list passed as parameter
+	 */
+	private List<PlateResponse> buildPlateResponse(List<Plate> plates){
+		
+		List<PlateResponse> response = new ArrayList<PlateResponse>();
+		PlateResponse plateResponse = null;
+		
+		for(Plate plate : plates){
+			
+			plateResponse = new PlateResponse(plate);
+			response.add(plateResponse);
+			
+		}
+		
+		return response;
+		
 	}
 	
 }

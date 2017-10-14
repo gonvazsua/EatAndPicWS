@@ -13,6 +13,7 @@ import com.plateandpic.exceptions.RestaurantException;
 import com.plateandpic.models.Restaurant;
 import com.plateandpic.response.RestaurantRequestResponse;
 import com.plateandpic.utils.DateUtils;
+import com.plateandpic.utils.ParserUtil;
 import com.plateandpic.utils.StringUtils;
 
 /**
@@ -102,6 +103,10 @@ public class RestaurantFactory {
 		response.setPriceAverage(restaurant.getPriceAverage());
 		response.setPicture(restaurant.getPicture());
 		response.setDescription(restaurant.getDescription());
+		
+		if(restaurant.getCategories() != null && !restaurant.getCategories().isEmpty()){
+			response.setCategories(ParserUtil.getCategoriesAsString(restaurant.getCategories()));
+		}
 		
 		return response;
 		

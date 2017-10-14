@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.PlateDao;
 import com.plateandpic.dao.RestaurantDao;
 import com.plateandpic.exceptions.PlateException;
@@ -22,6 +23,7 @@ import com.plateandpic.exceptions.RestaurantException;
 import com.plateandpic.factory.PlateFactory;
 import com.plateandpic.models.Plate;
 import com.plateandpic.models.Restaurant;
+import com.plateandpic.response.PlateResponse;
 
 /**
  * @author gonzalo
@@ -77,40 +79,22 @@ public class PlateController {
 	 * @param response
 	 * @param restaurantId
 	 * @return
+	 * @throws PlateException 
 	 */
 	@RequestMapping(value = "/getPlatesByRestaurant", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Plate> getPlatesByRestaurant(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam Long restaurantId){
+	public List<PlateResponse> getPlatesByRestaurant(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam Long restaurantId) throws PlateException{
 		  
-		Restaurant restaurant = null;
-		List<Plate> plates = null;
+		List<PlateResponse> plates = null;
 		
-		try{
-			
-			restaurant = restaurantDao.findOne(restaurantId);
-			
-			if(restaurant == null){
-				throw new RestaurantException("Restaurant not found with ID: " + restaurantId);
-			}
-			
-			plates = plateDao.findByRestaurant(restaurant);
-			
-			if(plates == null){
-				throw new PlateException("Plates not found for restaurantId: " + restaurantId);
-			}
-			
-			response.setStatus(HttpServletResponse.SC_OK);
-			  
-		} catch(RestaurantException e){
-			log.error(e.getMessage());
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			plates = null;
-		} catch(PlateException e){
-			log.error(e.getMessage());
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			plates = null;
+		if(restaurantId == null || restaurantId <= 0){
+			throw new PlateException(MessageConstants.PLATES_NOT_LOADED);
 		}
+		
+		plates = plateFactory.getPlateResponseByRestaurantId(restaurantId);
+		
+		response.setStatus(HttpServletResponse.SC_OK);
 		  
 		return plates;
 		 
