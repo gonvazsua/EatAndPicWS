@@ -1,6 +1,7 @@
 package com.plateandpic.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -77,47 +78,26 @@ public class RestaurantController {
 	 * @param response
 	 * @param name
 	 * @return
+	 * @throws RestaurantException 
 	 */
 	@RequestMapping(value = "/getRestaurantsByName", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Restaurant> getRestaurantsByName(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam String name){
+	public List<RestaurantRequestResponse> getRestaurantsByName(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam String name) {
 		
-		IpLocation ipLocation = null;
-		List<Restaurant> restaurants = null;
-		City city = null;
+		List<RestaurantRequestResponse> restaurants = null;
 		  
-		try{
+		if(name == null || "".equals(name)){
 			
-			if(name == null || "".equals(name)){
-				throw new RestaurantException("Restaurant not found: Empty name!");
-			}
+			restaurants = new ArrayList<RestaurantRequestResponse>();
 			
-			ipLocation = LocationFactory.getLocationFromHost(request.getRemoteHost());
+		} else {
 			
-			city = cityDao.findByName(ipLocation.getCityName());
+			restaurants = restaurantFactory.searchRestaurantsByName(name);
 			
-			restaurants = restaurantDao.findByNameAndCityId(name, city.getCityId());
-			
-			if(restaurants == null || restaurants.isEmpty()){
-				throw new RestaurantException("Restaurant not found by name: " + name);
-			}
-			
-			response.setStatus(HttpServletResponse.SC_OK);
-			  
-		} catch(RestaurantException ex){
-			restaurants = null;
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		
-		} catch(IOException ex){
-			restaurants = null;
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		
-		} catch(IPNotFoundException ex){
-			restaurants = null;
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		
+		response.setStatus(HttpServletResponse.SC_OK);
 		  
 		return restaurants;
 		 

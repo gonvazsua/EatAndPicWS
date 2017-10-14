@@ -35,4 +35,12 @@ public interface RestaurantDao extends CrudRepository<Restaurant, Long> {
 	 */
 	public List<Restaurant> findByApiPlaceId(String apliPlaceId);
 	
+	/**
+	 * @param apliPlaceId
+	 * @return
+	 * 
+	 * Find a restaurant by name with LIKE and IgnoreCase operator order by Name ASC
+	 */
+	public List<Restaurant> findByNameContainingIgnoreCaseOrderByNameAsc(String name);
+	
 }

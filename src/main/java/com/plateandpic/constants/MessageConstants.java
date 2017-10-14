@@ -18,6 +18,7 @@ public class MessageConstants {
 	public static final String COMMENT_NOT_SAVED = "comment.notSaved";
 	
 	public static final String RESTAURANT_NOT_FOUND = "restaurant.notFound";
+	public static final String RESTAURANT_SEARCH_ERROR = "restaurant.searchError";
 	
 	public static final String PLATES_NOT_LOADED = "plate.notLoaded";
 

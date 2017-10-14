@@ -83,6 +83,29 @@ public class RestaurantFactory {
 		
 	}
 	
+	
+	/**
+	 * @param restaurants
+	 * @return
+	 * 
+	 * Build a List of RestaurantRequestResponse from a given Restaurants list
+	 */
+	private List<RestaurantRequestResponse> buildListRestaurantRequestResponse(List<Restaurant> restaurants){
+		
+		List<RestaurantRequestResponse> response = new ArrayList<RestaurantRequestResponse>();
+		RestaurantRequestResponse rr = null;
+		
+		for(Restaurant restaurant : restaurants){
+			
+			rr = buildRestaurantRequestResponse(restaurant);
+			response.add(rr);
+			
+		}
+		
+		return response;
+		
+	}
+	
 	/**
 	 * @param restaurant
 	 * @return
@@ -106,6 +129,27 @@ public class RestaurantFactory {
 		
 		if(restaurant.getCategories() != null && !restaurant.getCategories().isEmpty()){
 			response.setCategories(ParserUtil.getCategoriesAsString(restaurant.getCategories()));
+		}
+		
+		return response;
+		
+	}
+	
+	
+	/**
+	 * @param name
+	 * @return
+	 * 
+	 * Search restaurants by name and build a RestaurantRequestResponse objects list
+	 */
+	public List<RestaurantRequestResponse> searchRestaurantsByName(String name){
+		
+		List<RestaurantRequestResponse> response = new ArrayList<RestaurantRequestResponse>();
+		
+		List<Restaurant> restaurants = restaurantDao.findByNameContainingIgnoreCaseOrderByNameAsc(name);
+		
+		if(restaurants != null && !restaurants.isEmpty()){
+			response = buildListRestaurantRequestResponse(restaurants);
 		}
 		
 		return response;
