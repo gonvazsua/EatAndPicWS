@@ -21,6 +21,7 @@ import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.CityDao;
 import com.plateandpic.dao.RestaurantDao;
 import com.plateandpic.exceptions.IPNotFoundException;
+import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.RestaurantException;
 import com.plateandpic.factory.LocationFactory;
 import com.plateandpic.factory.RestaurantFactory;
@@ -77,13 +78,16 @@ public class RestaurantController {
 	 * @param request
 	 * @param response
 	 * @param name
+	 * @param latitude
+	 * @param longitude
 	 * @return
+	 * @throws PlateAndPicException 
 	 * @throws RestaurantException 
 	 */
 	@RequestMapping(value = "/getRestaurantsByName", method = RequestMethod.GET)
 	@ResponseBody
 	public List<RestaurantRequestResponse> getRestaurantsByName(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam String name) {
+			@RequestParam String name, @RequestParam Double latitude, @RequestParam Double longitude) throws PlateAndPicException {
 		
 		List<RestaurantRequestResponse> restaurants = null;
 		  
@@ -93,7 +97,7 @@ public class RestaurantController {
 			
 		} else {
 			
-			restaurants = restaurantFactory.searchRestaurantsByName(name);
+			restaurants = restaurantFactory.searchRestaurantsByName(name, latitude, longitude);
 			
 		}
 		

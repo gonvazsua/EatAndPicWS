@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.RestaurantDao;
+import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.RestaurantException;
 import com.plateandpic.models.Restaurant;
 import com.plateandpic.response.RestaurantRequestResponse;
@@ -25,6 +26,9 @@ public class RestaurantFactory {
 	
 	@Autowired
 	private RestaurantDao restaurantDao;
+	
+	@Autowired 
+	private SearchRestaurantFactory searchRestaurantFactory;
 	
 	/**
 	 * @param restaurant
@@ -141,12 +145,13 @@ public class RestaurantFactory {
 	 * @return
 	 * 
 	 * Search restaurants by name and build a RestaurantRequestResponse objects list
+	 * @throws PlateAndPicException 
 	 */
-	public List<RestaurantRequestResponse> searchRestaurantsByName(String name){
+	public List<RestaurantRequestResponse> searchRestaurantsByName(String name, Double latitude, Double longitude) throws PlateAndPicException{
 		
 		List<RestaurantRequestResponse> response = new ArrayList<RestaurantRequestResponse>();
 		
-		List<Restaurant> restaurants = restaurantDao.findByNameContainingIgnoreCaseOrderByNameAsc(name);
+		List<Restaurant> restaurants = searchRestaurantFactory.executeUpdatedSearch(name, latitude, longitude);
 		
 		if(restaurants != null && !restaurants.isEmpty()){
 			response = buildListRestaurantRequestResponse(restaurants);
