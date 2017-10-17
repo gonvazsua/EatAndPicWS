@@ -1,7 +1,9 @@
 package com.plateandpic.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -190,5 +192,32 @@ public class UserController {
 		  return userResponse;
 		  
 	  }
+	  
+	  /**
+	  * GET /findByKey  --> Find users with name, lastname or username like the keysearch
+	  * @throws UserException 
+	  * @throws IOException 
+	  * @throws PlateAndPicException 
+	  */
+	  @RequestMapping(value = "/findByKey", method = RequestMethod.GET)
+	  @ResponseBody
+	  public List<UserResponse> findByKey(HttpServletRequest request, HttpServletResponse response, 
+			  @RequestParam String keySearch, @RequestParam Integer page) throws PlateAndPicException {
+		  
+		  List<UserResponse> users = new ArrayList<UserResponse>();
+		  
+		  if(keySearch != null && !keySearch.isEmpty() 
+				  && page != null && page >= 0){
+			  
+			  users = userFactory.findUsersByKeySearch(keySearch, page);
+			  
+		  }
+		  
+		  return users;
+		  
+	  }
+	  
+	  
+	  
 	  
 }

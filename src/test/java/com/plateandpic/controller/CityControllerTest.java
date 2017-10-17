@@ -52,7 +52,7 @@ public class CityControllerTest {
 	@Test
 	public void getCityByNameTest() throws Exception{
 		
-		Mockito.when(cityDao.findByName(Mockito.anyString())).thenReturn(city);
+		Mockito.when(cityDao.findByNameIgnoreCase(Mockito.anyString())).thenReturn(city);
 		
 		RequestBuilder rb = MockMvcRequestBuilders
 				.get("/city/getCityByName?name=Madrid")

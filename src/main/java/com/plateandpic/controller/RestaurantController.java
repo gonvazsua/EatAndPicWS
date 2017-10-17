@@ -113,29 +113,18 @@ public class RestaurantController {
 	 * @param response
 	 * @param restaurant
 	 * @return
+	 * @throws RestaurantException 
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
-	public Restaurant save(HttpServletRequest request, HttpServletResponse response,
-			@RequestBody Restaurant restaurant){
+	public RestaurantRequestResponse save(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody RestaurantRequestResponse restaurantRequest) throws RestaurantException{
 		
-		Restaurant savedRestaurant = null;
+		RestaurantRequestResponse savedRestaurant = null;
 		
-		try{
+		savedRestaurant = restaurantFactory.saveIfNotExists(restaurantRequest);
 			
-			savedRestaurant = restaurantFactory.findByApiPlaceId(restaurant);
-			
-			if(savedRestaurant == null)
-				savedRestaurant = restaurantFactory.buildAndSave(restaurant);
-			
-			response.setStatus(HttpServletResponse.SC_OK);
-			  
-		} catch(Exception ex){
-			
-			log.error("Error al guardar restaurante: " + ex.getMessage());
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		
-		} 
+		response.setStatus(HttpServletResponse.SC_OK);
 		
 		return savedRestaurant;
 		 

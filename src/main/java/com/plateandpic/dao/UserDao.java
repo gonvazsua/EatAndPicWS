@@ -1,8 +1,13 @@
 package com.plateandpic.dao;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import com.plateandpic.models.User;
 
@@ -25,9 +30,17 @@ public interface UserDao extends CrudRepository<User, Long> {
 	 * @return
 	 */
 	public User findByUsername(String username);
-	  
-	  //public Set<User> findFollowers(User user);
-	  
-	  //public Set<Long> findFollowersIds(User user);
+	
+	
+	/**
+	 * @param key
+	 * @param page
+	 * @return
+	 * 
+	 * Search user having name, lastname, username or email like the key passed as parameter
+	 */
+	@Query(value = "Select * from user where lower(firstname) like %:key% or lower(lastname) like %:key% "
+			+ " or lower(email) like %:key% or lower(username) like %:key% order by username asc", nativeQuery = true)
+	public List<User> findUserByKey(@Param("key") String key);
 
 }

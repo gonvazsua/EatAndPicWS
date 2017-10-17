@@ -20,6 +20,10 @@ public class RestaurantRequestResponse {
 	private String description;
 	private Boolean active;
 	private String categories;
+	private String latitude;
+	private String longitude;
+	private String apiPlaceId;
+	private String rating;
 	
 	/**
 	 * @return
@@ -187,6 +191,62 @@ public class RestaurantRequestResponse {
 	 */
 	public void setCategories(String categories) {
 		this.categories = categories;
+	}
+
+	/**
+	 * @return the latitude
+	 */
+	public String getLatitude() {
+		return latitude;
+	}
+
+	/**
+	 * @param latitude the latitude to set
+	 */
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	/**
+	 * @return the longitude
+	 */
+	public String getLongitude() {
+		return longitude;
+	}
+
+	/**
+	 * @param longitude the longitude to set
+	 */
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+	/**
+	 * @return the apiPlaceId
+	 */
+	public String getApiPlaceId() {
+		return apiPlaceId;
+	}
+
+	/**
+	 * @param apiPlaceId the apiPlaceId to set
+	 */
+	public void setApiPlaceId(String apiPlaceId) {
+		this.apiPlaceId = apiPlaceId;
+	}
+
+	/**
+	 * @return the rating
+	 */
+	public String getRating() {
+		return rating;
+	}
+
+	/**
+	 * @param rating the rating to set
+	 */
+	public void setRating(String rating) {
+		this.rating = rating;
 	}
 	
 }

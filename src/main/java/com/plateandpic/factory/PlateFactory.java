@@ -6,6 +6,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import com.plateandpic.dao.PlateDao;
@@ -23,6 +26,9 @@ import com.plateandpic.response.PlateResponse;
 public class PlateFactory {
 	
 	private static final Logger log = LoggerFactory.getLogger(PlateFactory.class);
+	
+	private static final Integer ROW_LIMIT = 30;
+	private static final String QUERY_SORT = "name";
 	
 	@Autowired
 	private PlateDao plateDao;
@@ -76,6 +82,31 @@ public class PlateFactory {
 		List<PlateResponse> response = null;
 		
 		List<Plate> plates = plateDao.findByRestaurant_restaurantId(restaurantId);
+		
+		if(plates != null){
+		
+			response = buildPlateResponse(plates);
+		
+		}
+		
+		return response;
+		
+	}
+	
+	/**
+	 * @param name
+	 * @param page
+	 * @return
+	 * 
+	 * Load a plateResponse from the plate name passed as parameter
+	 */
+	public List<PlateResponse> findPlatesByName(String name, Integer page){
+		
+		List<PlateResponse> response = null;
+		Pageable pageable = null;
+		
+		pageable = new PageRequest(page, ROW_LIMIT, Sort.Direction.DESC, QUERY_SORT);
+		List<Plate> plates = plateDao.findByNameContainingIgnoreCaseOrderByNameAsc(name, pageable);
 		
 		if(plates != null){
 		

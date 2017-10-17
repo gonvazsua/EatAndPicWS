@@ -13,5 +13,6 @@ public class ApiPlacesConstants {
 	
 	public static final String GET = "GET";
 	public static final String RESULTS = "results";
+	public static final String UTF8 = "UTF-8";
 
 }

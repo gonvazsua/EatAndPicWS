@@ -17,6 +17,6 @@ public interface CityDao extends CrudRepository<City, Long>{
 	 * @param name
 	 * @return
 	 */
-	public City findByName(String name);
+	public City findByNameIgnoreCase(String name);
 	
 }

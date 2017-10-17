@@ -43,4 +43,12 @@ public interface RestaurantDao extends CrudRepository<Restaurant, Long> {
 	 */
 	public List<Restaurant> findByNameContainingIgnoreCaseOrderByNameAsc(String name);
 	
+	
+	/**
+	 * @param name
+	 * @param cityName
+	 * @return
+	 */
+	public List<Restaurant> findByNameContainingIgnoreCaseAndCity_name(String name, String cityName);
+	
 }

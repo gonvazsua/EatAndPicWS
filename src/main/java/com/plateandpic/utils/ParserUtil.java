@@ -102,5 +102,58 @@ public class ParserUtil {
 		return parsedString;
 		
 	}
+	
+	/**
+	 * @param vicinity
+	 * @return
+	 * 
+	 * Extract the city name of the Adreess line from API Places:
+	 * Ex: Calle Claudio Coelho, 1, Madrid
+	 */
+	public static String getCityNameFromVicinity(String vicinity){
+		
+		String cityName = "";
+		String[] splitted = null;
+		
+		if(vicinity != null){
+			
+			splitted = vicinity.split(SEPARATOR);
+			cityName = splitted[splitted.length - 1];
+			
+		}
+		
+		return cityName;
+	}
+	
+	/**
+	 * @param vicinity
+	 * @return
+	 * 
+	 * Extract the city name of the Adreess line from API Places:
+	 * Ex: Calle Claudio Coelho, 1, Madrid
+	 */
+	public static String getAddressFromVicinity(String vicinity){
+		
+		String address = "";
+		String[] splitted = null;
+		
+		if(vicinity != null){
+			
+			splitted = vicinity.split(SEPARATOR);
+			
+			for(int i = 0; i < splitted.length; i++){
+				
+				if(i == 0){
+					address = splitted[0];
+				} else if(i != (splitted.length - 1)){
+					address = address + SEPARATOR + splitted[i];
+				}
+				
+			}
+			
+		}
+		
+		return address;
+	}
 
 }

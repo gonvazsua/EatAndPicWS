@@ -1,10 +1,15 @@
 package com.plateandpic.factory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +31,9 @@ import com.plateandpic.utils.UpdatePasswordRequest;
  */
 @Service
 public class UserFactory {
+	
+	private static final Integer ROW_LIMIT = 30;
+	private static final String QUERY_SORT = "name";
 	
 	@Autowired
 	UserDao userDao;
@@ -108,6 +116,34 @@ public class UserFactory {
 		}
 		
 		return userResponse;
+		
+	}
+	
+	/**
+	 * @param user
+	 * @return
+	 * @throws IOException
+	 * @throws PlateAndPicException 
+	 * 
+	 * Build a List of UserResponse from User list
+	 */
+	public List<UserResponse> buildUserResponseList(List<User> users) throws PlateAndPicException{
+		
+		UserResponse userResponse = null;
+		List<UserResponse> response = new ArrayList<UserResponse>();
+		
+		if(users == null || users.isEmpty()){
+			return response;
+		}
+		
+		for(User u : users){
+			
+			userResponse = buildUserResponse(u);
+			response.add(userResponse);
+			
+		}
+		
+		return response;
 		
 	}
 	
@@ -267,6 +303,29 @@ public class UserFactory {
 		String newPassword = passwordEncoder.encode(passwordRequest.getNewPassword1());
 		
 		user.setPassword(newPassword);
+		
+	}
+	
+	/**
+	 * @param keySearch
+	 * @param page
+	 * @return
+	 * 
+	 * Find users with name, lastname or username like the keysearch
+	 * @throws PlateAndPicException 
+	 */
+	public List<UserResponse> findUsersByKeySearch(String keySearch, Integer page) throws PlateAndPicException{
+		
+		List<User> userList = null;
+		List<UserResponse> userResponseList = null;
+		Pageable pageable = null;
+		
+		//pageable = new PageRequest(page, ROW_LIMIT, Sort.Direction.DESC, QUERY_SORT);
+		userList = userDao.findUserByKey(keySearch.trim());
+		
+		userResponseList = buildUserResponseList(userList);
+		
+		return userResponseList;
 		
 	}
 

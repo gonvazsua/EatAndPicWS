@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
 import com.plateandpic.models.Plate;
@@ -28,5 +29,12 @@ public interface PlateDao extends CrudRepository<Plate, Long> {
 	 * @return
 	 */
 	public List<Plate> findByRestaurant_restaurantId(Long restaurantId);
+	
+	/**
+	 * @param name
+	 * @param pageable
+	 * @return
+	 */
+	public List<Plate> findByNameContainingIgnoreCaseOrderByNameAsc(String name, Pageable pageable);
 	
 }

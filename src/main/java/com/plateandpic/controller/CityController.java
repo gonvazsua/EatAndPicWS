@@ -47,7 +47,7 @@ public class CityController {
 		
 		try{
 			
-			city = cityDao.findByName(name);
+			city = cityDao.findByNameIgnoreCase(name);
 			
 			if(city == null){
 				throw new CityException("No encontrada ciudad con nombre: " + name);

@@ -100,4 +100,30 @@ public class PlateController {
 		 
 	}
 	
+	/**
+	 * @param request
+	 * @param response
+	 * @param restaurantId
+	 * @return
+	 * @throws PlateException 
+	 */
+	@RequestMapping(value = "/findPlatesByName", method = RequestMethod.GET)
+	@ResponseBody
+	public List<PlateResponse> findPlatesByName(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam String name, @RequestParam Integer page) throws PlateException{
+		  
+		List<PlateResponse> plates = null;
+		
+		if(name == null || name.isEmpty()){
+			throw new PlateException(MessageConstants.PLATES_NOT_LOADED);
+		}
+		
+		plates = plateFactory.findPlatesByName(name, page);
+		
+		response.setStatus(HttpServletResponse.SC_OK);
+		  
+		return plates;
+		 
+	}
+	
 }
