@@ -12,6 +12,8 @@ public class Result {
 	@JsonIgnore
 	private String id;
 	
+	private String formatted_address;
+	
 	private String name;
 	
 	@JsonIgnore
@@ -35,8 +37,6 @@ public class Result {
 	
 	@JsonIgnore
 	private String types;
-	
-	private String vicinity;
 	
 	public Result(){}
 
@@ -108,20 +108,6 @@ public class Result {
 	 */
 	public void setRating(Double rating) {
 		this.rating = rating;
-	}
-
-	/**
-	 * @return the vicinity
-	 */
-	public String getVicinity() {
-		return vicinity;
-	}
-
-	/**
-	 * @param vicinity the vicinity to set
-	 */
-	public void setVicinity(String vicinity) {
-		this.vicinity = vicinity;
 	}
 
 	/**
@@ -221,6 +207,19 @@ public class Result {
 	public void setPrice_level(String price_level) {
 		this.price_level = price_level;
 	}
-	
-	
+
+	/**
+	 * @return the formatted_address
+	 */
+	public String getFormatted_address() {
+		return formatted_address;
+	}
+
+	/**
+	 * @param formatted_address the formatted_address to set
+	 */
+	public void setFormatted_address(String formatted_address) {
+		this.formatted_address = formatted_address;
+	}
+
 }

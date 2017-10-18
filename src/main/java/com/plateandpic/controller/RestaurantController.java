@@ -87,7 +87,9 @@ public class RestaurantController {
 	@RequestMapping(value = "/getRestaurantsByName", method = RequestMethod.GET)
 	@ResponseBody
 	public List<RestaurantRequestResponse> getRestaurantsByName(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam String name, @RequestParam Double latitude, @RequestParam Double longitude) throws PlateAndPicException {
+			@RequestParam String name, 
+			@RequestParam(value="latitude", required=false) Double latitude, 
+			@RequestParam(value="longitude", required=false) Double longitude) throws PlateAndPicException {
 		
 		List<RestaurantRequestResponse> restaurants = null;
 		  

@@ -13,6 +13,7 @@ import com.plateandpic.models.Category;
 public class ParserUtil {
 	
 	private static final String SEPARATOR = ",";
+	private static final String BLANK = " ";
 	
 	/**
 	 * @param toConvert
@@ -104,44 +105,50 @@ public class ParserUtil {
 	}
 	
 	/**
-	 * @param vicinity
+	 * @param apiAddress
 	 * @return
 	 * 
 	 * Extract the city name of the Adreess line from API Places:
-	 * Ex: Calle Claudio Coelho, 1, Madrid
+	 * Ex: Calle Eloy Gonzalo, 10, 28010 Madrid, España -> Return Madrid
 	 */
-	public static String getCityNameFromVicinity(String vicinity){
+	public static String getCityNameFromFormattedAPIAddress(String apiAddress){
 		
+		String cityNameAndPC = "";
 		String cityName = "";
 		String[] splitted = null;
 		
-		if(vicinity != null){
+		if(apiAddress != null){
 			
-			splitted = vicinity.split(SEPARATOR);
-			cityName = splitted[splitted.length - 1];
+			splitted = apiAddress.split(SEPARATOR);
+			cityNameAndPC = splitted[splitted.length - 2];
 			
+			splitted = cityNameAndPC.split(BLANK);
+			
+			if(splitted.length >= 2)
+				cityName = splitted[splitted.length - 1];
+				
 		}
 		
 		return cityName;
 	}
 	
 	/**
-	 * @param vicinity
+	 * @param apiAddress
 	 * @return
 	 * 
 	 * Extract the city name of the Adreess line from API Places:
-	 * Ex: Calle Claudio Coelho, 1, Madrid
+	 * Ex: Calle Eloy Gonzalo, 10, 28010 Madrid, España -> Return Calle Eloy Gonzalo, 10
 	 */
-	public static String getAddressFromVicinity(String vicinity){
+	public static String getAddressFromFormattedAddress(String apiAddress){
 		
 		String address = "";
 		String[] splitted = null;
 		
-		if(vicinity != null){
+		if(apiAddress != null){
 			
-			splitted = vicinity.split(SEPARATOR);
+			splitted = apiAddress.split(SEPARATOR);
 			
-			for(int i = 0; i < splitted.length; i++){
+			for(int i = 0; i < splitted.length - 2; i++){
 				
 				if(i == 0){
 					address = splitted[0];

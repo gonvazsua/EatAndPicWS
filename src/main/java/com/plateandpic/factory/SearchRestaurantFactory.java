@@ -102,7 +102,7 @@ public class SearchRestaurantFactory {
 	 * @throws PlateAndPicException 
 	 * 
 	 */
-	private List<Restaurant> getFromAPIPlaceAndSaveResults(String name, Double latitude, Double longitude) throws PlateAndPicException{
+	private List<Restaurant> getFromAPIPlaceAndSaveResults(String name, Double latitude, Double longitude) throws PlateAndPicException {
 		
 		List<Restaurant> restaurants = null;
 		
@@ -137,20 +137,25 @@ public class SearchRestaurantFactory {
 	 * 
 	 * Create an ApiPlaceRequest object and get the API Endpoint
 	 * @throws UnsupportedEncodingException 
+	 * @throws PlateAndPicException 
 	 */
-	private String getUrlApiRequest(String name, Double latitude, Double longitude) throws UnsupportedEncodingException{
+	private String getUrlApiRequest(String name, Double latitude, Double longitude) throws PlateAndPicException{
 		
+		String url = "";
+		ApiPlaceRequest apiPlaceRequest = null;
+		
+		//Get common params
 		String endpoint = env.getProperty(ConstantsProperties.API_ENDPOINT);
 		Integer radius = new Integer(env.getProperty(ConstantsProperties.API_RADIUS));
 		String types = env.getProperty(ConstantsProperties.API_TYPES);
-		String key = env.getProperty(ConstantsProperties.API_KEY);
+		String apiKey = env.getProperty(ConstantsProperties.API_KEY);
+		apiPlaceRequest = new ApiPlaceRequest(endpoint, name, types, apiKey, radius, latitude, longitude);
 		
-		//Encode name to convert whitespaces and illegal characters
-		String encodedName = URLEncoder.encode(name, ApiPlacesConstants.UTF8);
+		url = apiPlaceRequest.buildURL();
 		
-		ApiPlaceRequest apiPlaceRequest = new ApiPlaceRequest(endpoint, radius, types, latitude, longitude, encodedName, key);
+		log.debug("Calling to url: " + url);
 		
-		return apiPlaceRequest.buildURL();
+		return url;
 		
 	}
 	
@@ -216,7 +221,7 @@ public class SearchRestaurantFactory {
 	 */
 	private List<Result> mapResponseToApiPlaceResponse(StringBuffer response) throws JsonParseException, JsonMappingException, IOException{
 		
-		String jsonResponse = response.toString();
+		String jsonResponse = response.toString(); System.out.println(jsonResponse);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		
@@ -235,12 +240,10 @@ public class SearchRestaurantFactory {
 	private List<Restaurant> convertToRestaurantsObjects(List<Result> apiPlaceResponseList){
 		
 		List<Restaurant> restaurants = new ArrayList<Restaurant>();
-		Restaurant restaurant = null;
 		
 		for(Result result : apiPlaceResponseList){
 			
-			restaurant = buildRestaurantFromResult(result);
-			restaurants.add(restaurant);
+			buildRestaurantFromResultAndAppendToList(result, restaurants);
 			
 		}
 		
@@ -251,24 +254,39 @@ public class SearchRestaurantFactory {
 	/**
 	 * @param result
 	 * @return
+	 * 
+	 * If some result cannot be parsed,  go to the next one
 	 */
-	private Restaurant buildRestaurantFromResult(Result result){
+	private void buildRestaurantFromResultAndAppendToList(Result result, List<Restaurant> restaurants){
 		
-		Restaurant restaurant = new Restaurant();
-		City city = new City();
+		Restaurant restaurant = null;
+		City city = null;
 		
-		restaurant.setActive(true);
-		restaurant.setAddress(ParserUtil.getAddressFromVicinity(result.getVicinity()));
-		restaurant.setApiPlaceId(result.getPlace_id());
-		restaurant.setLatitude(result.getGeometry().getLocation().getLat().toString());
-		restaurant.setLongitude(result.getGeometry().getLocation().getLng().toString());
-		restaurant.setName(result.getName());
-		restaurant.setRating(result.getRating());
-		
-		city.setName(ParserUtil.getCityNameFromVicinity(result.getVicinity()));
-		restaurant.setCity(city);
-		
-		return restaurant;
+		try {
+			
+			restaurant = new Restaurant();
+			city = new City();
+			
+			restaurant.setActive(true);
+			restaurant.setApiPlaceId(result.getPlace_id());
+			restaurant.setLatitude(result.getGeometry().getLocation().getLat().toString());
+			restaurant.setLongitude(result.getGeometry().getLocation().getLng().toString());
+			restaurant.setName(result.getName());
+			restaurant.setRating(result.getRating());
+			
+			if(result.getFormatted_address() != null){
+				
+				restaurant.setAddress(ParserUtil.getAddressFromFormattedAddress(result.getFormatted_address()));
+				city.setName(ParserUtil.getCityNameFromFormattedAPIAddress(result.getFormatted_address()));
+				restaurant.setCity(city);
+				
+			}
+			
+			restaurants.add(restaurant);
+			
+		} catch (Exception e){
+			log.error(e.getStackTrace().toString());
+		}
 		
 	}
 	
