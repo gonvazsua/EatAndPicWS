@@ -153,6 +153,12 @@ public class PlatePictureFactory {
 		
 	}
 	
+	/**
+	 * @param platePictureResponse
+	 * @throws PlateAndPicException
+	 * 
+	 * Convert the images of a list of Plate pictures to base64 format
+	 */
 	private void convertImagesToBase64(List<PlatePictureResponse> platePictureResponse) throws PlateAndPicException{
 		
 		String base64ImgPlatePicture = "";
@@ -160,14 +166,29 @@ public class PlatePictureFactory {
 		
 		for(PlatePictureResponse ppr : platePictureResponse){
 			
-			base64ImgPlatePicture = FileFactory.getBase64FromProfilePictureName(getPlatePicturesPath(), ppr.getPicture());
-			ppr.setPicture(base64ImgPlatePicture);
+			convertImageToBase64(ppr);
 			
-			if(ppr.getUserImage() != null){
-				base64UserImage = FileFactory.getBase64FromProfilePictureName(getProfilePicturePath(), ppr.getUserImage());
-				ppr.setUserImage(base64UserImage);
-			}
-			
+		}
+		
+	}
+	
+	/**
+	 * @param ppr
+	 * @throws PlateAndPicException
+	 * 
+	 * Convert image and the user picture to a bas64 format
+	 */
+	private void convertImageToBase64(PlatePictureResponse ppr) throws PlateAndPicException{
+		
+		String base64ImgPlatePicture = "";
+		String base64UserImage = "";
+		
+		base64ImgPlatePicture = FileFactory.getBase64FromProfilePictureName(getPlatePicturesPath(), ppr.getPicture());
+		ppr.setPicture(base64ImgPlatePicture);
+		
+		if(ppr.getUserImage() != null){
+			base64UserImage = FileFactory.getBase64FromProfilePictureName(getProfilePicturePath(), ppr.getUserImage());
+			ppr.setUserImage(base64UserImage);
 		}
 		
 	}
@@ -354,6 +375,18 @@ public class PlatePictureFactory {
 		Integer toLimit = fromLimit + (ROW_LIMIT - 1);
 		
 		return toLimit;
+		
+	}
+	
+	public PlatePictureResponse getPlatePictureResponseById(Long platePictureId) throws PlateAndPicException{
+		
+		PlatePictureResponse platePicture = null;
+		
+		platePicture = platePictureDao.getPlatePictureByPlatePictureId(platePictureId);
+		
+		convertImageToBase64(platePicture);
+		
+		return platePicture;
 		
 	}
 

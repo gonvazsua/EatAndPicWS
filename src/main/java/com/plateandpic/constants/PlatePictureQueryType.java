@@ -26,7 +26,12 @@ public enum PlatePictureQueryType {
 	/**
 	 * Type Plate will be used when the platepictures to show are filtered by plateId
 	 */
-	TYPE_PLATE(4);
+	TYPE_PLATE(4),
+	
+	/**
+	 * Type Plate Picture will be used when only it has to been showed a single platePicture object
+	 */
+	TYPE_PLATE_PICTURE(5);
 	
 	/**
 	 * Aux. parameter

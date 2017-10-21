@@ -175,6 +175,50 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.plateandpic.dao.PlatePictureDaoCustom#getPlatePictureByPlatePictureId()
+	 *	
+	 * Get plate picture object with the id passed as parameter
+	 */
+	@Override
+	public PlatePictureResponse getPlatePictureByPlatePictureId(Long platePictureId) throws PlatePictureException{
+		
+		List<PlatePictureResponse> response = null;
+		StringBuilder sqlQuery = null;
+		List<Object[]> queryResult = null;
+		Query query = null;
+		PlatePictureResponse platePicture = null;
+		Integer pageFrom = null;
+		Integer pageTo = 1;
+		
+		try {
+			
+			pageFrom = 0;
+			pageTo = 1;
+			
+			sqlQuery = buildPlatePictureQuery(platePictureId.toString(), PlatePictureQueryType.TYPE_PLATE_PICTURE, pageFrom, pageTo);
+			
+			query = entityManager.createNativeQuery(sqlQuery.toString());
+			
+			queryResult = query.getResultList();
+			
+			response = buildListOfPlatePictureResponse(queryResult);
+			
+			if(response.size() == 1){
+				platePicture = response.get(0);
+			}
+			
+		} catch(Exception e){
+			
+			log.error("Error in getLastPlatePicturesByPlatePictureId with platePictureId: " + platePictureId);
+			throw new PlatePictureException(MessageConstants.PLATEPICTURE_CANT_LOAD);
+			
+		}
+		
+		return platePicture;
+		
+	}
+	
 	/**
 	 * @return
 	 * 
@@ -253,6 +297,10 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 		} else if(queryType.equals(PlatePictureQueryType.TYPE_PLATE)){
 			
 			whereClause.append(" where pp.plate_plate_id = ").append(data);
+			
+		} else if(queryType.equals(PlatePictureQueryType.TYPE_PLATE_PICTURE)){
+			
+			whereClause.append(" where pp.plate_picture_id = ").append(data);
 			
 		}
 		

@@ -31,4 +31,8 @@ public interface PlatePictureDaoCustom {
 	 */
 	public List<PlatePictureResponse> getLastPlatePicturesByPlateId(Long plateId, Integer from, Integer to) throws PlatePictureException;
 	
+	/**
+	 * @return
+	 */
+	public PlatePictureResponse getPlatePictureByPlatePictureId(Long platePictureId) throws PlatePictureException;
 }

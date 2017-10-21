@@ -271,5 +271,20 @@ public class PlatePictureController {
 		return lastPlatePictures;
 		 
 	}
+	
+	@RequestMapping(value = "/getById", method = RequestMethod.GET)
+	@ResponseBody
+	public PlatePictureResponse getById(HttpServletResponse response,
+			@RequestParam Long platePictureId) throws PlateAndPicException, IOException{
+		
+		PlatePictureResponse platePicture = null;
+		
+		platePicture = platePictureFactory.getPlatePictureResponseById(platePictureId);
+			
+		response.setStatus(HttpServletResponse.SC_OK);
+		
+		return platePicture;
+		 
+	}
 
 }
