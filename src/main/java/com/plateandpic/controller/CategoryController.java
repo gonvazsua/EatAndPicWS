@@ -15,49 +15,45 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.plateandpic.dao.CityDao;
-import com.plateandpic.factory.CityFactory;
-import com.plateandpic.response.CityResponse;
+import com.plateandpic.factory.CategoryFactory;
+import com.plateandpic.models.Category;
 
-/**
- * @author gonzalo
- *
- */
 @RestController
-@RequestMapping("/city")
-public class CityController { 
+@RequestMapping("/category")
+public class CategoryController {
 	
-	private static final Logger log = LoggerFactory.getLogger(CityController.class);
+	private static final Logger log = LoggerFactory.getLogger(CategoryController.class);
 	
 	@Autowired
-	private CityFactory cityFactory;
-	
+	private CategoryFactory categoryFactory;
 	
 	/**
 	 * @param request
 	 * @param response
 	 * @param name
 	 * @return
+	 * 
+	 * Return list of Categories filtered by name
 	 */
 	@RequestMapping(value = "/findByName", method = RequestMethod.GET)
 	@ResponseBody
-	public List<CityResponse> getCityByName(HttpServletRequest request, HttpServletResponse response,
+	public List<Category> findByName(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam String name){
-		  
-		List<CityResponse> cityResponse = null;
+		
+		List<Category> categories = new ArrayList<Category>();
 		
 		if(name != null && !name.isEmpty()){
 			
-			cityResponse = cityFactory.findCitiesByName(name);
+			categories = categoryFactory.findCategoriesByName(name);
 			
 		} else {
 			
-			cityResponse = new ArrayList<CityResponse>();
+			log.error("Empty name or null");
 			
 		}
 		
-		return cityResponse;
-		 
+		return categories;
+		
 	}
 
 }

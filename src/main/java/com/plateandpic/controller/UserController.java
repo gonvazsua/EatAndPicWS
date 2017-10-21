@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.UserDao;
 import com.plateandpic.exceptions.PasswordException;
 import com.plateandpic.exceptions.PlateAndPicException;
@@ -138,9 +139,10 @@ public class UserController {
 	  
 	  /**
 	   * POST /updateProfilePicture  --> Update user profile picture
+	 * @throws PlateAndPicException 
 	   */
 	  @RequestMapping(value = "/updateProfilePicture", method = RequestMethod.POST, produces = MediaType.IMAGE_JPEG_VALUE)
-	  public String updateProfilePicture(@RequestBody MultipartFile image, HttpServletRequest request, HttpServletResponse response){
+	  public String updateProfilePicture(@RequestBody MultipartFile image, HttpServletRequest request, HttpServletResponse response) throws PlateAndPicException{
 		  
 		  String token = "";
 	      Long userId = null;
@@ -168,10 +170,9 @@ public class UserController {
 			  }
 			  
 		  }
-		  catch (Exception ex) {
+		  catch (IOException ex) {
 			  log.error(ex.getMessage());
-			  response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			  base64Img = null;
+			  throw new PlateAndPicException(MessageConstants.USER_PICTURE_NOT_SAVED);
 		  }
 		  
 		  return base64Img;

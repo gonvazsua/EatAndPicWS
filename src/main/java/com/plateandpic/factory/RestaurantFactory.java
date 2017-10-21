@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.plateandpic.constants.MessageConstants;
+import com.plateandpic.dao.CategoryDao;
 import com.plateandpic.dao.CityDao;
 import com.plateandpic.dao.RestaurantDao;
 import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.RestaurantException;
+import com.plateandpic.models.Category;
 import com.plateandpic.models.City;
 import com.plateandpic.models.Restaurant;
 import com.plateandpic.response.RestaurantRequestResponse;
@@ -38,6 +40,9 @@ public class RestaurantFactory {
 	
 	@Autowired
 	private CityDao cityDao;
+	
+	@Autowired
+	private CategoryDao categoryDao;
 	
 	/**
 	 * @param id
@@ -231,6 +236,36 @@ public class RestaurantFactory {
 		}
 		
 		return restaurant;
+		
+	}
+	
+	/**
+	 * @param cityId
+	 * @param categoryId
+	 * @return
+	 * @throws RestaurantException
+	 * 
+	 * Find Restaurants with the city and category passed as parameter and build a RestaurantRequestResponse
+	 */
+	public List<RestaurantRequestResponse> findByCityAndCategory(Long cityId, Long categoryId) throws RestaurantException{
+		
+		List<RestaurantRequestResponse> results = new ArrayList<RestaurantRequestResponse>();
+		List<Restaurant> restaurants = null;
+		
+		City city = cityDao.findOne(cityId);
+		Category category = categoryDao.findOne(categoryId);
+		
+		if(city == null || category == null){
+			throw new RestaurantException(MessageConstants.RESTAURANT_NOT_FOUND);
+		}
+		
+		restaurants = restaurantDao.findAllByCityAndCategories(city, category);
+		
+		if(restaurants != null && !restaurants.isEmpty()){
+			results = buildListRestaurantRequestResponse(restaurants);
+		}
+		
+		return results;
 		
 	}
 

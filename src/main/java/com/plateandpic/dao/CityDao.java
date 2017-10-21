@@ -1,5 +1,7 @@
 package com.plateandpic.dao;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.repository.CrudRepository;
@@ -18,5 +20,11 @@ public interface CityDao extends CrudRepository<City, Long>{
 	 * @return
 	 */
 	public City findByNameIgnoreCase(String name);
+	
+	/**
+	 * @param name
+	 * @return
+	 */
+	public List<City> findByNameContainingIgnoreCaseOrderByNameAsc(String name);
 	
 }

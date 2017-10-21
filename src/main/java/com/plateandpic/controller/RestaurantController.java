@@ -1,6 +1,5 @@
 package com.plateandpic.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,15 +17,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.plateandpic.constants.MessageConstants;
-import com.plateandpic.dao.CityDao;
-import com.plateandpic.dao.RestaurantDao;
-import com.plateandpic.exceptions.IPNotFoundException;
 import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.RestaurantException;
-import com.plateandpic.factory.LocationFactory;
 import com.plateandpic.factory.RestaurantFactory;
-import com.plateandpic.models.City;
-import com.plateandpic.models.IpLocation;
 import com.plateandpic.models.Restaurant;
 import com.plateandpic.response.RestaurantRequestResponse;
 
@@ -41,31 +34,30 @@ public class RestaurantController {
 	private static final Logger log = LoggerFactory.getLogger(RestaurantController.class);
 	
 	@Autowired
-	private CityDao cityDao;
-	
-	@Autowired
-	private RestaurantDao restaurantDao;
-	
-	@Autowired
 	private RestaurantFactory restaurantFactory;
 	
 
 	/**
 	 * @param chars
 	 * @return
+	 * @throws RestaurantException 
 	 */
-	@RequestMapping(value = "/getRestaurants", method = RequestMethod.GET)
+	@RequestMapping(value = "/findByCityAndCategory", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Restaurant> getRestaurants(String chars){
+	public List<RestaurantRequestResponse> findByCityAndCategory(
+			@RequestParam Long cityId, @RequestParam Long categoryId) throws RestaurantException{
 		  
-		List<Restaurant> restaurants = null;
+		List<RestaurantRequestResponse> restaurants = null;
 		
-		try{
+		if(cityId != null && cityId > 0 && categoryId != null && categoryId > 0){
 			
+			restaurants = restaurantFactory.findByCityAndCategory(cityId, categoryId);
 			
-			  
-		} catch(Exception e){
-			restaurants = null;
+		} else {
+			
+			log.error("Params not valid in RestaurantController - findByCityAndCategory:" + cityId + ", " + categoryId);
+			throw new RestaurantException(MessageConstants.RESTAURANT_SEARCH_ERROR);
+			
 		}
 		  
 		return restaurants;
