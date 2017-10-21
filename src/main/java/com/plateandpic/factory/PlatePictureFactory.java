@@ -156,11 +156,17 @@ public class PlatePictureFactory {
 	private void convertImagesToBase64(List<PlatePictureResponse> platePictureResponse) throws PlateAndPicException{
 		
 		String base64ImgPlatePicture = "";
+		String base64UserImage = "";
 		
 		for(PlatePictureResponse ppr : platePictureResponse){
 			
 			base64ImgPlatePicture = FileFactory.getBase64FromProfilePictureName(getPlatePicturesPath(), ppr.getPicture());
 			ppr.setPicture(base64ImgPlatePicture);
+			
+			if(ppr.getUserImage() != null){
+				base64UserImage = FileFactory.getBase64FromProfilePictureName(getProfilePicturePath(), ppr.getUserImage());
+				ppr.setUserImage(base64UserImage);
+			}
 			
 		}
 		
