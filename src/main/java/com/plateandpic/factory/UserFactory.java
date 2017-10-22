@@ -111,11 +111,32 @@ public class UserFactory {
 		userResponse = new UserResponse(user);
 		
 		if(user.getPicture() != null && !"".equals(user.getPicture())){
-			base64UserPicture = FileFactory.getBase64FromProfilePictureName(getProfilePicturePath(), user.getPicture());
+			base64UserPicture = convertBase64UserProfilePicture(user.getPicture());
 			userResponse.setPicture(base64UserPicture);
 		}
 		
 		return userResponse;
+		
+	}
+	
+	/**
+	 * @param picture
+	 * @return
+	 * @throws PlateAndPicException
+	 * 
+	 * Convert picture passed as parameter to base64
+	 */
+	public String convertBase64UserProfilePicture(String picture) throws PlateAndPicException{
+		
+		String base64 = "";
+		
+		if(picture != null && !picture.isEmpty()){
+			
+			base64 = FileFactory.getBase64FromProfilePictureName(getProfilePicturePath(), picture);
+			
+		}
+		
+		return base64;
 		
 	}
 	

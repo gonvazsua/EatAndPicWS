@@ -110,6 +110,7 @@ public class ParserUtil {
 	 * 
 	 * Extract the city name of the Adreess line from API Places:
 	 * Ex: Calle Eloy Gonzalo, 10, 28010 Madrid, España -> Return Madrid
+	 * Ex 2: La Pereda, s/n, 33509 Llanes, Asturias, España
 	 */
 	public static String getCityNameFromFormattedAPIAddress(String apiAddress){
 		
@@ -120,7 +121,7 @@ public class ParserUtil {
 		if(apiAddress != null){
 			
 			splitted = apiAddress.split(SEPARATOR);
-			cityNameAndPC = splitted[splitted.length - 2];
+			cityNameAndPC = splitted[2];
 			
 			splitted = cityNameAndPC.split(BLANK);
 			
@@ -138,6 +139,7 @@ public class ParserUtil {
 	 * 
 	 * Extract the city name of the Adreess line from API Places:
 	 * Ex: Calle Eloy Gonzalo, 10, 28010 Madrid, España -> Return Calle Eloy Gonzalo, 10
+	 * Ex2: La Pereda, s/n, 33509 Llanes, Asturias, España
 	 */
 	public static String getAddressFromFormattedAddress(String apiAddress){
 		
@@ -148,14 +150,8 @@ public class ParserUtil {
 			
 			splitted = apiAddress.split(SEPARATOR);
 			
-			for(int i = 0; i < splitted.length - 2; i++){
-				
-				if(i == 0){
-					address = splitted[0];
-				} else if(i != (splitted.length - 1)){
-					address = address + SEPARATOR + splitted[i];
-				}
-				
+			if(splitted.length > 2){
+				address = splitted[0] + SEPARATOR + splitted[1];
 			}
 			
 		}

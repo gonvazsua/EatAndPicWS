@@ -102,7 +102,7 @@ public class CommentFactory {
 			
 			commentResponse = new CommentRequestResponse(comment);
 			
-			userImage = FileFactory.getBase64FromProfilePictureName(userFactory.getProfilePicturePath(), commentResponse.getUserImage());
+			userImage = userFactory.convertBase64UserProfilePicture(commentResponse.getUserImage());
 			commentResponse.setUserImage(userImage);
 			
 			commentsResponse.add(commentResponse);
@@ -135,6 +135,8 @@ public class CommentFactory {
 		}
 		
 		comment = new CommentRequestResponse(newComment);
+		
+		comment.setUserImage(userFactory.convertBase64UserProfilePicture(comment.getUserImage()));
 		
 		return comment;
 		

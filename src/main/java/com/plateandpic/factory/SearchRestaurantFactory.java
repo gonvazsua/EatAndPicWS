@@ -174,6 +174,8 @@ public class SearchRestaurantFactory {
 		
 		URL obj = new URL(url);
 		
+		log.debug("Calling to api: " + url);
+		
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		
 		con.setRequestMethod(ApiPlacesConstants.GET);
