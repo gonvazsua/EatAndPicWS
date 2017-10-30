@@ -22,5 +22,9 @@ public class MessageConstants {
 	public static final String RESTAURANT_SEARCH_ERROR = "restaurant.searchError";
 	
 	public static final String PLATES_NOT_LOADED = "plate.notLoaded";
+	
+	public static final String PROVINCE_NOT_FOUND = "province.notFound";
+	
+	public static final String CITY_NOT_FOUND = "city.notFound";
 
 }

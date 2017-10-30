@@ -2,6 +2,10 @@ package com.plateandpic.apiplace.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * @author gonzalo
+ *
+ */
 public class Geometry {
 	
 	private Location location;
@@ -9,6 +13,15 @@ public class Geometry {
 	@JsonIgnore
 	private String viewport;
 	
+	@JsonIgnore
+	private String bounds;
+	
+	@JsonIgnore
+	private String location_type;
+	
+	/**
+	 * 
+	 */
 	public Geometry(){}
 
 	/**
@@ -38,6 +51,33 @@ public class Geometry {
 	public void setViewport(String viewport) {
 		this.viewport = viewport;
 	}
-	
+
+	/**
+	 * @return the bounds
+	 */
+	public String getBounds() {
+		return bounds;
+	}
+
+	/**
+	 * @param bounds the bounds to set
+	 */
+	public void setBounds(String bounds) {
+		this.bounds = bounds;
+	}
+
+	/**
+	 * @return the location_type
+	 */
+	public String getLocation_type() {
+		return location_type;
+	}
+
+	/**
+	 * @param location_type the location_type to set
+	 */
+	public void setLocation_type(String location_type) {
+		this.location_type = location_type;
+	}
 
 }

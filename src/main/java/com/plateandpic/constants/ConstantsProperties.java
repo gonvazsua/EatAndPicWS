@@ -18,6 +18,8 @@ public class ConstantsProperties {
 	
 	public static final String API_ENDPOINT = "api.endpoint";
 	
+	public static final String API_CITY_ENDPOINT = "api.city.endpoint";
+	
 	public static final String API_RADIUS = "api.radius";
 	
 	public static final String API_TYPES = "api.types";

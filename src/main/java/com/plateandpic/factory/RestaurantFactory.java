@@ -13,6 +13,7 @@ import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.CategoryDao;
 import com.plateandpic.dao.CityDao;
 import com.plateandpic.dao.RestaurantDao;
+import com.plateandpic.exceptions.CityException;
 import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.RestaurantException;
 import com.plateandpic.models.Category;
@@ -21,7 +22,6 @@ import com.plateandpic.models.Restaurant;
 import com.plateandpic.response.RestaurantRequestResponse;
 import com.plateandpic.utils.DateUtils;
 import com.plateandpic.utils.ParserUtil;
-import com.plateandpic.utils.StringUtils;
 
 /**
  * @author gonzalo
@@ -43,6 +43,9 @@ public class RestaurantFactory {
 	
 	@Autowired
 	private CategoryDao categoryDao;
+	
+	@Autowired
+	private CityFactory cityFactory;
 	
 	/**
 	 * @param id
@@ -210,29 +213,36 @@ public class RestaurantFactory {
 	 * 
 	 * Build a Restaurant object from a RestaurantRequestResponse one
 	 */
-	private Restaurant buildRestaurantFromRequest(RestaurantRequestResponse restaurantToSave) throws RestaurantException{
+	private Restaurant buildRestaurantFromRequest(RestaurantRequestResponse restaurantToSave) throws RestaurantException {
 		
-		Restaurant restaurant = new Restaurant();
+		Restaurant restaurant = null;
+		City city = null;
 		
-		City city = cityDao.findByNameIgnoreCase(restaurantToSave.getCityName().trim());
+		try {
+			
+			restaurant = new Restaurant();
 		
-		if(city == null){
-			log.error("Not found city with name: " + restaurantToSave.getCityName());
-			throw new RestaurantException(MessageConstants.RESTAURANT_SEARCH_ERROR);
-		}
-		
-		restaurant.setCity(city);
-		restaurant.setName(restaurantToSave.getName());
-		restaurant.setAddress(restaurantToSave.getAddress());
-		restaurant.setRegisteredOn(new Date());
-		restaurant.setActive(true);
-		restaurant.setLatitude(restaurantToSave.getLatitude());
-		restaurant.setLongitude(restaurantToSave.getLongitude());
-		restaurant.setApiPlaceId(restaurantToSave.getApiPlaceId());
-		restaurant.setPriceAverage(restaurantToSave.getPriceAverage());
-		
-		if(restaurantToSave.getRating() != null){
-			restaurant.setRating(new Double(restaurantToSave.getRating()));
+			city = cityFactory.getCityByNameOrLatitudeLongitude(restaurantToSave.getCityName(), restaurantToSave.getLatitude(),
+					restaurantToSave.getLongitude());
+			
+			restaurant.setCity(city);
+			restaurant.setName(restaurantToSave.getName());
+			restaurant.setAddress(restaurantToSave.getAddress());
+			restaurant.setRegisteredOn(new Date());
+			restaurant.setActive(true);
+			restaurant.setLatitude(restaurantToSave.getLatitude());
+			restaurant.setLongitude(restaurantToSave.getLongitude());
+			restaurant.setApiPlaceId(restaurantToSave.getApiPlaceId());
+			restaurant.setPriceAverage(restaurantToSave.getPriceAverage());
+			
+			if(restaurantToSave.getRating() != null){
+				restaurant.setRating(new Double(restaurantToSave.getRating()));
+			}
+			
+		} catch (CityException e){
+			log.error("City not found building restaurant with restaurant name: " + restaurant.getName() + "latLong: " + 
+					restaurantToSave.getLatitude() + ", " + restaurantToSave.getLongitude());
+			throw new RestaurantException(MessageConstants.RESTAURANT_NOT_FOUND);
 		}
 		
 		return restaurant;

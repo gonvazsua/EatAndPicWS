@@ -1,7 +1,17 @@
 package com.plateandpic.apiplace.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Iterator;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.plateandpic.constants.MessageConstants;
+import com.plateandpic.exceptions.CityException;
+import com.plateandpic.exceptions.ProvinceException;
+
+/**
+ * @author gonzalo
+ *
+ */
 public class Result {
 	
 	private Geometry geometry;
@@ -38,6 +48,11 @@ public class Result {
 	@JsonIgnore
 	private String types;
 	
+	private List<Address_Components> address_components;
+	
+	/**
+	 * 
+	 */
 	public Result(){}
 
 	/**
@@ -220,6 +235,93 @@ public class Result {
 	 */
 	public void setFormatted_address(String formatted_address) {
 		this.formatted_address = formatted_address;
+	}
+
+	/**
+	 * @return the address_components
+	 */
+	public List<Address_Components> getAddress_components() {
+		return address_components;
+	}
+
+	/**
+	 * @param address_components the address_components to set
+	 */
+	public void setAddress_components(List<Address_Components> address_components) {
+		this.address_components = address_components;
+	}
+	
+	/**
+	 * @return
+	 * @throws CityException
+	 * 
+	 * Get city name with the long_name attribute from Api response:
+	 * 
+	 * long_name	"Arcos de la Frontera"
+	 * short_name	"Arcos de la Frontera"
+	 * types		["locality", "political"]
+	 */
+	public String getCityFromAddressComponent() throws CityException{
+		
+		String cityName = "";
+		Iterator<Address_Components> itAddressComponents = null;
+		Address_Components address_comp = null;
+		
+		if(this.getAddress_components() == null){
+			throw new CityException(MessageConstants.CITY_NOT_FOUND);
+		}
+		
+		itAddressComponents = this.getAddress_components().iterator();
+		
+		while(itAddressComponents.hasNext()){
+			
+			address_comp = itAddressComponents.next();
+			
+			if(address_comp.isCityComponent()){
+				cityName = address_comp.getLong_name();
+				break;
+			}
+			
+		}
+		
+		return cityName;
+		
+	}
+	
+	/**
+	 * @return
+	 * @throws CityException
+	 * 
+	 * Get city name with the long_name attribute from Api response:
+	 * 
+	 * long_name	"Cadiz"
+	 * short_name	"Cadiz"
+	 * types		["administrative_area_level_2", "political"]
+	 */
+	public String getProvinceFromAddresComponent() throws ProvinceException {
+		
+		String provinceName = "";
+		Iterator<Address_Components> itAddressComponents = null;
+		Address_Components address_comp = null;
+		
+		if(this.getAddress_components() == null) {
+			throw new ProvinceException(MessageConstants.PROVINCE_NOT_FOUND);
+		}
+		
+		itAddressComponents = this.getAddress_components().iterator();
+		
+		while(itAddressComponents.hasNext()){
+			
+			address_comp = itAddressComponents.next();
+			
+			if(address_comp.isProvinceComponent()){
+				provinceName = address_comp.getLong_name();
+				break;
+			}
+			
+		}
+		
+		return provinceName;
 	}
 
 }

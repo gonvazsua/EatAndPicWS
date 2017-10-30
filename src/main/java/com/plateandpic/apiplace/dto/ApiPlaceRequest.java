@@ -10,11 +10,9 @@ import com.plateandpic.exceptions.PlateAndPicException;
  * @author gonzalo
  * 
  * DTO used for make a ApiPlace request
- * 
- * Extends from ApiRequest and implements the own buildURL method
  *
  */
-public class ApiPlaceRequest {
+public class ApiPlaceRequest extends Api {
 
 	private String endpoint;
 	private String querySearch;
@@ -36,10 +34,10 @@ public class ApiPlaceRequest {
 	public ApiPlaceRequest(String endpoint, String querySearch, String types, String apiKey,
 			Integer radius, Double latitude, Double longitude) {
 		
-		this.endpoint = endpoint; 
+		super(endpoint, apiKey);
+		
 		this.querySearch = querySearch;
 		this.types = types;
-		this.apiKey = apiKey;
 		this.radius = radius;
 		this.latitude = latitude;
 		this.longitude = longitude;
@@ -101,11 +99,12 @@ public class ApiPlaceRequest {
 	 * Ex 2: https://maps.googleapis.com/maps/api/place/textsearch/json?types=restaurant&query=cham+en+espa%C3%B1a&language=es&key=AIzaSyD_WL2_rolCu7nOpAbyDtv-uxdh7ZlIv8Q
 	 *
 	 */
-	public String buildURL() throws PlateAndPicException {
+	@Override
+	public String buildUrl() throws PlateAndPicException {
 		
 		StringBuilder sb = new StringBuilder(100);
 		
-		sb.append(this.endpoint);
+		sb.append(super.getEndpoint());
 		sb.append(ApiPlacesConstants.TYPES).append(ApiPlacesConstants.RESTAURANT);
 		sb.append(ApiPlacesConstants.AMPERSAND);
 		sb.append(ApiPlacesConstants.LANGUAGE);
@@ -127,7 +126,7 @@ public class ApiPlaceRequest {
 		}
 		
 		sb.append(ApiPlacesConstants.AMPERSAND);
-		sb.append(ApiPlacesConstants.KEY).append(this.apiKey);
+		sb.append(ApiPlacesConstants.KEY).append(super.getApiKey());
 		
 		return sb.toString();
 		

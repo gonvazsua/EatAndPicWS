@@ -1,10 +1,17 @@
 package com.plateandpic.apiplace.dto;
 
+/**
+ * @author gonzalo
+ *
+ */
 public class Location {
 	
 	private Double lat;
 	private Double lng;
 	
+	/**
+	 * 
+	 */
 	public Location(){}
 
 	/**

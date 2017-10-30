@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.plateandpic.apiplace.dto.Api;
 import com.plateandpic.apiplace.dto.ApiPlaceRequest;
 import com.plateandpic.apiplace.dto.ApiPlaceResponse;
 import com.plateandpic.apiplace.dto.Result;
@@ -94,7 +95,7 @@ public class SearchRestaurantFactory {
 	 * @param longitude
 	 * @return
 	 * 
-	 * 1. Create the URL of the GET request
+	 * 1. Build the ApiPlateRequest and call to API
 	 * 2. Map the results in ApiPlaceResponseObject
 	 * 3. Convert to Restaurant object
 	 * 4. Save restaurants
@@ -104,132 +105,34 @@ public class SearchRestaurantFactory {
 	 */
 	private List<Restaurant> getFromAPIPlaceAndSaveResults(String name, Double latitude, Double longitude) throws PlateAndPicException {
 		
-		List<Restaurant> restaurants = null;
-		
-		try {
-		
-			String url = getUrlApiRequest(name, latitude, longitude);
+		Api apiPlaces = getApiPlateRequest(name, latitude, longitude);
 			
-			List<Result> apiPlaceresponseList = executeHttpGetRequest(url);
+		List<Result> apiPlaceresponseList = apiPlaces.executeGetMethod();
 			
-			restaurants = convertToRestaurantsObjects(apiPlaceresponseList);
+		List<Restaurant> restaurants = convertToRestaurantsObjects(apiPlaceresponseList);
 			
-			//saveRestaurants(restaurants);
-			
-		} catch(IOException e) {
-			log.error(e.getStackTrace().toString());
-			throw new PlateAndPicException(MessageConstants.RESTAURANT_SEARCH_ERROR);
-		} catch (URISyntaxException e) {
-			log.error(e.getStackTrace().toString());
-			throw new PlateAndPicException(MessageConstants.RESTAURANT_SEARCH_ERROR);
-		}
+		//saveRestaurants(restaurants);
 		
 		return restaurants;
 		
 	}
 	
-	
-	/**
-	 * @param name
-	 * @param latitude
-	 * @param longitude
-	 * @return
-	 * 
-	 * Create an ApiPlaceRequest object and get the API Endpoint
-	 * @throws UnsupportedEncodingException 
-	 * @throws PlateAndPicException 
-	 */
-	private String getUrlApiRequest(String name, Double latitude, Double longitude) throws PlateAndPicException{
+	private Api getApiPlateRequest(String name, Double latitude, Double longitude){
 		
-		String url = "";
-		ApiPlaceRequest apiPlaceRequest = null;
 		
-		//Get common params
+		Api apiPlaceRequest = null;
+		
 		String endpoint = env.getProperty(ConstantsProperties.API_ENDPOINT);
+		
 		Integer radius = new Integer(env.getProperty(ConstantsProperties.API_RADIUS));
+		
 		String types = env.getProperty(ConstantsProperties.API_TYPES);
+		
 		String apiKey = env.getProperty(ConstantsProperties.API_KEY);
+		
 		apiPlaceRequest = new ApiPlaceRequest(endpoint, name, types, apiKey, radius, latitude, longitude);
 		
-		url = apiPlaceRequest.buildURL();
-		
-		log.debug("Calling to url: " + url);
-		
-		return url;
-		
-	}
-	
-	/**
-	 * @param url
-	 * @return
-	 * @throws IOException
-	 * @throws URISyntaxException 
-	 * 
-	 * Execute GET Request and map the result as Result list 
-	 * First, the url is cleaned with URI object to scape illegal characters
-	 */
-	private List<Result> executeHttpGetRequest(String url) throws IOException, URISyntaxException {
-		
-		List<Result> apiPlaceResponseList = null;
-		
-		URL obj = new URL(url);
-		
-		log.debug("Calling to api: " + url);
-		
-		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-		
-		con.setRequestMethod(ApiPlacesConstants.GET);
-		
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		
-		StringBuffer response = getResponseAsStringBuffer(in);
-		
-		apiPlaceResponseList = mapResponseToApiPlaceResponse(response);
-		
-		return apiPlaceResponseList;
-		
-	}
-	
-	/**
-	 * @param br
-	 * @return
-	 * @throws IOException
-	 * 
-	 * Convert the BufferReader response in StringBuffer
-	 */
-	private StringBuffer getResponseAsStringBuffer(BufferedReader br) throws IOException{
-		
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		while ((inputLine = br.readLine()) != null) {
-			response.append(inputLine);
-		}
-		
-		br.close();
-		
-		return response;
-		
-	}
-	
-	/**
-	 * @param response
-	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 * 
-	 * Convert the StringBuffer response in a ApiPlaceResponse object
-	 */
-	private List<Result> mapResponseToApiPlaceResponse(StringBuffer response) throws JsonParseException, JsonMappingException, IOException{
-		
-		String jsonResponse = response.toString(); System.out.println(jsonResponse);
-		
-		ObjectMapper mapper = new ObjectMapper();
-		
-		ApiPlaceResponse apiResponse = mapper.readValue(jsonResponse, ApiPlaceResponse.class);
-		
-		return apiResponse.getResults();
+		return apiPlaceRequest;
 		
 	}
 	

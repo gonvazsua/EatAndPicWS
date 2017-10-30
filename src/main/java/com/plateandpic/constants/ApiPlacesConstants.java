@@ -16,9 +16,13 @@ public class ApiPlacesConstants {
 	public static final String RANKBY = "rankBy=distance";
 	public static final String EN_ESPANA = " en españa";
 	public static final String LANGUAGE = "language=es";
+	public static final String LATLNG = "latlng=";
 	
 	public static final String GET = "GET";
 	public static final String RESULTS = "results";
 	public static final String UTF8 = "UTF-8";
+	
+	public static final String TYPE_LOCALITY = "locality";
+	public static final String TYPE_PROVINCE = "administrative_area_level_2";
 
 }
