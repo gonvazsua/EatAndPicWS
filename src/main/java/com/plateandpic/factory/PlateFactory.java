@@ -11,12 +11,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.PlateDao;
 import com.plateandpic.dao.RestaurantDao;
+import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.PlateException;
 import com.plateandpic.models.Plate;
 import com.plateandpic.models.Restaurant;
 import com.plateandpic.response.PlateResponse;
+import com.plateandpic.validator.PlateValidator;
 
 /**
  * @author gonzalo
@@ -37,38 +40,22 @@ public class PlateFactory {
 	private RestaurantDao restaurantDao;
 	
 	/**
-	 * @param plate
+	 * @param plateId
 	 * @return
 	 * @throws PlateException
+	 * 
+	 * Find the plate with the id passed as parameter
 	 */
-	public Plate savePlateIfNotExists(Plate plate) throws PlateException{
+	public Plate findById(Long plateId) throws PlateException{
 		
-		Restaurant restaurant = null;
-		Plate savedPlate = null;
-		List<Plate> plates = null;
+		Plate plate = plateDao.findOne(plateId);
 		
-		restaurant = restaurantDao.findOne(plate.getRestaurant().getRestaurantId());
-		
-		plate.setRestaurant(restaurant);
-		
-		plates = plateDao.findByRestaurantAndName(restaurant, plate.getName());
-		
-		if(plates != null && plates.size() > 0){
-			
-			savedPlate = plates.get(0);
-		
-		} 
-		else{
-			
-			savedPlate = plateDao.save(plate);
-			
+		if(plate == null){
+			log.error("Plate not found with ID: " + plateId);
+			throw new PlateException(MessageConstants.PLATE_NOT_FOUND);
 		}
 		
-		if(savedPlate == null){
-			throw new PlateException("Plate not saved: " + plate.toString());
-		}
-		
-		return savedPlate;
+		return plate;
 	}
 	
 	/**
@@ -137,6 +124,71 @@ public class PlateFactory {
 		}
 		
 		return response;
+		
+	}
+	
+	/**
+	 * @param request
+	 * @throws PlateAndPicException
+	 * 
+	 * Validate a PlateResponse object with a PlateValidator
+	 */
+	private void validatePlateResponse(PlateResponse request) throws PlateAndPicException{
+		
+		PlateValidator plateValidator = new PlateValidator(request);
+		
+		plateValidator.validate();
+		
+	}
+	
+	/**
+	 * @param request
+	 * @return
+	 * @throws PlateAndPicException
+	 * 
+	 * Validate, save and return a PlateResponse object
+	 */
+	public PlateResponse validateAndSave(PlateResponse request) throws PlateAndPicException {
+		
+		Plate plate = null;
+		PlateResponse response = null;
+		
+		validatePlateResponse(request);
+		
+		plate = buildPlateFromPlateResponse(request);
+		
+		plate = plateDao.save(plate);
+		
+		response = new PlateResponse(plate);
+		
+		return response;
+		
+	}
+	
+	/**
+	 * @param request
+	 * @return
+	 * @throws PlateException
+	 * 
+	 * Generate a Plate object from PlateResponse one
+	 */
+	private Plate buildPlateFromPlateResponse(PlateResponse request) throws PlateException {
+		
+		Plate plate = new Plate();
+		
+		Restaurant restaurant = restaurantDao.findOne(request.getRestaurantId());
+		
+		if(restaurant == null){
+			log.error("Restaurant not found while building Plate: " + request.getRestaurantId());
+			throw new PlateException(MessageConstants.PLATE_RESTAURANT_NOT_NULL);
+		}
+		
+		plate.setName(request.getPlateName());
+		plate.setRestaurant(restaurant);
+		//TODO: Set platetype
+		plate.setActive(true);
+		
+		return plate;
 		
 	}
 	

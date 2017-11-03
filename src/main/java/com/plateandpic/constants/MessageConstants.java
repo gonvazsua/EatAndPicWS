@@ -4,6 +4,7 @@ public class MessageConstants {
 	
 	public static final String LOGIN_NOT_VALID = "login.notValid";
 	public static final String GENERAL_ERROR = "general.error";
+	public static final String PICTURE_NOT_FOUND = "picture.notFound";
 	
 	public static final String USER_USER_NOT_FOUND = "user.userNotFound";
 	public static final String USER_USERNAME_ALREADY_USED = "user.usernameAlreadyUsed";
@@ -15,6 +16,9 @@ public class MessageConstants {
 	public static final String PASSWORD_NOT_CORRECT = "password.notCorrect";
 	
 	public static final String PLATEPICTURE_CANT_LOAD = "platepicture.cantLoad";
+	public static final String PLATEPICTURE_PARAMS_ERROR = "platePicture.paramsError";
+	public static final String PLATEPICTURE_NOT_SAVED = "platePicture.notSaved";
+	public static final String PLATEPICTURE_TITLE_TOO_LONG = "platePicture.titleTooLong";
 	
 	public static final String COMMENT_NOT_SAVED = "comment.notSaved";
 	
@@ -22,6 +26,9 @@ public class MessageConstants {
 	public static final String RESTAURANT_SEARCH_ERROR = "restaurant.searchError";
 	
 	public static final String PLATES_NOT_LOADED = "plate.notLoaded";
+	public static final String PLATE_NOT_FOUND = "plate.notFound";
+	public static final String PLATE_NAME_NOT_NULL = "plate.nameNotNull";
+	public static final String PLATE_RESTAURANT_NOT_NULL = "plate.restaurantNotNull";
 	
 	public static final String PROVINCE_NOT_FOUND = "province.notFound";
 	

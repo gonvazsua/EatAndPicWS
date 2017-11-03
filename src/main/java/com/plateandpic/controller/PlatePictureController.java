@@ -19,8 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.PlatePictureDao;
 import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.PlatePictureException;
@@ -52,12 +55,13 @@ public class PlatePictureController {
 	 * @param request
 	 * @param response
 	 * @return
+	 * @throws PlateAndPicException 
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
-	public PlatePicture save(HttpServletRequest request, HttpServletResponse response){
+	public void save(HttpServletRequest request, HttpServletResponse response) throws PlateAndPicException{
 		
-		PlatePicture savedPlatePicture = null, platePicture = null;  
+		PlatePictureResponse platePicture = null;  
 		MultipartRequest multipartRequest = null;
 		String jsonPlatePicture = null;	
 		MultipartFile picture = null;
@@ -78,10 +82,10 @@ public class PlatePictureController {
 			
 			jsonPlatePicture = request.getParameter("platePicture");
 			
-			platePicture = mapper.readValue(jsonPlatePicture, PlatePicture.class);
+			platePicture = mapper.readValue(jsonPlatePicture, PlatePictureResponse.class);
 			
 			if(picture != null && platePicture != null){
-				savedPlatePicture = platePictureFactory.save(picture, platePicture, token);
+				platePictureFactory.save(picture, platePicture, token);
 			}
 			else{
 				throw new PlatePictureException("Incorrect parameters platePicture!");
@@ -89,14 +93,22 @@ public class PlatePictureController {
 			
 			response.setStatus(HttpServletResponse.SC_OK);
 			  
-		} catch(Exception ex){
-			
-			log.error("Error al guardar platePicture: " + ex.getMessage());
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-		
-		} 
-		
-		return savedPlatePicture;
+		} catch(PlatePictureException e){
+			log.error(e.getMessage());
+			throw new PlatePictureException(MessageConstants.PLATEPICTURE_NOT_SAVED);
+		} catch (JsonParseException e) {
+			log.error(e.getMessage());
+			throw new PlatePictureException(MessageConstants.PLATEPICTURE_NOT_SAVED);
+		} catch (JsonMappingException e) {
+			log.error(e.getMessage());
+			throw new PlatePictureException(MessageConstants.PLATEPICTURE_NOT_SAVED);
+		} catch (IOException e) {
+			log.error(e.getMessage());
+			throw new PlatePictureException(MessageConstants.PLATEPICTURE_NOT_SAVED);
+		} catch (UserException e) {
+			log.error(e.getMessage());
+			throw new PlatePictureException(MessageConstants.PLATEPICTURE_NOT_SAVED);
+		}
 		 
 	}
 	

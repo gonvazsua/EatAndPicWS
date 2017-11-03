@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.PlateDao;
 import com.plateandpic.dao.RestaurantDao;
+import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.PlateException;
 import com.plateandpic.exceptions.RestaurantException;
 import com.plateandpic.factory.PlateFactory;
@@ -49,28 +50,20 @@ public class PlateController {
 	 * @param response
 	 * @param plate
 	 * @return
+	 * @throws PlateAndPicException 
 	 */
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	@ResponseBody
-	public Plate save(HttpServletRequest request, HttpServletResponse response,
-			@RequestBody Plate plate){
+	public PlateResponse save(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody PlateResponse plate) throws PlateAndPicException{
 		  
-		Restaurant restaurant = null;
-		Plate savedPlate = null;
-		
-		try{
-			
-			savedPlate = plateFactory.savePlateIfNotExists(plate);
-			
-			response.setStatus(HttpServletResponse.SC_OK);
-			  
-		} catch(PlateException e){
-			log.error(e.getMessage());
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			plate = null;
+		if(plate == null){
+			throw new PlateAndPicException(MessageConstants.GENERAL_ERROR);
 		}
-		  
-		return savedPlate;
+		
+		plate = plateFactory.validateAndSave(plate);
+		
+		return plate;
 		 
 	}
 	

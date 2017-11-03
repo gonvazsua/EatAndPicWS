@@ -1,10 +1,13 @@
 package com.plateandpic.factory;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
@@ -14,13 +17,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.plateandpic.constants.ConstantsProperties;
+import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.PlatePictureDao;
 import com.plateandpic.exceptions.PlateAndPicException;
+import com.plateandpic.exceptions.PlateException;
 import com.plateandpic.exceptions.PlatePictureException;
 import com.plateandpic.exceptions.UserException;
 import com.plateandpic.models.PlatePicture;
 import com.plateandpic.models.User;
 import com.plateandpic.response.PlatePictureResponse;
+import com.plateandpic.validator.PlatePictureValidator;
 
 /**
  * @author gonzalo
@@ -29,8 +35,11 @@ import com.plateandpic.response.PlatePictureResponse;
 @Service
 public class PlatePictureFactory {
 	
+	private static final Logger log = LoggerFactory.getLogger(PlatePictureFactory.class);
+	
 	private static final Integer ROW_LIMIT = 20;
 	private static final String QUERY_SORT = "registeredOn";
+	private static final String SEPARATOR = "_";
 	
 	@Autowired
 	private PlatePictureDao platePictureDao;
@@ -41,40 +50,83 @@ public class PlatePictureFactory {
 	@Autowired
 	private UserFactory userFactory;
 	
+	@Autowired
+	private PlateFactory plateFactory;
+	
 	
 	/**
 	 * @param picture
 	 * @param platePicture
 	 * @param token
 	 * @return
-	 * @throws PlatePictureException
 	 * @throws IOException
-	 * @throws UserException
+	 * @throws PlateAndPicException 
 	 */
-	public PlatePicture save(MultipartFile picture, PlatePicture platePicture, String token) throws PlatePictureException, IOException, UserException{
+	public void save(MultipartFile picture, PlatePictureResponse platePicture, String token) throws IOException, PlateAndPicException{
 		
-		PlatePicture savedPlatePicture;
+		PlatePictureResponse savedPlatePicture;
 		String newPictureName = "";
+		PlatePicture toSave = null;
 		
 		try{
 			
-			platePicture.setUser(userFactory.getUserFromToken(token));
+			toSave = buildPlatePictureForSaving(token, platePicture.getPlateId(), platePicture.getTitle(), true);
+
+			validatePlatePicture(toSave);
 			
-			newPictureName = getNewPlatePictureFileName();
+			FileFactory.uploadFile(getPlatePicturesPath(), toSave.getPicture(), picture);
 			
-			platePicture.setPicture(newPictureName);
-			
-			savedPlatePicture = savePlatePicture(platePicture);
-			
-			FileFactory.uploadFile(getPlatePicturesPath(), newPictureName, picture);
+			toSave = savePlatePicture(toSave);
 			
 		} catch(PlatePictureException e){
 			throw e;
 		} catch (IOException e) {
 			throw e;
 		}
+	
+	}
+	
+	/**
+	 * @param platePicture
+	 * @throws PlateAndPicException
+	 * 
+	 * Validate the PlatePiture object using the PlatePictureValidator class
+	 */
+	private void validatePlatePicture(PlatePicture platePicture) throws PlateAndPicException{
 		
-		return savedPlatePicture;
+		PlatePictureValidator validator = new PlatePictureValidator(platePicture);
+		
+		validator.validate();
+		
+	}
+	
+	/**
+	 * @param token
+	 * @param plateId
+	 * @param title
+	 * @param isNew
+	 * @return
+	 * @throws UserException
+	 * @throws PlateException
+	 * 
+	 * Build a new object of PlatePicture. If the parameter isNew is true, set the registeredOn to the current date
+	 */
+	private PlatePicture buildPlatePictureForSaving(String token, Long plateId, String title, Boolean isNew) throws UserException, PlateException{
+		
+		PlatePicture platePicture = new PlatePicture();
+		User user = userFactory.getUserFromToken(token);
+		
+		platePicture.setUser(user);
+		platePicture.setPlate(plateFactory.findById(plateId));
+		platePicture.setTitle(title);
+		platePicture.setPicture(getNewPlatePictureFileName(user.getId()));
+		
+		if(isNew){
+			platePicture.setRegisteredOn(new Date());
+		}
+		
+		return platePicture;
+		
 	}
 	
 	/**
@@ -82,14 +134,13 @@ public class PlatePictureFactory {
 	 * @return
 	 * @throws PlatePictureException
 	 */
-	public PlatePicture savePlatePicture(PlatePicture platePicture) throws PlatePictureException{
-		
-		platePicture.setRegisteredOn(new Date());
+	public PlatePicture savePlatePicture(PlatePicture platePicture) throws PlatePictureException {
 		
 		PlatePicture savedPlatePicture = platePictureDao.save(platePicture);
 		
 		if(savedPlatePicture == null){
-			throw new PlatePictureException("PlatePicture not saved!!");
+			log.error("PlatePicture not saved");
+			throw new PlatePictureException(MessageConstants.PLATEPICTURE_NOT_SAVED);
 		}
 		
 		return savedPlatePicture;
@@ -116,15 +167,18 @@ public class PlatePictureFactory {
 	
 	/**
 	 * @return
+	 * 
+	 * Example: 2017-03-11_18-51-33_1
 	 */
-	private String getNewPlatePictureFileName(){
+	private String getNewPlatePictureFileName(Long userId){
 		
-		Integer numFiles = FileFactory.getFileCount(getPlatePicturesPath());
+		Date today = new Date();
 		
-		numFiles = numFiles + 1;
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 		
-		return numFiles.toString() + FileFactory.JPG;
+		String fileName = dateFormat.format(today) + SEPARATOR + userId;
 		
+		return fileName;
 	}
 	
 	/**

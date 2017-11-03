@@ -17,6 +17,20 @@ public class PlateResponse {
 	private Boolean plateActive;
 	
 	/**
+	 * No parameters constructor
+	 */
+	public PlateResponse(){
+		
+		this.plateId = null;
+		this.plateName = null;
+		this.restaurantId = null;
+		this.restaurantName = null;
+		this.plateType = null;
+		this.plateActive = null;
+		
+	}
+	
+	/**
 	 * @param plate
 	 */
 	public PlateResponse(Plate plate){
