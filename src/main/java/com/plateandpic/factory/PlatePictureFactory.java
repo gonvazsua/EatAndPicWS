@@ -176,7 +176,7 @@ public class PlatePictureFactory {
 		
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 		
-		String fileName = dateFormat.format(today) + SEPARATOR + userId;
+		String fileName = dateFormat.format(today) + SEPARATOR + userId + FileFactory.JPG;
 		
 		return fileName;
 	}

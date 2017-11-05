@@ -175,7 +175,7 @@ public class FileFactory {
 			
 			projectPath = System.getProperty(systemPath);
 			
-			newFile = new File(projectPath + relativeFolderPath + fileName + JPG);
+			newFile = new File(projectPath + relativeFolderPath + fileName);
 			
 			if(!newFile.exists())
 				newFile.createNewFile();

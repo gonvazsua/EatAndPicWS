@@ -35,7 +35,7 @@ public class PlatePicture {
 	@ManyToOne
 	private User user;
 	
-	@Size(min = 4, max = 200)
+	@Size(min = 0, max = 200)
 	private String title;
 	
 	@NotNull
