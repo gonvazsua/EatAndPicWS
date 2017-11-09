@@ -21,6 +21,7 @@ import com.plateandpic.exceptions.PasswordException;
 import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.UserException;
 import com.plateandpic.models.User;
+import com.plateandpic.response.FollowersResponse;
 import com.plateandpic.response.UserResponse;
 import com.plateandpic.security.JwtTokenUtil;
 import com.plateandpic.utils.UpdatePasswordRequest;
@@ -347,6 +348,77 @@ public class UserFactory {
 		userResponseList = buildUserResponseList(userList);
 		
 		return userResponseList;
+		
+	}
+	
+	
+	/**
+	 * @param loggedUserId
+	 * @param userId
+	 * @return
+	 * @throws PlateAndPicException
+	 * 
+	 * Load the Followers data from the userLogged passed as parameter.
+	 * If the userId is null, it means that the infomation we are looking for is the logged user,
+	 * so we have to set their value to the same that loggedUserId
+	 */
+	public FollowersResponse getFollowersData(Long loggedUserId, Long userId) throws PlateAndPicException{
+		
+		FollowersResponse response = null;
+		
+		if(userId == null || userId == 0){
+			userId = loggedUserId;
+		}
+		
+		response = userDao.getFollowersData(loggedUserId, userId);
+		
+		return response;
+		
+	}
+	
+	/**
+	 * @param userId
+	 * @param token
+	 * @throws UserException
+	 * 
+	 * Get the logged user and add the user passed as parameter to their followers,
+	 * if it does not exist
+	 */
+	public void followToUser(Long userId, String token) throws UserException{
+		
+		User user = getUserFromToken(token);
+		
+		User userToFollow = userDao.findOne(userId);
+		
+		if(!user.getFollowers().contains(userToFollow)){
+			
+			user.getFollowers().add(userToFollow);
+			userDao.save(user);
+			
+		}
+		
+	}
+	
+	/**
+	 * @param userId
+	 * @param token
+	 * @throws UserException
+	 * 
+	 * Get the logged user and remove from to their followers, the user passed as parameter,
+	 * if it exists
+	 */
+	public void unfollowToUser(Long userId, String token) throws UserException{
+		
+		User user = getUserFromToken(token);
+		
+		User userToUnfollow = userDao.findOne(userId);
+		
+		if(user.getFollowers().contains(userToUnfollow)){
+			
+			user.getFollowers().remove(userToUnfollow);
+			userDao.save(user);
+			
+		}
 		
 	}
 

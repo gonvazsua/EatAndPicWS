@@ -221,14 +221,14 @@ public class PlatePictureController {
 	 * @throws PlateAndPicException 
 	 * @throws IOException 
 	 */
-	@RequestMapping(value = "/getByUsername", method = RequestMethod.GET)
+	@RequestMapping(value = "/getByUserId", method = RequestMethod.GET)
 	@ResponseBody
 	public List<PlatePictureResponse> getByUsername(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam String username, @RequestParam Integer page) throws PlateAndPicException, IOException{
+			@RequestParam String userId, @RequestParam Integer page) throws PlateAndPicException, IOException{
 		
 		List<PlatePictureResponse> lastPlatePictures = null;
 		
-		lastPlatePictures = platePictureFactory.getPlatePictureByUsername(username, page);
+		lastPlatePictures = platePictureFactory.getPlatePictureByUserId(userId, page);
 			
 		response.setStatus(HttpServletResponse.SC_OK);
 		

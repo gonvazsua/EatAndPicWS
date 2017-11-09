@@ -16,7 +16,7 @@ import com.plateandpic.models.User;
  *
  */
 @Transactional
-public interface UserDao extends CrudRepository<User, Long> {
+public interface UserDao extends CrudRepository<User, Long>, UserDaoCustom {
 	
 	
 	  /**

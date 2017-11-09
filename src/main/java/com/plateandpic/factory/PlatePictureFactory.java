@@ -347,14 +347,14 @@ public class PlatePictureFactory {
 	 * @throws IOException
 	 * @throws PlateAndPicException 
 	 */
-	public List<PlatePictureResponse> getPlatePictureByUsername(String username, Integer page) throws IOException, PlateAndPicException{
+	public List<PlatePictureResponse> getPlatePictureByUserId(String userId, Integer page) throws IOException, PlateAndPicException{
 		
 		List<PlatePictureResponse> platePicturesResponse;
 		
 		Integer fromLimit = calculateFromLimitPagination(page);
 		Integer toLimit = calculateToLimitPagination(fromLimit);
 		
-		platePicturesResponse = platePictureDao.getLastPlatePicturesByUsername(username, fromLimit, toLimit);
+		platePicturesResponse = platePictureDao.getLastPlatePicturesByUserId(userId, fromLimit, toLimit);
 		
 		convertImagesToBase64(platePicturesResponse);
 		

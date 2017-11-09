@@ -14,7 +14,7 @@ public interface PlatePictureDaoCustom {
 	/**
 	 * @return
 	 */
-	public List<PlatePictureResponse> getLastPlatePicturesByUsername(String username, Integer from, Integer to) throws PlatePictureException;
+	public List<PlatePictureResponse> getLastPlatePicturesByUserId(String userId, Integer from, Integer to) throws PlatePictureException;
 	
 	/**
 	 * @return

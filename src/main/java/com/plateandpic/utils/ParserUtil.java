@@ -70,6 +70,10 @@ public class ParserUtil {
 		
 			result = new Integer(toConvert.toString());
 			
+		} else {
+			
+			result = new Integer(0);
+			
 		}
 		
 		return result;

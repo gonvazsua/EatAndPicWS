@@ -1,4 +1,4 @@
-package com.plateandpic.dao;
+package com.plateandpic.dao.impl;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.constants.PlatePictureConstants;
 import com.plateandpic.constants.PlatePictureQueryType;
+import com.plateandpic.dao.PlatePictureDaoCustom;
 import com.plateandpic.exceptions.PlatePictureException;
 import com.plateandpic.response.PlatePictureResponse;
 import com.plateandpic.utils.DateUtils;
@@ -45,7 +46,7 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 	 * Get last platePictures loaded by username
 	 */
 	@Override
-	public List<PlatePictureResponse> getLastPlatePicturesByUsername(String username, Integer from, Integer to) throws PlatePictureException {
+	public List<PlatePictureResponse> getLastPlatePicturesByUserId(String userId, Integer from, Integer to) throws PlatePictureException {
 
 		List<PlatePictureResponse> response = null;
 		StringBuilder SQLQuery = null;
@@ -54,7 +55,7 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 		
 		try {
 			
-			SQLQuery = buildPlatePictureQuery(username, PlatePictureQueryType.TYPE_PROFILE, from, to);
+			SQLQuery = buildPlatePictureQuery(userId, PlatePictureQueryType.TYPE_PROFILE, from, to);
 			
 			query = entityManager.createNativeQuery(SQLQuery.toString());
 			
@@ -65,7 +66,7 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 			
 		} catch(Exception e){
 			
-			log.error("Error in getLastPlatePicturesByUsername with username: " + username);
+			log.error("Error in getLastPlatePicturesByUsername with userId: " + userId);
 			throw new PlatePictureException(MessageConstants.PLATEPICTURE_CANT_LOAD);
 			
 		}
@@ -282,7 +283,8 @@ public class PlatePictureDaoImpl implements PlatePictureDaoCustom {
 		
 		if(queryType.equals(PlatePictureQueryType.TYPE_PROFILE)){
 			
-			whereClause.append("where u.username = '").append(data).append("'");
+			whereClause.append("where u.id = '").append(data).append("'");
+			whereClause.append(" and pp.plate_picture_id is not null ");
 			
 		} else if(queryType.equals(PlatePictureQueryType.TYPE_FOLLOWERS)){
 			
