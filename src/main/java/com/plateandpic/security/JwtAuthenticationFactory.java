@@ -175,13 +175,7 @@ public class JwtAuthenticationFactory {
 		user.setUsername(request.getUsername());
 		user.setEmail(request.getEmail());
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
-		
-		if(request.getIsUserRestaurant()){
-			user.setStatus(Status.RESTAURANT_PENDING.getCode());
-		}
-		else {
-			user.setStatus(Status.ACTIVE.getCode());
-		}
+		user.setStatus(Status.ACTIVE.getCode());
 		
 		return user;
 		

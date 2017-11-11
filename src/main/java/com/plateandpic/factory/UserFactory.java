@@ -22,6 +22,7 @@ import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.RestaurantException;
 import com.plateandpic.exceptions.UserException;
 import com.plateandpic.models.Restaurant;
+import com.plateandpic.models.Status;
 import com.plateandpic.models.User;
 import com.plateandpic.response.FollowersResponse;
 import com.plateandpic.response.RestaurantRequestResponse;
@@ -444,6 +445,7 @@ public class UserFactory {
 		Restaurant restToSave = restaurantFactory.findRestaurantById(restaurant.getRestaurantId());
 
 		user.setRestaurant(restToSave);
+		user.setStatus(Status.RESTAURANT_PENDING.getCode());
 		
 		userDao.save(user);
 		
