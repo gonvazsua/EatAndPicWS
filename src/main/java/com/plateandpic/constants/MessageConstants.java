@@ -10,6 +10,14 @@ public class MessageConstants {
 	public static final String USER_USERNAME_ALREADY_USED = "user.usernameAlreadyUsed";
 	public static final String USER_EMAIL_ALREADY_USED = "user.emailAlreadyUsed";
 	public static final String USER_PICTURE_NOT_SAVED = "user.pictureNotSaved";
+	public static final String USER_USERNAME_EMPTY = "user.usernameEmpty";
+	public static final String USER_EMAIL_EMPTY = "user.emailEmpty";
+	public static final String USER_PASSWORD_EMPTY = "user.passwordEmpty";
+	public static final String USER_PASSWORDS_NOT_MATCH = "user.passwordsNotMatch";
+	public static final String USER_USERNAME_TOO_LONG = "user.usernameTooLong";
+	public static final String USER_EMAIL_TOO_LONG = "user.emailTooLong";
+	public static final String USER_PASSWORD_TOO_LONG = "user.passwordTooLong";
+	public static final String USER_RESTAURANT_NOT_SAVED = "user.restaurantNotSaved";
 	
 	public static final String PASSWORD_NOT_VALID = "password.notValid";
 	public static final String PASSWORD_NOT_EQUALS = "password.notEquals";

@@ -29,11 +29,13 @@ import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.UserDao;
 import com.plateandpic.exceptions.PasswordException;
 import com.plateandpic.exceptions.PlateAndPicException;
+import com.plateandpic.exceptions.RestaurantException;
 import com.plateandpic.exceptions.UserException;
 import com.plateandpic.factory.FileFactory;
 import com.plateandpic.factory.UserFactory;
 import com.plateandpic.models.User;
 import com.plateandpic.response.FollowersResponse;
+import com.plateandpic.response.RestaurantRequestResponse;
 import com.plateandpic.response.UserResponse;
 import com.plateandpic.security.JwtTokenUtil;
 import com.plateandpic.utils.UpdatePasswordRequest;
@@ -301,6 +303,41 @@ public class UserController {
 
 	}
 	
-	
+	/**
+	 * POST /saveUserRestaurant --> Set the Restaurant passed as parameter to logged user
+	 * 
+	 * @throws PlateAndPicException
+	 */
+	@RequestMapping(value = "/saveUserRestaurant", method = RequestMethod.POST)
+	@ResponseBody
+	public void saveUserRestaurant(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody RestaurantRequestResponse restaurant) throws PlateAndPicException {
+
+		String token = null;
+		
+		try{
+			
+			if(restaurant == null){
+				log.error("Parameter null in saveUserRestaurant");
+				throw new PlateAndPicException(MessageConstants.USER_USER_NOT_FOUND);
+			}
+			
+			token = request.getHeader(tokenHeader);
+			
+			userFactory.saveUserRestaurant(token, restaurant);
+			
+		} catch (RestaurantException e){
+			
+			log.error("Restaurant not found while saving in user");
+			throw new PlateAndPicException(MessageConstants.USER_RESTAURANT_NOT_SAVED);
+			
+		} catch (UserException e){
+			
+			log.error("User not found while saving restaurant of user");
+			throw new PlateAndPicException(MessageConstants.USER_RESTAURANT_NOT_SAVED);
+			
+		}
+
+	}
 
 }

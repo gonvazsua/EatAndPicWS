@@ -104,6 +104,9 @@ public class User {
     @OneToOne(fetch = FetchType.LAZY)
     private Restaurant restaurant;
     
+    @NotNull
+    private Integer status;
+    
     /*
      * FOREIGN KEY FOLLOWERS
      */
@@ -118,17 +121,32 @@ public class User {
     private City city;
     
     
+    /**
+     * 
+     */
     public User(){}    
     
+    /**
+     * @param email
+     * @param name
+     */
     public User(String email, String name){
     	this.email = email;
     	this.firstname = name;
     }
     
+    /**
+     * @param id
+     */
     public User(Long id){
     	this.id = id;
     }
     
+    /**
+     * @param username
+     * @param email
+     * @param password
+     */
     public User(String username, String email, String password){
     	this.username = username;
     	this.email = email;
@@ -138,149 +156,220 @@ public class User {
     	this.rolId = Rol.USUARIO;
     }
 
+	/**
+	 * @return
+	 */
 	public Long getId() {
 		return id;
 	}
 
+	/**
+	 * @param userId
+	 */
 	public void setId(Long userId) {
 		this.id = userId;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getFirstname() {
 		return firstname;
 	}
 
+	/**
+	 * @param firstname
+	 */
 	public void setFirstname(String firstname) {
 		this.firstname = firstname;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getLastname() {
 		return lastname;
 	}
 
+	/**
+	 * @param lastname
+	 */
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getUsername() {
 		return username;
 	}
 
+	/**
+	 * @param username
+	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getEmail() {
 		return email;
 	}
 
+	/**
+	 * @param email
+	 */
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getPassword() {
 		return password;
 	}
 
+	/**
+	 * @param password
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	/**
+	 * @return
+	 */
 	public Date getRegisterDate() {
 		return registerDate;
 	}
 
+	/**
+	 * @param registerDate
+	 */
 	public void setRegisterDate(Date registerDate) {
 		this.registerDate = registerDate;
 	}
 
+	/**
+	 * @return
+	 */
 	public Date getLastLogin() {
 		return lastLogin;
 	}
 
+	/**
+	 * @param lastLogin
+	 */
 	public void setLastLogin(Date lastLogin) {
 		this.lastLogin = lastLogin;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getRolId() {
 		return rolId;
 	}
 
+	/**
+	 * @param rolId
+	 */
 	public void setRolId(int rolId) {
 		this.rolId = rolId;
 	}
 
+	/**
+	 * @return
+	 */
 	public Set getFollowers() {
 		return followers;
 	}
 
+	/**
+	 * @param followers
+	 */
 	public void setFollowers(Set followers) {
 		this.followers = followers;
 	}
 
+	/**
+	 * @return
+	 */
 	public Set getLikes() {
 		return likes;
 	}
 
+	/**
+	 * @param likes
+	 */
 	public void setLikes(Set likes) {
 		this.likes = likes;
 	}
-	
-	public void prepareForRegisterRoleUser(){
-		
-		this.username = this.getUsername();
-    	this.email = this.getEmail();
-    	//this.setCryptedPassword(this.getPassword());
-    	this.registerDate = new Date();
-    	this.lastLogin = new Date();
-    	this.rolId = Rol.USUARIO;
-  
-    	Authority authority = new Authority();
-    	authority.setName(AuthorityName.ROLE_USER);
-		
-    	this.authorities = new ArrayList<Authority>();
-    	this.authorities.add(authority);
-    	this.enabled = true;
-    	this.registerDate = new Date();
-    	this.lastLogin = new Date();
-    	this.lastPasswordResetDate = new Date();
-    	this.followers = new HashSet();
-    	this.followers.add(this);
-	
-	}
 
+	/**
+	 * @return
+	 */
 	public String getPicture() {
 		return picture;
 	}
 
+	/**
+	 * @param picture
+	 */
 	public void setPicture(String picture) {
 		this.picture = picture;
 	}
 
+	/**
+	 * @return
+	 */
 	public Boolean getEnabled() {
 		return enabled;
 	}
 
+	/**
+	 * @param enabled
+	 */
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
 	}
 
+	/**
+	 * @return
+	 */
 	public Date getLastPasswordResetDate() {
 		return lastPasswordResetDate;
 	}
 
+	/**
+	 * @param lastPasswordResetDate
+	 */
 	public void setLastPasswordResetDate(Date lastPasswordResetDate) {
 		this.lastPasswordResetDate = lastPasswordResetDate;
 	}
 
+	/**
+	 * @return
+	 */
 	public List<Authority> getAuthorities() {
 		return authorities;
 	}
 
+	/**
+	 * @param authorities
+	 */
 	public void setAuthorities(List<Authority> authorities) {
 		this.authorities = authorities;
 	}
 	
+	/**
+	 * @param otherUser
+	 * @return
+	 */
 	public boolean equals(User otherUser) {
         if (this == otherUser)
             return true;
@@ -290,34 +379,68 @@ public class User {
         return id.equals(otherUser.getId());
     }
     
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
     public int hashCode() {
         return id == null ? 0 : id.hashCode();
     }
 	
+	/**
+	 * @return
+	 */
 	public String getTarget(){
 		return this.target;
 	}
 	
+	/**
+	 * @param target
+	 */
 	public void setTarget(String target){
 		this.target = target;
 	}
 
+	/**
+	 * @return
+	 */
 	public Restaurant getRestaurant() {
 		return restaurant;
 	}
 
+	/**
+	 * @param restaurant
+	 */
 	public void setRestaurant(Restaurant restaurant) {
 		this.restaurant = restaurant;
 	}
 
+	/**
+	 * @return
+	 */
 	public City getCity() {
 		return city;
 	}
 
+	/**
+	 * @param city
+	 */
 	public void setCity(City city) {
 		this.city = city;
 	}
-	
+
+	/**
+	 * @return
+	 */
+	public Integer getStatus() {
+		return status;
+	}
+
+	/**
+	 * @param status
+	 */
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
 	
 }

@@ -48,6 +48,31 @@ public class RestaurantFactory {
 	private CityFactory cityFactory;
 	
 	/**
+	 * @param restaurantId
+	 * @return
+	 * @throws RestaurantException 
+	 * 
+	 * Find a Restaurant object by id
+	 */
+	public Restaurant findRestaurantById(Long restaurantId) throws RestaurantException{
+		
+		Restaurant restaurant = null;
+		
+		if(restaurantId != null){
+			
+			restaurant = restaurantDao.findOne(restaurantId);
+			
+		} else {
+			
+			throw new RestaurantException(MessageConstants.RESTAURANT_NOT_FOUND);
+			
+		}
+		
+		return restaurant;
+		
+	}
+	
+	/**
 	 * @param id
 	 * @return
 	 * @throws RestaurantException

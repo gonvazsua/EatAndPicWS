@@ -19,9 +19,12 @@ import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.UserDao;
 import com.plateandpic.exceptions.PasswordException;
 import com.plateandpic.exceptions.PlateAndPicException;
+import com.plateandpic.exceptions.RestaurantException;
 import com.plateandpic.exceptions.UserException;
+import com.plateandpic.models.Restaurant;
 import com.plateandpic.models.User;
 import com.plateandpic.response.FollowersResponse;
+import com.plateandpic.response.RestaurantRequestResponse;
 import com.plateandpic.response.UserResponse;
 import com.plateandpic.security.JwtTokenUtil;
 import com.plateandpic.utils.UpdatePasswordRequest;
@@ -47,6 +50,9 @@ public class UserFactory {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private RestaurantFactory restaurantFactory;
 	
 	/**
 	 * @param userFrom
@@ -419,6 +425,27 @@ public class UserFactory {
 			userDao.save(user);
 			
 		}
+		
+	}
+	
+	/**
+	 * @param token
+	 * @param restaurant
+	 * @throws UserException 
+	 * @throws RestaurantException 
+	 * 
+	 * Get the logged user and the restaurant passed as parameter, and assign it
+	 * to the user
+	 */
+	public void saveUserRestaurant(String token, RestaurantRequestResponse restaurant) throws UserException, RestaurantException{
+		
+		User user = getUserFromToken(token);
+		
+		Restaurant restToSave = restaurantFactory.findRestaurantById(restaurant.getRestaurantId());
+
+		user.setRestaurant(restToSave);
+		
+		userDao.save(user);
 		
 	}
 

@@ -4,16 +4,26 @@ import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.exceptions.PasswordException;
 import com.plateandpic.utils.UpdatePasswordRequest;
 
+/**
+ * @author gonzalo
+ *
+ */
 public class PasswordValidator {
 	
 	private UpdatePasswordRequest request;
 	
+	/**
+	 * @param request
+	 */
 	public PasswordValidator(UpdatePasswordRequest request){
 		
 		this.request = request;
 		
 	}
 	
+	/**
+	 * @throws PasswordException
+	 */
 	public void validate() throws PasswordException{
 		
 		this.validateNewPasswordsNotEmpty();
@@ -22,6 +32,9 @@ public class PasswordValidator {
 		
 	}
 	
+	/**
+	 * @throws PasswordException
+	 */
 	private void validateNewPasswordsNotEmpty() throws PasswordException{
 		
 		if(this.request.getNewPassword1() == null || this.request.getNewPassword1().isEmpty()){
@@ -34,6 +47,9 @@ public class PasswordValidator {
 		
 	}
 	
+	/**
+	 * @throws PasswordException
+	 */
 	private void validatePasswordsAreEquals() throws PasswordException{
 		
 		if(!this.request.getNewPassword1().equals(this.request.getNewPassword2())){

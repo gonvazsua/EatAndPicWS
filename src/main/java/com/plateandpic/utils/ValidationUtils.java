@@ -58,5 +58,24 @@ public class ValidationUtils {
 		}
 		
 	}
+	
+	/**
+	 * @param obj1
+	 * @param obj2
+	 * @param e
+	 * @throws PlateAndPicException
+	 * 
+	 * Validate objects are equals
+	 */
+	public static void validateEquals(Object obj1, Object obj2, PlateAndPicException e) throws PlateAndPicException {
+		
+		if(obj1 == null && obj2 != null
+				|| obj1 != null && obj2 == null
+				|| (obj1 != null && obj2 != null && !obj1.equals(obj2))){
+			
+			throw e;
+		}
+		
+	}
 
 }

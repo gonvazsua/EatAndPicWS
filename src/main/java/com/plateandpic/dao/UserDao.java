@@ -19,6 +19,13 @@ import com.plateandpic.models.User;
 public interface UserDao extends CrudRepository<User, Long>, UserDaoCustom {
 	
 	
+	/**
+	 * @param username
+	 * @param email
+	 * @return
+	 */
+	public User findByUsernameOrEmail(String username, String email);
+	
 	  /**
 	 * @param email
 	 * @return
