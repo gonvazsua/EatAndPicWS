@@ -1,5 +1,6 @@
 package com.plateandpic.factory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,8 +8,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.plateandpic.constants.ConstantsProperties;
 import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.dao.CategoryDao;
 import com.plateandpic.dao.CityDao;
@@ -16,12 +20,15 @@ import com.plateandpic.dao.RestaurantDao;
 import com.plateandpic.exceptions.CityException;
 import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.RestaurantException;
+import com.plateandpic.exceptions.UserException;
 import com.plateandpic.models.Category;
 import com.plateandpic.models.City;
 import com.plateandpic.models.Restaurant;
+import com.plateandpic.models.User;
 import com.plateandpic.response.RestaurantRequestResponse;
 import com.plateandpic.utils.DateUtils;
 import com.plateandpic.utils.ParserUtil;
+import com.plateandpic.validator.RestaurantValidator;
 
 /**
  * @author gonzalo
@@ -46,6 +53,12 @@ public class RestaurantFactory {
 	
 	@Autowired
 	private CityFactory cityFactory;
+	
+	@Autowired
+	private UserFactory userFactory;
+	
+	@Autowired
+	private Environment env;
 	
 	/**
 	 * @param restaurantId
@@ -136,7 +149,6 @@ public class RestaurantFactory {
 		response.setCityId(restaurant.getCity().getCityId());
 		response.setCityName(restaurant.getCity().getName());
 		response.setPriceAverage(restaurant.getPriceAverage());
-		response.setPicture(restaurant.getPicture());
 		response.setDescription(restaurant.getDescription());
 		response.setLatitude(restaurant.getLatitude());
 		response.setLongitude(restaurant.getLongitude());
@@ -150,7 +162,33 @@ public class RestaurantFactory {
 			response.setCategories(ParserUtil.getCategoriesAsString(restaurant.getCategories()));
 		}
 		
+		if(restaurant.getPicture() != null){
+			response.setPicture(getbase64Picture(restaurant.getPicture()));
+		}
+		
 		return response;
+		
+	}
+	
+	/**
+	 * @param picture
+	 * @return
+	 */
+	private String getbase64Picture(String picture){
+		
+		String returnedImg = null;
+		
+		try {
+			
+			returnedImg = FileFactory.getBase64FromProfilePictureName(env.getProperty(ConstantsProperties.RESTAURANT_PICTURE_PATH), 
+					picture);
+			
+		} catch (Exception e){
+			log.error(e.getMessage());
+			returnedImg = null;
+		}
+		
+		return returnedImg;
 		
 	}
 	
@@ -301,6 +339,139 @@ public class RestaurantFactory {
 		}
 		
 		return results;
+		
+	}
+	
+	/**
+	 * @param token
+	 * @return
+	 * @throws RestaurantException 
+	 * @throws UserException 
+	 * 
+	 * Get the restaurant of the logged user, and parse to the response object
+	 */
+	public RestaurantRequestResponse getUserRestaurant(String token) throws RestaurantException, UserException{
+		
+		RestaurantRequestResponse response = null;
+		
+		Restaurant restaurant = getRestaurantFromUserToken(token);
+		
+		response = buildRestaurantRequestResponse(restaurant);
+		
+		return response;
+		
+	}
+	
+	
+	/**
+	 * @param restaurant
+	 * @throws PlateAndPicException
+	 * 
+	 * Validate a Restaurant object
+	 */
+	private void validateRestaurant(Restaurant restaurant) throws PlateAndPicException {
+		
+		RestaurantValidator validator = new RestaurantValidator(restaurant);
+		
+		validator.validate();
+		
+	}
+	
+	/**
+	 * @param request
+	 * @return
+	 * @throws PlateAndPicException
+	 * 
+	 * Validate and save a RestaurantRequestResponse object
+	 */
+	public RestaurantRequestResponse validateAndSave(RestaurantRequestResponse request) throws PlateAndPicException{
+		
+		RestaurantRequestResponse response = null;
+		
+		Restaurant restaurant = restaurantDao.findOne(request.getRestaurantId());
+		
+		if(restaurant == null){
+			log.error("Restaurant not found with ID: " + request.getRestaurantId());
+			throw new RestaurantException(MessageConstants.RESTAURANT_NOT_FOUND);
+		}
+		
+		updateRestaurantFromRequest(restaurant, request);
+		
+		validateRestaurant(restaurant);
+		
+		restaurant = restaurantDao.save(restaurant);
+		
+		response = buildRestaurantRequestResponse(restaurant);
+		
+		return response;
+		
+	}
+	
+	/**
+	 * @param restaurant
+	 * @param request
+	 * 
+	 * Update allowed fields from request
+	 */
+	private void updateRestaurantFromRequest(Restaurant restaurant, RestaurantRequestResponse request) {
+		
+		restaurant.setAddress(request.getAddress());
+		restaurant.setPhoneNumber(request.getPhoneNumber());
+		restaurant.setPriceAverage(request.getPriceAverage());
+		restaurant.setDescription(request.getDescription());
+		
+	}
+	
+	/**
+	 * @param token
+	 * @param image
+	 * @return
+	 * @throws IOException
+	 * @throws PlateAndPicException
+	 * 
+	 * 1. Get the user and their restaurant
+	 * 2. Upload file and set the name:  path+restaurntId+.jpg
+	 * 3. Update the new file name to the restaurant
+	 * 4. Convert to base64 and return
+	 */
+	public String updatePicture(String token, MultipartFile image) throws IOException, PlateAndPicException{
+		
+		String base64Img = null;
+		String fileName = null;
+		
+		Restaurant restaurant = getRestaurantFromUserToken(token);
+		
+		fileName = FileFactory.uploadRestaurantPicture(image, restaurant.getRestaurantId());
+		
+		restaurant.setPicture(fileName);
+		
+		restaurantDao.save(restaurant);
+		
+		base64Img = FileFactory.getBase64FromProfilePictureName(env.getProperty(ConstantsProperties.RESTAURANT_PICTURE_PATH),
+				fileName);
+		
+		return base64Img;
+		
+	}
+	
+	/**
+	 * @param token
+	 * @return
+	 * @throws RestaurantException
+	 * @throws UserException
+	 */
+	public Restaurant getRestaurantFromUserToken(String token) throws RestaurantException, UserException{
+		
+		User loggedUser = userFactory.getUserFromToken(token);
+		
+		Restaurant restaurant = loggedUser.getRestaurant();
+		
+		if(restaurant == null){
+			log.error("Restaurant not found for userId: " + loggedUser.getId());
+			throw new RestaurantException(MessageConstants.RESTAURANT_NOT_FOUND);
+		}
+		
+		return restaurant;
 		
 	}
 

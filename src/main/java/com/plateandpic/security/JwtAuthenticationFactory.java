@@ -109,7 +109,7 @@ public class JwtAuthenticationFactory {
 
 		} else {
 
-			response = new JwtAuthenticationRestaurantResponse(token, user.getRestaurant().getRestaurantId());
+			response = new JwtAuthenticationRestaurantResponse(token, user.getRestaurant().getRestaurantId(), user.getStatus());
 
 		}
 
@@ -172,8 +172,8 @@ public class JwtAuthenticationFactory {
 		
 		User user = new User();
 		
-		user.setUsername(request.getUsername());
-		user.setEmail(request.getEmail());
+		user.setUsername(request.getUsername().toLowerCase());
+		user.setEmail(request.getEmail().toLowerCase());
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
 		user.setStatus(Status.ACTIVE.getCode());
 		

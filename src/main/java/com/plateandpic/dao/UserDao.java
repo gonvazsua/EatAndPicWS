@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import com.plateandpic.models.Restaurant;
 import com.plateandpic.models.User;
 
 /**
@@ -49,5 +50,11 @@ public interface UserDao extends CrudRepository<User, Long>, UserDaoCustom {
 	@Query(value = "Select * from user where lower(firstname) like %:key% or lower(lastname) like %:key% "
 			+ " or lower(email) like %:key% or lower(username) like %:key% order by username asc", nativeQuery = true)
 	public List<User> findUserByKey(@Param("key") String key);
+	
+	/**
+	 * @param restaurant
+	 * @return
+	 */
+	public User findByRestaurant(Restaurant restaurant);
 
 }

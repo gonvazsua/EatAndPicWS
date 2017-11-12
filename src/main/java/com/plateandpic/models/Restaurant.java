@@ -31,7 +31,7 @@ public class Restaurant {
 	@Size(min = 4, max = 50)
 	private String name;
 	
-	@Size(min = 4, max = 200)
+	@Size(min = 4, max = 50)
 	private String address;
 	
 	@Size(min = 4, max = 12)
@@ -65,7 +65,7 @@ public class Restaurant {
 	
 	private Double rating;
 	
-	@Size(min = 1, max = 150)
+	@Size(min = 1, max = 200)
 	private String description;
 	
 	@NotNull

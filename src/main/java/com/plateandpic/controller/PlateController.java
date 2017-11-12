@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,13 +38,10 @@ public class PlateController {
 	private static final Logger log = LoggerFactory.getLogger(PlateController.class);
 	
 	@Autowired
-	private PlateDao plateDao;
-	
-	@Autowired
-	private RestaurantDao restaurantDao;
-	
-	@Autowired
 	private PlateFactory plateFactory;
+	
+	@Value("${jwt.header}")
+	private String tokenHeader;
 	
 	/**
 	 * @param request
@@ -61,7 +59,9 @@ public class PlateController {
 			throw new PlateAndPicException(MessageConstants.GENERAL_ERROR);
 		}
 		
-		plate = plateFactory.validateAndSave(plate);
+		String token = request.getHeader(tokenHeader);
+		
+		plate = plateFactory.validateAndSave(token, plate);
 		
 		return plate;
 		 
@@ -112,6 +112,23 @@ public class PlateController {
 		}
 		
 		plates = plateFactory.findPlatesByName(name, page);
+		
+		response.setStatus(HttpServletResponse.SC_OK);
+		  
+		return plates;
+		 
+	}
+	
+	@RequestMapping(value = "/getByUserRestaurant", method = RequestMethod.GET)
+	@ResponseBody
+	public List<PlateResponse> getByUserRestaurant(HttpServletRequest request, HttpServletResponse response)
+			throws PlateAndPicException {
+		  
+		List<PlateResponse> plates = null;
+		
+		String token = request.getHeader(tokenHeader);
+		
+		plates = plateFactory.getPlatesFromUserRestaurant(token);
 		
 		response.setStatus(HttpServletResponse.SC_OK);
 		  

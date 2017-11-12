@@ -9,12 +9,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.plateandpic.constants.MessageConstants;
 import com.plateandpic.exceptions.PlateAndPicException;
@@ -35,6 +38,9 @@ public class RestaurantController {
 	
 	@Autowired
 	private RestaurantFactory restaurantFactory;
+	
+	@Value("${jwt.header}")
+	private String tokenHeader;
 	
 
 	/**
@@ -131,6 +137,28 @@ public class RestaurantController {
 	 * @return
 	 * @throws RestaurantException 
 	 */
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	@ResponseBody
+	public RestaurantRequestResponse update(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody RestaurantRequestResponse restaurantRequest) throws PlateAndPicException{
+		
+		RestaurantRequestResponse savedRestaurant = null;
+		
+		savedRestaurant = restaurantFactory.validateAndSave(restaurantRequest);
+			
+		response.setStatus(HttpServletResponse.SC_OK);
+		
+		return savedRestaurant;
+		 
+	}
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @param restaurant
+	 * @return
+	 * @throws RestaurantException 
+	 */
 	@RequestMapping(value = "/getById", method = RequestMethod.GET)
 	@ResponseBody
 	public RestaurantRequestResponse getById(HttpServletRequest request, HttpServletResponse response,
@@ -146,4 +174,54 @@ public class RestaurantController {
 		 
 	}
 	
+	/**
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws PlateAndPicException 
+	 * @throws RestaurantException 
+	 */
+	@RequestMapping(value = "/getUserRestaurant", method = RequestMethod.GET)
+	@ResponseBody
+	public RestaurantRequestResponse getUserRestaurant(HttpServletRequest request, HttpServletResponse response) throws PlateAndPicException {
+		
+		String token = null;
+		RestaurantRequestResponse restaurant = null;
+		
+		try {
+			
+			token = request.getHeader(tokenHeader);
+			
+			restaurant = restaurantFactory.getUserRestaurant(token);
+			
+		} catch (PlateAndPicException e){
+			log.error("Error in getUserRestaurant from RestaurantController: " + e.getStackTrace().toString());
+			throw e;
+		}
+		
+		return restaurant;
+		 
+	}
+	
+	@RequestMapping(value = "/savePicture", method = RequestMethod.POST, produces = MediaType.IMAGE_JPEG_VALUE)
+	public String saveRestaurantPicture(@RequestBody MultipartFile image, HttpServletRequest request,
+			HttpServletResponse response) throws PlateAndPicException {
+	
+		String token = null;
+		String base64Img = null;
+		
+		try {
+			
+			token = request.getHeader(tokenHeader);
+			
+			base64Img = restaurantFactory.updatePicture(token, image);
+			
+		} catch(Exception e){
+			log.error(e.getMessage());
+			throw new PlateAndPicException(MessageConstants.RESTAURANT_PICTURE_NOT_SAVED);
+		}
+		
+		return base64Img;
+		
+	}
 }

@@ -444,6 +444,12 @@ public class UserFactory {
 		
 		Restaurant restToSave = restaurantFactory.findRestaurantById(restaurant.getRestaurantId());
 
+		User userWithRestaurant = userDao.findByRestaurant(restToSave);
+		
+		if(userWithRestaurant != null){
+			throw new UserException(MessageConstants.USER_RESTAURANT_ALREADY_MANAGED);
+		}
+		
 		user.setRestaurant(restToSave);
 		user.setStatus(Status.RESTAURANT_PENDING.getCode());
 		

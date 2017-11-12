@@ -18,6 +18,7 @@ public class MessageConstants {
 	public static final String USER_EMAIL_TOO_LONG = "user.emailTooLong";
 	public static final String USER_PASSWORD_TOO_LONG = "user.passwordTooLong";
 	public static final String USER_RESTAURANT_NOT_SAVED = "user.restaurantNotSaved";
+	public static final String USER_RESTAURANT_ALREADY_MANAGED = "user.restaurantAlreadyManaged";
 	
 	public static final String PASSWORD_NOT_VALID = "password.notValid";
 	public static final String PASSWORD_NOT_EQUALS = "password.notEquals";
@@ -32,6 +33,13 @@ public class MessageConstants {
 	
 	public static final String RESTAURANT_NOT_FOUND = "restaurant.notFound";
 	public static final String RESTAURANT_SEARCH_ERROR = "restaurant.searchError";
+	public static final String RESTAURANT_NAME_NOT_NULL = "restaurant.nameNotNull";
+	public static final String RESTAURANT_CITY_NOT_NULL = "restaurant.cityNotNull";
+	public static final String RESTAURANT_NAME_TOO_LONG = "restaurant.nameTooLong";
+	public static final String RESTAURANT_ADDRESS_TOO_LONG = "restaurant.addressTooLong";
+	public static final String RESTAURANT_PHONENUMBER_TOO_LONG = "restaurant.phoneNumberTooLong";
+	public static final String RESTAURANT_DESCRIPTION_TOO_LONG = "restaurant.descriptionTooLong";
+	public static final String RESTAURANT_PICTURE_NOT_SAVED = "restaurant.pictureNotSaved";
 	
 	public static final String PLATES_NOT_LOADED = "plate.notLoaded";
 	public static final String PLATE_NOT_FOUND = "plate.notFound";

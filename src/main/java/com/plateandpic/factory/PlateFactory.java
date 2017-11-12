@@ -16,6 +16,8 @@ import com.plateandpic.dao.PlateDao;
 import com.plateandpic.dao.RestaurantDao;
 import com.plateandpic.exceptions.PlateAndPicException;
 import com.plateandpic.exceptions.PlateException;
+import com.plateandpic.exceptions.RestaurantException;
+import com.plateandpic.exceptions.UserException;
 import com.plateandpic.models.Plate;
 import com.plateandpic.models.Restaurant;
 import com.plateandpic.response.PlateResponse;
@@ -38,6 +40,9 @@ public class PlateFactory {
 	
 	@Autowired
 	private RestaurantDao restaurantDao;
+	
+	@Autowired
+	private RestaurantFactory restaurantFactory;
 	
 	/**
 	 * @param plateId
@@ -142,16 +147,42 @@ public class PlateFactory {
 	}
 	
 	/**
+	 * @param token
+	 * @param request
+	 * @throws RestaurantException
+	 * @throws UserException
+	 * 
+	 * Check if the plate is saved from the restaurant of the logged user.
+	 * If restaurantId is null in the request, it means that the restaurant of the plate has to be completed with the user restaurant
+	 * In other case, the restaurant will be of the request 
+	 */
+	private void checkPlateOfUserRestaurant(String token, PlateResponse request) throws RestaurantException, UserException {
+		
+		Restaurant restaurant = null;
+		
+		if(request.getRestaurantId() == null || request.getRestaurantId() == 0){
+			
+			restaurant = restaurantFactory.getRestaurantFromUserToken(token);
+			
+			request.setRestaurantId(restaurant.getRestaurantId());
+			
+		}
+		
+	}
+	
+	/**
 	 * @param request
 	 * @return
 	 * @throws PlateAndPicException
 	 * 
 	 * Validate, save and return a PlateResponse object
 	 */
-	public PlateResponse validateAndSave(PlateResponse request) throws PlateAndPicException {
+	public PlateResponse validateAndSave(String token, PlateResponse request) throws PlateAndPicException {
 		
 		Plate plate = null;
 		PlateResponse response = null;
+		
+		checkPlateOfUserRestaurant(token, request);
 		
 		validatePlateResponse(request);
 		
@@ -183,12 +214,35 @@ public class PlateFactory {
 			throw new PlateException(MessageConstants.PLATE_RESTAURANT_NOT_NULL);
 		}
 		
+		
+		if(request.getPlateId() != null){
+			plate.setPlateId(request.getPlateId());
+		}
+		
 		plate.setName(request.getPlateName());
 		plate.setRestaurant(restaurant);
 		//TODO: Set platetype
-		plate.setActive(true);
+		plate.setActive(request.getPlateActive());
 		
 		return plate;
+		
+	}
+	
+	/**
+	 * @param token
+	 * @return
+	 * @throws RestaurantException
+	 * @throws UserException
+	 */
+	public List<PlateResponse> getPlatesFromUserRestaurant(String token) throws RestaurantException, UserException {
+		
+		List<PlateResponse> response = null;
+		
+		Restaurant restaurant = restaurantFactory.getRestaurantFromUserToken(token);
+		
+		response = getPlateResponseByRestaurantId(restaurant.getRestaurantId());
+		
+		return response;
 		
 	}
 	

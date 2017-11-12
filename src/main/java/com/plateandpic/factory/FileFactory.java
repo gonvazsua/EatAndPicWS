@@ -73,6 +73,48 @@ public class FileFactory {
 	}
 	
 	/**
+	 * @param image
+	 * @param restaurantId
+	 * @return
+	 * @throws IOException
+	 */
+	public static String uploadRestaurantPicture(MultipartFile image, Long restaurantId) throws IOException{
+		
+		File newImage = null;
+		String newImageName = null;
+		String realPath = "";
+		GetPropertiesValues properties = null;
+		String path = "";
+		
+		try{
+			
+			properties = new GetPropertiesValues(ConstantsProperties.APPLICATION_PROPERTIES);
+			
+			path = properties.getValue(ConstantsProperties.RESTAURANT_PICTURE_PATH);
+			
+			realPath = System.getProperty(systemPath) + path;
+			
+			newImage = new File(realPath + restaurantId + JPG);
+			
+			if(!newImage.exists()){
+				newImage.createNewFile();
+			}
+			
+			image.transferTo(newImage);
+			
+			newImageName = newImage.getName();
+			
+		}
+		catch (IOException e){
+			
+			throw e;
+		}
+		
+		return newImageName;
+		
+	}
+	
+	/**
 	 * @param path
 	 * @param profilePictureName
 	 * @return
