@@ -145,7 +145,7 @@ public class Restaurant {
 	/**
 	 * @return
 	 */
-	public Set getCategories() {
+	public Set<Category> getCategories() {
 		return categories;
 	}
 

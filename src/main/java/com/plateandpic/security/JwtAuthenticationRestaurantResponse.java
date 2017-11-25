@@ -10,17 +10,20 @@ public class JwtAuthenticationRestaurantResponse extends JwtAuthenticationRespon
 	
 	private Long restaurantId;
 	private Integer verificationStatus;
+	private String restaurantName;
 	
 	/**
 	 * @param token
 	 * @param restaurantId
 	 * @param verificationStatus
 	 */
-	public JwtAuthenticationRestaurantResponse(String token, Long restaurantId, Integer verificationStatus) {
+	public JwtAuthenticationRestaurantResponse(String token, Long restaurantId, 
+			Integer verificationStatus, String restaurantName) {
 		
 		super(token);
 		this.restaurantId = restaurantId;
 		this.verificationStatus = verificationStatus;
+		this.restaurantName = restaurantName;
 		
 	}
 	
@@ -36,6 +39,13 @@ public class JwtAuthenticationRestaurantResponse extends JwtAuthenticationRespon
 	 */
 	public Long getRestaurantId(){
 		return this.restaurantId;
+	}
+	
+	/**
+	 * @return
+	 */
+	public String getRestaurantName(){
+		return this.restaurantName;
 	}
 
 }

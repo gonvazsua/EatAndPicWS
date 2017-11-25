@@ -109,7 +109,8 @@ public class JwtAuthenticationFactory {
 
 		} else {
 
-			response = new JwtAuthenticationRestaurantResponse(token, user.getRestaurant().getRestaurantId(), user.getStatus());
+			response = new JwtAuthenticationRestaurantResponse(token, user.getRestaurant().getRestaurantId(), 
+					user.getStatus(), user.getRestaurant().getName());
 
 		}
 

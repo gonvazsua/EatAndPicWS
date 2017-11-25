@@ -474,5 +474,22 @@ public class RestaurantFactory {
 		return restaurant;
 		
 	}
+	
+	/**
+	 * @param restaurant
+	 * @throws RestaurantException
+	 * 
+	 * Save restaurant passed as parameter
+	 */
+	public void saveOne(Restaurant restaurant) throws RestaurantException {
+		
+		restaurant = restaurantDao.save(restaurant);
+		
+		if(restaurant == null){
+			log.error("Error saving restaurant: " + restaurant.toString());
+			throw new RestaurantException(MessageConstants.RESTAURANT_NOT_SAVED);
+		}
+		
+	}
 
 }

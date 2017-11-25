@@ -40,6 +40,7 @@ public class MessageConstants {
 	public static final String RESTAURANT_PHONENUMBER_TOO_LONG = "restaurant.phoneNumberTooLong";
 	public static final String RESTAURANT_DESCRIPTION_TOO_LONG = "restaurant.descriptionTooLong";
 	public static final String RESTAURANT_PICTURE_NOT_SAVED = "restaurant.pictureNotSaved";
+	public static final String RESTAURANT_NOT_SAVED = "restaurant.notSaved";
 	
 	public static final String PLATES_NOT_LOADED = "plate.notLoaded";
 	public static final String PLATE_NOT_FOUND = "plate.notFound";
