@@ -47,8 +47,13 @@ public interface UserDao extends CrudRepository<User, Long>, UserDaoCustom {
 	 * 
 	 * Search user having name, lastname, username or email like the key passed as parameter
 	 */
-	@Query(value = "Select * from user where lower(firstname) like %:key% or lower(lastname) like %:key% "
-			+ " or lower(email) like %:key% or lower(username) like %:key% order by username asc", nativeQuery = true)
+	@Query(value = "Select * from user "
+			+ "			where ("
+			+ "					lower(firstname) like %:key% or lower(lastname) like %:key% "
+			+ " 				or lower(email) like %:key% or lower(username) like %:key%"
+			+ "				  ) "
+			+ "			 	and restaurant_restaurant_id is null "
+			+ "		order by username asc", nativeQuery = true)
 	public List<User> findUserByKey(@Param("key") String key);
 	
 	/**
