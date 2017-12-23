@@ -143,6 +143,25 @@ public class CommentFactory {
 	}
 	
 	/**
+	 * @param token
+	 * @param comment
+	 * @return
+	 * @throws PlateAndPicException
+	 * 
+	 * Validate the commentRequest and remove it
+	 * 
+	 */
+	public CommentRequestResponse validateAndRemove(String token, CommentRequestResponse comment) throws PlateAndPicException {	
+		
+		validateRemoveComment(comment, token);
+		
+		commentDao.delete(comment.getCommentId());
+		
+		return comment;
+		
+	}
+	
+	/**
 	 * @param comment
 	 * @throws PlateAndPicException
 	 * 
@@ -154,6 +173,28 @@ public class CommentFactory {
 		CommentValidator commentValidator = new CommentValidator(comment);
 		
 		commentValidator.validate();
+		
+	}
+	
+	/**
+	 * @param comment
+	 * @throws PlateAndPicException
+	 * 
+	 * Validate user logged is the same that the user comment
+	 * 
+	 */
+	private void validateRemoveComment(CommentRequestResponse comment, String token) throws PlateAndPicException{
+		
+		User loggedUser = userFactory.getUserFromToken(token);
+		
+		User userComment = userFactory.getUserByUsername(comment.getUsername());
+		
+		if(!loggedUser.getId().equals(userComment.getId())){
+			
+			log.error("The userId: " + loggedUser.getId() + " has tried to remove a comment from the userId: " + userComment.getId());
+			throw new PlateAndPicException(MessageConstants.COMMENT_NOT_REMOVED);
+			
+		}
 		
 	}
 	

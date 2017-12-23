@@ -99,5 +99,28 @@ public class CommentController {
 		return savedComment;
 		
 	}
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @param comment
+	 * @return
+	 * @throws PlateAndPicException 
+	 */
+	@RequestMapping(value = "/remove", method = RequestMethod.POST)
+	@ResponseBody
+	public CommentRequestResponse remove(HttpServletRequest request, 
+			@RequestBody CommentRequestResponse comment) throws PlateAndPicException{
+		
+		CommentRequestResponse removedComment;
+		String token = "";
+		
+		token = request.getHeader(tokenHeader);
+		
+		removedComment = commentFactory.validateAndRemove(token, comment);
+		
+		return removedComment;
+		
+	}
 
 }

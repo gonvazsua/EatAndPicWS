@@ -30,6 +30,7 @@ public class MessageConstants {
 	public static final String PLATEPICTURE_TITLE_TOO_LONG = "platePicture.titleTooLong";
 	
 	public static final String COMMENT_NOT_SAVED = "comment.notSaved";
+	public static final String COMMENT_NOT_REMOVED = "comment.notRemoved";
 	
 	public static final String RESTAURANT_NOT_FOUND = "restaurant.notFound";
 	public static final String RESTAURANT_SEARCH_ERROR = "restaurant.searchError";
